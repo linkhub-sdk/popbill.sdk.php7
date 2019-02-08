@@ -20,7 +20,7 @@
  namespace Popbill;
 
 
-class CashbillService extends PopbillBase {
+class PopbillCashbill extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {
     	parent::__construct($LinkID,$SecretKey);
     	$this->AddScope('140');

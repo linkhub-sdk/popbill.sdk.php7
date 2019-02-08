@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class MessagingService extends PopbillBase
+class PopbillMessaging extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)
     {

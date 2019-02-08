@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class KakaoService extends PopbillBase
+class PopbillKakao extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)
     {

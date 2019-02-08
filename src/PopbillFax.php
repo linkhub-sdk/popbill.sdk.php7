@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class FaxService extends PopbillBase
+class PopbillFax extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)
     {

@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class TaxinvoiceService extends PopbillBase
+class PopbillTaxinvoice extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)
     {

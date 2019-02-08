@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class StatementService extends PopbillBase {
+class PopbillStatement extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {
     parent::__construct($LinkID,$SecretKey);
     $this->AddScope('121');

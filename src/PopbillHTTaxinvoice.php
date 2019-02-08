@@ -19,7 +19,7 @@
 
 namespace Popbill;
 
-class HTTaxinvoiceService extends PopbillBase {
+class PopbillHTTaxinvoice extends PopbillBase {
 	public function __construct ( $LinkID, $SecretKey )
   {
     parent::__construct ( $LinkID, $SecretKey );

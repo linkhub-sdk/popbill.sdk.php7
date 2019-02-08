@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Popbill;
+namespace Linkhub\Popbill;
 
 class PopbillKakao extends PopbillBase
 {

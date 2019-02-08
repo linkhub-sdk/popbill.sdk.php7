@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Popbill;
+namespace Linkhub\Popbill;
 
 class PopbillClosedown extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {

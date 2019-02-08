@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Popbill;
+namespace Linkhub\Popbill;
 
 class PopbillTaxinvoice extends PopbillBase
 {

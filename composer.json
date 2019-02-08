@@ -19,7 +19,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.0.0",
-        "linkhub/linkhub": "1.0.0"
+        "linkhub/linkhub": "dev-master"
     },
     "autoload": {
       "psr-4": {"Popbill\\": "src/Popbill"}

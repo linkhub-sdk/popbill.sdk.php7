@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Linkhub\Popbill;
+namespace Popbill;
 
 class ClosedownService extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {

@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Linkhub\Popbill;
+namespace Popbill;
 
 class FaxService extends PopbillBase
 {

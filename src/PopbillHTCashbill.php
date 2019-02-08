@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
- namespace Linkhub\Popbill;
+namespace Popbill;
 
 class HTCashbillService extends PopbillBase {
 	public function __construct ( $LinkID, $SecretKey )

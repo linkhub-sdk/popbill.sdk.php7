@@ -17,7 +17,8 @@
  * ======================================================================================
  */
 
-namespace Linkhub\Popbill;
+ namespace Popbill;
+
 
 class CashbillService extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {

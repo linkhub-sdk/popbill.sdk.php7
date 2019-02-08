@@ -17,7 +17,7 @@
  * ======================================================================================
  */
 
-namespace Linkhub\Popbill;
+namespace Popbill;
 
 use Linkhub\Authority;
 

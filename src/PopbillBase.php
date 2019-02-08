@@ -56,7 +56,7 @@ class PopbillBase
         if (is_null($targetToken)) {
             $Refresh = true;
         } else {
-            $Expiration = new DateTime($targetToken->expiration, new DateTimeZone("UTC"));
+            $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
             $now = $this->Linkhub->getTime();
             $Refresh = $Expiration < $now;
         }

@@ -19,7 +19,7 @@
 
 namespace Linkhub\Popbill;
 
-use Linkhub;
+use Linkhub\Authority;
 
 class PopbillBase
 {

@@ -17,8 +17,6 @@
  * ======================================================================================
  */
 
-namespace Linkhub;
-
 class StatementService extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {
     parent::__construct($LinkID,$SecretKey);

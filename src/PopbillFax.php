@@ -17,8 +17,6 @@
  * ======================================================================================
  */
 
-namespace Linkhub;
-
 class FaxService extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)

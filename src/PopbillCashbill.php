@@ -17,8 +17,6 @@
  * ======================================================================================
  */
 
-namespace Linkhub;
-
 class CashbillService extends PopbillBase {
 	public function __construct($LinkID,$SecretKey) {
     	parent::__construct($LinkID,$SecretKey);

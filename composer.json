@@ -2,7 +2,7 @@
     "name": "linkhub/popbill",
     "type": "library",
     "description": "Popbill SDK for php7",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "homepage": "https://www.linkhub.co.kr/",
     "keywords": [
         "linkhub",
@@ -19,9 +19,9 @@
     "license": "MIT",
     "require": {
         "php": ">=7.0.0",
-        "linkhub/linkhub": "1.0.0"
+        "linkhub/linkhub": "1.0.1"
     },
     "autoload": {
-      "psr-4": {"Popbill\\": "src/Popbill"}
+      "psr-4": {"Linkhub\\": "src/Popbill"}
     }
 }

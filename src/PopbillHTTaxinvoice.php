@@ -17,8 +17,6 @@
  * ======================================================================================
  */
 
-namespace Linkhub;
-
 class HTTaxinvoiceService extends PopbillBase {
 	public function __construct ( $LinkID, $SecretKey )
   {

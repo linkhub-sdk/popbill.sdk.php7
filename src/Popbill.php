@@ -17,8 +17,6 @@
  * ======================================================================================
  */
 
-namespace Linkhub;
-
 class PopbillBase
 {
     const ServiceID_REAL = 'POPBILL';

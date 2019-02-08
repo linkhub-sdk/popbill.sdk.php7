@@ -17,6 +17,8 @@
  * ======================================================================================
  */
 
+ namespace Linkhub\Popbill;
+
 class TaxinvoiceService extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)

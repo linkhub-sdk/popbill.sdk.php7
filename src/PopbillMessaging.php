@@ -16,6 +16,8 @@
  * We welcome any suggestions, feedbacks, blames or anything.
  * ======================================================================================
  */
+ 
+ namespace Linkhub\Popbill;
 
 class MessagingService extends PopbillBase
 {

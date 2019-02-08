@@ -17,6 +17,8 @@
  * ======================================================================================
  */
 
+ namespace Linkhub\Popbill;
+
 class KakaoService extends PopbillBase
 {
     public function __construct($LinkID, $SecretKey)

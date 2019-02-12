@@ -545,7 +545,7 @@ class StatementLog
         isset($jsonInfo->ip) ? ($this->ip = $jsonInfo->ip) : null;
     }
 }
-class MemoRequest
+class StmtMemoRequest
 {
     public $memo;
 }

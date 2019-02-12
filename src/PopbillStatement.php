@@ -89,7 +89,7 @@ class PopbillStatement extends PopbillBase {
     	if(is_null($MgtKey) || empty($MgtKey)) {
     		throw new PopbillException('관리번호가 입력되지 않았습니다.');
     	}
-		$Request = new IssueRequest();
+		$Request = new StmtIssueRequest();
     	$Request->memo = $Memo;
     	$postdata = json_encode($Request);
 		return $this->executeCURL('/Statement/'.$itemCode."/".$MgtKey, $CorpNum, $UserID, true, 'ISSUE',$postdata);
@@ -99,7 +99,7 @@ class PopbillStatement extends PopbillBase {
     	if(is_null($MgtKey) || empty($MgtKey)) {
     		throw new PopbillException('관리번호가 입력되지 않았습니다.');
     	}
-		$Request = new MemoRequest();
+		$Request = new StmtMemoRequest();
 		$Request->memo = $Memo;
 		$postdata = json_encode($Request);
 		return $this->executeCURL('/Statement/'.$itemCode."/".$MgtKey, $CorpNum, $UserID, true, 'CANCEL',$postdata);
@@ -316,7 +316,7 @@ class PopbillStatement extends PopbillBase {
 		$EmailSendConfigList = array();
 		$result = $this->executeCURL('/Statement/EmailSendConfig', $CorpNum, $UserID);
 		for($i=0; $i<Count($result); $i++){
-			$EmailSendConfig = new EmailSendConfig();
+			$EmailSendConfig = new StmtEmailSendConfig();
 			$EmailSendConfig->fromJsonInfo($result[$i]);
 			$EmailSendConfigList[$i] = $EmailSendConfig;
 		}
@@ -549,7 +549,7 @@ class MemoRequest
 {
     public $memo;
 }
-class IssueRequest
+class StmtIssueRequest
 {
     public $memo;
 }
@@ -584,7 +584,7 @@ class StmtRequest
     public $ItemCode;
     public $MgtKey;
 }
-class EmailSendConfig
+class StmtEmailSendConfig
 {
     public $emailType;
     public $sendYN;

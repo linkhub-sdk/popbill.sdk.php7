@@ -52,7 +52,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
       throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
     }
     $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$JobID.'/State', $CorpNum, $UserID);
-    $JobState = new JobState();
+    $JobState = new HTTIJobState();
     $JobState->fromJsonInfo($response);
     return $JobState;
   }
@@ -61,7 +61,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
     $result = $this->executeCURL('/HomeTax/Taxinvoice/JobList', $CorpNum, $UserID);
     $JobList = array();
 		for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-			$JobState = new JobState();
+			$JobState = new HTTIJobState();
 			$JobState->fromJsonInfo($result[$i]);
 			$JobList[$i] = $JobState;
 		}
@@ -135,7 +135,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
   public function GetFlatRateState ( $CorpNum, $UserID = null )
   {
     $response = $this->executeCURL ( '/HomeTax/Taxinvoice/Contract', $CorpNum, $UserID ) ;
-    $FlatRateState = new FlatRate();
+    $FlatRateState = new HTTIFlatRate();
     $FlatRateState->fromJsonInfo ( $response );
     return $FlatRateState;
   }
@@ -175,7 +175,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
 		if(is_null($deptUserPWD) || empty($deptUserPWD)) {
       throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
     }
-		$Request = new RegistDeptUserRequest();
+		$Request = new HTTIRegistDeptUserRequest();
     $Request->id = $deptUserID;
 		$Request->pwd = $deptUserPWD;
     $postdata = json_encode($Request);
@@ -203,7 +203,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
 		return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum, $UserID, true, 'DELETE', null);
 	}
 }
-class FlatRate
+class HTTIFlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -522,7 +522,7 @@ class HTTaxinvoiceAbbr
         isset ($jsonInfo->invoiceType) ? $this->invoiceType = $jsonInfo->invoiceType : null;
     }
 }
-class JobState
+class HTTIJobState
 {
     public $jobID;
     public $jobState;
@@ -552,13 +552,13 @@ class JobState
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
-class KeyType
+class HTTIKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
-class RegistDeptUserRequest
+class HTTIRegistDeptUserRequest
 {
     public $id;
     public $pwd;

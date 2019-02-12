@@ -107,7 +107,7 @@ class PopbillCashbill extends PopbillBase {
     if(is_null($MgtKey) || empty($MgtKey)) {
       throw new PopbillException('관리번호가 입력되지 않았습니다.');
     }
-    $Request = new IssueRequest();
+    $Request = new CBIssueRequest();
     $Request->memo = $Memo;
     $postdata = json_encode($Request);
     return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'ISSUE',$postdata);
@@ -116,7 +116,7 @@ class PopbillCashbill extends PopbillBase {
     if(is_null($MgtKey) || empty($MgtKey)) {
       throw new PopbillException('관리번호가 입력되지 않았습니다.');
     }
-    $Request = new MemoRequest();
+    $Request = new CBMemoRequest();
     $Request->memo = $Memo;
     $postdata = json_encode($Request);
     return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'CANCELISSUE',$postdata);
@@ -275,7 +275,7 @@ class PopbillCashbill extends PopbillBase {
 		$EmailSendConfigList = array();
 		$result = $this->executeCURL('/Cashbill/EmailSendConfig', $CorpNum, $UserID);
 		for($i=0; $i<Count($result); $i++){
-			$EmailSendConfig = new EmailSendConfig();
+			$EmailSendConfig = new CBEmailSendConfig();
 			$EmailSendConfig->fromJsonInfo($result[$i]);
 			$EmailSendConfigList[$i] = $EmailSendConfig;
 		}
@@ -423,11 +423,11 @@ class CashbillLog
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
-class MemoRequest
+class CBMemoRequest
 {
     public $memo;
 }
-class IssueRequest
+class CBIssueRequest
 {
     public $memo;
 }
@@ -457,7 +457,7 @@ class CBSearchResult
         $this->list = $InfoList;
     }
 }
-class EmailSendConfig
+class CBEmailSendConfig
 {
     public $emailType;
     public $sendYN;

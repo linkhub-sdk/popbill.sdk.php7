@@ -103,7 +103,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $Request->emailSubject = $EmailSubject;
         $postdata = json_encode($Request);
@@ -115,7 +115,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELSEND', $postdata);
@@ -126,7 +126,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'ACCEPT', $postdata);
@@ -137,7 +137,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'DENY', $postdata);
@@ -148,7 +148,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new IssueRequest();
+        $Request = new TIIssueRequest();
         $Request->memo = $Memo;
         $Request->emailSubject = $EmailSubject;
         $Request->forceIssue = $ForceIssue;
@@ -161,7 +161,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELISSUE', $postdata);
@@ -181,7 +181,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REQUEST', $postdata);
@@ -192,7 +192,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REFUSE', $postdata);
@@ -203,7 +203,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('관리번호가 입력되지 않았습니다.');
         }
-        $Request = new MemoRequest();
+        $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELREQUEST', $postdata);
@@ -443,7 +443,7 @@ class PopbillTaxinvoice extends PopbillBase
     public function AttachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
         $uri = '/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/AttachStmt';
-        $Request = new StmtRequest();
+        $Request = new TIStmtRequest();
         $Request->ItemCode = $SubItemCode;
         $Request->MgtKey = $SubMgtKey;
         $postdata = json_encode($Request);
@@ -453,7 +453,7 @@ class PopbillTaxinvoice extends PopbillBase
     public function DetachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
         $uri = '/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/DetachStmt';
-        $Request = new StmtRequest();
+        $Request = new TIStmtRequest();
         $Request->ItemCode = $SubItemCode;
         $Request->MgtKey = $SubMgtKey;
         $postdata = json_encode($Request);
@@ -483,7 +483,7 @@ class PopbillTaxinvoice extends PopbillBase
         $EmailSendConfigList = array();
         $result = $this->executeCURL('/Taxinvoice/EmailSendConfig', $CorpNum, $UserID);
         for ($i = 0; $i < Count($result); $i++) {
-            $EmailSendConfig = new EmailSendConfig();
+            $EmailSendConfig = new TIEmailSendConfig();
             $EmailSendConfig->fromJsonInfo($result[$i]);
             $EmailSendConfigList[$i] = $EmailSendConfig;
         }
@@ -857,29 +857,29 @@ class TaxinvoiceLog
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
-class ENumMgtKeyType
+class TIENumMgtKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
-class MemoRequest
+class TIMemoRequest
 {
     public $memo;
     public $emailSubject;
 }
-class IssueRequest
+class TIIssueRequest
 {
     public $memo;
     public $emailSubject;
     public $forceIssue;
 }
-class StmtRequest
+class TIStmtRequest
 {
     public $ItemCode;
     public $MgtKey;
 }
-class EmailSendConfig
+class TIEmailSendConfig
 {
     public $emailType;
     public $sendYN;

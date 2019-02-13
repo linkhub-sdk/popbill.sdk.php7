@@ -203,7 +203,7 @@ class PopbillBase
                             if ($key == 'Filedata') {
                                 $filename = substr($filename, 0, strpos($filename, ';filename'));
                             }
-                            $postdata[$key] = new CURLFile($filename);
+                            $postdata[$key] = new \CURLFile($filename);
                         }
                     } // end of foreach
                 }

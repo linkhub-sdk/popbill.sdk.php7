@@ -158,7 +158,7 @@ class PopbillHTCashbill extends PopbillBase {
 		return $this->executeCURL('/HomeTax/Cashbill/DeptUser', $CorpNum, $UserID, true, 'DELETE', null);
 	}
 }
-class FlatRate
+class HTCBFlatRate
 {
     public $referenceID;
     public $contractDT;

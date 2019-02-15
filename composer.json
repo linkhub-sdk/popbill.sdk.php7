@@ -1,7 +1,7 @@
 {
     "name": "linkhub/popbill",
     "description": "Popbill SDK for php7",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "type": "library",
     "keywords": [
         "linkhub",

@@ -195,7 +195,7 @@ class PopbillKakao extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
-    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null)
+    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Buttons = null)
     {
         $Request = array();
         if (empty($TemplateCode) == false) $Request['templateCode'] = $TemplateCode;
@@ -206,6 +206,8 @@ class PopbillKakao extends PopbillBase
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
         if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
         $Request['msgs'] = $Messages;
+        if (is_null($Buttons) == false) $Request['btns'] = $Buttons;
+        
         $postdata = json_encode($Request);
         return $this->executeCURL('/ATS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }

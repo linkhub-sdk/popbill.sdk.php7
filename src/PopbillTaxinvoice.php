@@ -340,6 +340,14 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=POPUP', $CorpNum, $UserID)->url;
     }
+    //팝업URL
+    public function GetViewURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('관리번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=VIEW', $CorpNum, $UserID)->url;
+    }
     //인쇄URL
     public function GetPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {

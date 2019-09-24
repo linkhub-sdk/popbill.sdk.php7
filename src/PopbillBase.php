@@ -10,7 +10,7 @@
  *
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
- * Written : 2019-02-08
+ * Written : 2019-09-24
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -31,12 +31,17 @@ class PopbillBase
     private $Token_Table = array();
     private $Linkhub;
     private $IsTest = false;
+    private $IPRestrictOnOff = true;
     private $scopes = array();
     private $__requestMode = LINKHUB_COMM_MODE;
     public function __construct($LinkID, $SecretKey)
     {
         $this->Linkhub = Authority::getInstance($LinkID, $SecretKey);
         $this->scopes[] = 'member';
+    }
+    public function IPRestrictOnOff($V)
+    {
+        $this->IPRestrictOnOff = $V;
     }
     public function IsTest($T)
     {
@@ -62,7 +67,7 @@ class PopbillBase
         }
         if ($Refresh) {
             try {
-                $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes);
+                $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*");
             } catch (LinkhubException $le) {
                 throw new PopbillException($le->getMessage(), $le->getCode());
             }

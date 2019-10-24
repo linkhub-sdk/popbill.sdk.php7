@@ -11,6 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
+ * Updated : 2019-10-24
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -606,6 +607,10 @@ class Taxinvoice
     public $ntsconfirmNum;
     public $detailList;
     public $addContactList;
+
+    public $orgNTSConfirmNum;
+
+
     function fromjsonInfo($jsonInfo)
     {
         isset($jsonInfo->closeDownState) ? ($this->closeDownState = $jsonInfo->closeDownState) : null;
@@ -685,6 +690,9 @@ class Taxinvoice
         isset($jsonInfo->faxreceiveNum) ? ($this->faxreceiveNum = $jsonInfo->faxreceiveNum) : null;
         isset($jsonInfo->originalTaxinvoiceKey) ? ($this->originalTaxinvoiceKey = $jsonInfo->originalTaxinvoiceKey) : null;
         isset($jsonInfo->ntsconfirmNum) ? ($this->ntsconfirmNum = $jsonInfo->ntsconfirmNum) : null;
+
+        isset($jsonInfo->orgNTSConfirmNum) ? ($this->orgNTSConfirmNum = $jsonInfo->orgNTSConfirmNum) : null;
+
         if (isset($jsonInfo->detailList)) {
             $DetailList = array();
             for ($i = 0; $i < Count($jsonInfo->detailList); $i++) {

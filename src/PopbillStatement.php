@@ -11,6 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
+ * Updated : 2019-10-24
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -57,12 +58,17 @@ class PopbillStatement extends PopbillBase {
     	return $this->executeCURL('/Statement',$CorpNum,$UserID,true,'FAX',$postdata)->receiptNum;
 	}
 	# 전자명세서 즉시발행
-	public function RegistIssue($CorpNum,$Statement,$memo,$UserID = null){
+	public function RegistIssue($CorpNum,$Statement,$memo,$UserID = null, $EmailSubject = null){
 		if(!is_null($memo) || !empty($memo)){
 			$Statement->memo = $memo;
 		}
+
+    if ( !is_null($EmailSubject) || !empty($EmailSubject) ) {
+			$Statement->emailSubject = $EmailSubject;
+		}
+
 		$postdata = json_encode($Statement);
-    	return $this->executeCURL('/Statement',$CorpNum,$UserID,true,'ISSUE',$postdata);
+    return $this->executeCURL('/Statement',$CorpNum,$UserID,true,'ISSUE',$postdata);
 	}
 	# 전자명세서 임시저장
     public function Register($CorpNum, $Statement, $UserID = null) {
@@ -381,6 +387,9 @@ class Statement
     public $autoacceptYN;
     public $detailList;
     public $propertyBag;
+
+    public $emailSubject;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->itemCode) ? ($this->itemCode = $jsonInfo->itemCode) : null;
@@ -458,6 +467,23 @@ class StatementDetail
     public $spare3;
     public $spare4;
     public $spare5;
+    public $spare6;
+    public $spare7;
+    public $spare8;
+    public $spare9;
+    public $spare10;
+    public $spare11;
+    public $spare12;
+    public $spare13;
+    public $spare14;
+    public $spare15;
+
+    public $spare16;
+    public $spare17;
+    public $spare18;
+    public $spare19;
+    public $spare20;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->serialNum) ? ($this->serialNum = $jsonInfo->serialNum) : null;
@@ -475,6 +501,24 @@ class StatementDetail
         isset($jsonInfo->spare3) ? ($this->spare3 = $jsonInfo->spare3) : null;
         isset($jsonInfo->spare4) ? ($this->spare4 = $jsonInfo->spare4) : null;
         isset($jsonInfo->spare5) ? ($this->spare5 = $jsonInfo->spare5) : null;
+
+        isset($jsonInfo->spare6) ? ($this->spare6 = $jsonInfo->spare6) : null;
+        isset($jsonInfo->spare7) ? ($this->spare7 = $jsonInfo->spare7) : null;
+        isset($jsonInfo->spare8) ? ($this->spare8 = $jsonInfo->spare8) : null;
+        isset($jsonInfo->spare9) ? ($this->spare9 = $jsonInfo->spare9) : null;
+        isset($jsonInfo->spare10) ? ($this->spare10 = $jsonInfo->spare10) : null;
+
+        isset($jsonInfo->spare11) ? ($this->spare11 = $jsonInfo->spare11) : null;
+        isset($jsonInfo->spare12) ? ($this->spare12 = $jsonInfo->spare12) : null;
+        isset($jsonInfo->spare13) ? ($this->spare13 = $jsonInfo->spare13) : null;
+        isset($jsonInfo->spare14) ? ($this->spare14 = $jsonInfo->spare14) : null;
+        isset($jsonInfo->spare15) ? ($this->spare15 = $jsonInfo->spare15) : null;
+
+        isset($jsonInfo->spare16) ? ($this->spare16 = $jsonInfo->spare16) : null;
+        isset($jsonInfo->spare17) ? ($this->spare17 = $jsonInfo->spare17) : null;
+        isset($jsonInfo->spare18) ? ($this->spare18 = $jsonInfo->spare18) : null;
+        isset($jsonInfo->spare19) ? ($this->spare19 = $jsonInfo->spare19) : null;
+        isset($jsonInfo->spare20) ? ($this->spare20 = $jsonInfo->spare20) : null;
     }
 }
 class StatementInfo

@@ -11,6 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
+ * Updated : 2019-10-24
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -207,7 +208,7 @@ class PopbillKakao extends PopbillBase
         if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
         $Request['msgs'] = $Messages;
         if (is_null($Buttons) == false) $Request['btns'] = $Buttons;
-        
+
         $postdata = json_encode($Request);
         return $this->executeCURL('/ATS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }

@@ -11,6 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
+ * Updated : 2019-10-24
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -42,13 +43,20 @@ class PopbillCashbill extends PopbillBase {
       throw $pe;
     }
   }
-  public function RegistIssue($CorpNum, $Cashbill, $Memo, $UserID = null) {
-  if(!is_null($Memo) || !empty($Memo)){
-    $Cashbill->memo = $Memo;
-  }
+  public function RegistIssue($CorpNum, $Cashbill, $Memo, $UserID = null, $EmailSubject = null) {
+    if(!is_null($Memo) || !empty($Memo)){
+      $Cashbill->memo = $Memo;
+    }
+
+    if ( !is_null($EmailSubject) || !empty($EmailSubject) ) {
+      $Cashbill->emailSubject = $EmailSubject;
+    }
+
+
     $postdata = json_encode($Cashbill);
     return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'ISSUE',$postdata);
   }
+
   public function Register($CorpNum, $Cashbill, $UserID = null) {
     $postdata = json_encode($Cashbill);
     return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,null,$postdata);
@@ -317,6 +325,8 @@ class Cashbill
     public $fax;
     public $faxsendYN;
     public $cancelType;
+    public $emailSubject;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->mgtKey) ? $this->mgtKey = $jsonInfo->mgtKey : null;

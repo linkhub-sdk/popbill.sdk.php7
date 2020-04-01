@@ -223,11 +223,19 @@ class PopbillBase
             curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
             $responseJson = curl_exec($http);
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
+
+            $contentType = strtolower(curl_getinfo($http, CURLINFO_CONTENT_TYPE));
+
             curl_close($http);
             if ($http_status != 200) {
                 throw new PopbillException($responseJson);
             }
+
+            if( 0 === mb_strpos($contentType, 'application/pdf')) {
+              return $responseJson;
+            }
             return json_decode($responseJson);
+
         } else {
             $header = array();
             $header[] = 'Accept-Encoding: gzip,deflate';
@@ -318,6 +326,18 @@ class PopbillBase
             if ($http_response_header[0] != "HTTP/1.1 200 OK") {
                 throw new PopbillException($response);
             }
+
+            foreach( $http_response_header as $k=>$v )
+            {
+                $t = explode( ':', $v, 2 );
+                if( preg_match('/^Content-Type:/i', $v, $out )) {
+                    $contentType = trim($t[1]);
+                    if( 0 === mb_strpos($contentType, 'application/pdf')) {
+                      return $response;
+                    }
+                }
+            }
+
             return json_decode($response);
         }
     }

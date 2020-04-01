@@ -522,6 +522,26 @@ class PopbillTaxinvoice extends PopbillBase
         $response = $this->executeCURL('/?TG=CERT', $CorpNum, $UserID);
         return $response->url;
     }
+
+    // PDF URL
+    public function GetPDFURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('관리번호가 입력되지 않았습니다.');
+        }
+
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PDF', $CorpNum, $UserID)->url;
+    }
+
+    // get PDF
+    public function GetPDF($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('관리번호가 입력되지 않았습니다.');
+        }
+
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?PDF', $CorpNum, $UserID);
+    }
 }
 class Taxinvoice
 {

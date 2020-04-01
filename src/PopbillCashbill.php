@@ -294,6 +294,24 @@ class PopbillCashbill extends PopbillBase {
 		$uri = '/Cashbill/EmailSendConfig?EmailType='.$emailType.'&SendYN='.$sendYNString;
 		return $result = $this->executeCURL($uri, $corpNum, $userID, true);
 	}
+
+  public function GetPDFURL($CorpNum,$MgtKey,$UserID = null) {
+    if(is_null($MgtKey) || empty($MgtKey)) {
+      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+    }
+
+    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PDF', $CorpNum,$UserID)->url;
+  }
+
+  // get PDF
+  public function GetPDF($CorpNum, $MgtKey, $UserID = null)
+  {
+      if (is_null($MgtKey) || empty($MgtKey)) {
+          throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      }
+
+      return $this->executeCURL('/Cashbill/' . $MgtKey . '?PDF', $CorpNum, $UserID);
+  }
 }
 class Cashbill
 {

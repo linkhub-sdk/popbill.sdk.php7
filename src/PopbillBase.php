@@ -222,6 +222,11 @@ class PopbillBase
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
             $responseJson = curl_exec($http);
+
+            if ($responseJson != true){
+              throw new PopbillException(curl_error($http));
+            }
+
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
 
             $contentType = strtolower(curl_getinfo($http, CURLINFO_CONTENT_TYPE));

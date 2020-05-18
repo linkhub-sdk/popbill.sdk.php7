@@ -54,27 +54,30 @@ class PopbillBase
     }
     private function getsession_Token($CorpNum)
     {
-        $targetToken = null;
-        if (array_key_exists($CorpNum, $this->Token_Table)) {
-            $targetToken = $this->Token_Table[$CorpNum];
-        }
-        $Refresh = false;
+      $targetToken = null;
+      if (array_key_exists($CorpNum, $this->Token_Table)) {
+        $targetToken = $this->Token_Table[$CorpNum];
+      }
+
+      $Refresh = false;
+      try {
         if (is_null($targetToken)) {
-            $Refresh = true;
+          $Refresh = true;
         } else {
-            $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
-            $now = $this->Linkhub->getTime();
-            $Refresh = $Expiration < $now;
+          $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
+          $now = $this->Linkhub->getTime();
+          $Refresh = $Expiration < $now;
         }
         if ($Refresh) {
-            try {
-                $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*");
-            } catch (LinkhubException $le) {
-                throw new PopbillException($le->getMessage(), $le->getCode());
-            }
-            $this->Token_Table[$CorpNum] = $targetToken;
+
+          $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*");
+
+          $this->Token_Table[$CorpNum] = $targetToken;
         }
-        return $targetToken->session_token;
+      } catch (LinkhubException $le) {
+        throw new PopbillException($le->getMessage(), $le->getCode());
+      }
+      return $targetToken->session_token;
     }
     // ID 중복 확인
     public function CheckID($ID)

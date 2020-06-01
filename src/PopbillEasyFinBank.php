@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-12-30
+ * Updated : 2020-06-01
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -41,6 +41,91 @@ class PopbillEasyFinBank extends PopbillBase {
 		}
     return $BankAccountList;
   }
+  public function RegistBankAccount($CorpNum, $BankAccountInfo, $UserID = null)
+  {
+      $uri = '/EasyFin/Bank/BankAccount/Regist';
+      $uri .= '?UsePeriod=' . $BankAccountInfo->UsePeriod;
+
+      $postdata = json_encode($BankAccountInfo);
+
+      return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
+  }
+
+  public function UpdateBankAccount($CorpNum, $BankCode, $AccountNumber, $BankAccountInfo, $UserID = null)
+  {
+    if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
+      throw new PopbillException ('은행코드가 올바르지 않습니다.');
+    }
+
+    if ( empty($AccountNumber) || $AccountNumber === "" ) {
+      throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+    }
+
+    $uri = '/EasyFin/Bank/BankAccount/'.$BankCode.'/'.$AccountNumber.'/Update';
+
+    $postdata = json_encode($BankAccountInfo);
+
+    return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
+  }
+
+  public function CloseBankAccount($CorpNum, $BankCode, $AccountNumber, $CloseType, $UserID = null)
+  {
+    if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
+      throw new PopbillException ('은행코드가 올바르지 않습니다.');
+    }
+
+    if ( empty($AccountNumber) || $AccountNumber === "" ) {
+      throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+    }
+
+    if( $CloseType != "일반" && $CloseType != "중도"){
+      throw new PopbillException ('정액제 해지유형이 올바르지 않습니다.');
+    }
+
+    $uri = '/EasyFin/Bank/BankAccount/Close';
+    $uri .= '?BankCode=' . $BankCode;
+    $uri .= '&AccountNumber=' . $AccountNumber;
+    $uri .= '&CloseType=' . $CloseType;
+
+    return $this->executeCURL($uri, $CorpNum, $UserID, true, null, null);
+  }
+
+  public function RevokeCloseBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
+  {
+    if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
+      throw new PopbillException ('은행코드가 올바르지 않습니다.');
+    }
+
+    if ( empty($AccountNumber) || $AccountNumber === "" ) {
+      throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+    }
+
+    $uri = '/EasyFin/Bank/BankAccount/RevokeClose';
+    $uri .= '?BankCode=' . $BankCode;
+    $uri .= '&AccountNumber=' . $AccountNumber;
+
+    return $this->executeCURL($uri, $CorpNum, $UserID, true, null, null);
+  }
+
+  public function GetBankAccountInfo ( $CorpNum, $BankCode, $AccountNumber, $UserID = null)
+  {
+    if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
+      throw new PopbillException ('은행코드가 올바르지 않습니다.');
+    }
+
+    if ( empty($AccountNumber) || $AccountNumber === "" ) {
+      throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+    }
+
+    $response = $this->executeCURL('/EasyFin/Bank/BankAccount/'.$BankCode.'/'.$AccountNumber, $CorpNum, $UserID);
+
+    $BankInfo = new EasyFinBankAccount();
+    $BankInfo->fromJsonInfo($response);
+
+    return $BankInfo;
+  }
+
+
   public function RequestJob ( $CorpNum, $BankCode, $AccountNumber, $SDate, $EDate, $UserID = null ) {
     if ( empty($BankCode) || $BankCode === "")	{
       throw new PopbillException('은행코드가 입력되지 않았습니다.');
@@ -239,6 +324,33 @@ class EasyFinBankSearchDetail
         isset ($jsonInfo->memo) ? $this->memo = $jsonInfo->memo : null;
     }
 }
+
+class EasyFinBankAccountForm
+{
+  public $BankCode;
+  public $AccountNumber;
+  public $AccountPWD;
+  public $AccountType;
+  public $IdentityNumber;
+  public $AccountName;
+  public $BankID;
+  public $FastID;
+  public $FastPWD;
+  public $UsePeriod;
+  public $Memo;
+}
+
+
+class UpdateEasyFinBankAccountForm
+{
+  public $AccountPWD;
+  public $AccountName;
+  public $BankID;
+  public $FastID;
+  public $FastPWD;
+  public $Memo;
+}
+
 class EasyFinBankJobState
 {
     public $jobID;
@@ -272,6 +384,14 @@ class EasyFinBankAccount
   public $state;
   public $regDT;
   public $memo;
+  public $contractDT;
+  public $baseDate;
+  public $useEndDate;
+  public $contractState;
+  public $closeRequestYN;
+  public $useRestrictYN;
+  public $closeOnExpired;
+  public $unPaidYN;
   public function fromJsonInfo($jsonInfo)
   {
     isset($jsonInfo->bankCode) ? $this->bankCode = $jsonInfo->bankCode : null;
@@ -281,6 +401,15 @@ class EasyFinBankAccount
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     isset($jsonInfo->memo) ? $this->memo = $jsonInfo->memo : null;
+
+    isset($jsonInfo->contractDT) ? $this->contractDT = $jsonInfo->contractDT : null;
+    isset($jsonInfo->baseDate) ? $this->baseDate = $jsonInfo->baseDate : null;
+    isset($jsonInfo->useEndDate) ? $this->useEndDate = $jsonInfo->useEndDate : null;
+    isset($jsonInfo->contractState) ? $this->contractState = $jsonInfo->contractState : null;
+    isset($jsonInfo->closeRequestYN) ? $this->closeRequestYN = $jsonInfo->closeRequestYN : null;
+    isset($jsonInfo->useRestrictYN) ? $this->useRestrictYN = $jsonInfo->useRestrictYN : null;
+    isset($jsonInfo->closeOnExpired) ? $this->closeOnExpired = $jsonInfo->closeOnExpired : null;
+    isset($jsonInfo->unPaidYN) ? $this->unPaidYN = $jsonInfo->unPaidYN : null;
   }
 }
 ?>

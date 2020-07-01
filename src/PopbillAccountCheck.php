@@ -47,7 +47,7 @@ class PopbillAccountCheck extends PopbillBase {
 
   	$result = $this->executeCURL($uri, $MemberCorpNum, null, true, null, null);
 
-		$AccountInfo = new AccountInfo();
+		$AccountInfo = new AccountCheckInfo();
 		$AccountInfo->fromJsonInfo($result);
 		return $AccountInfo;
   }

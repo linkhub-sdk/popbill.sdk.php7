@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-07-15
+ * Updated : 2020-07-16
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -21,6 +21,7 @@
 namespace Linkhub\Popbill;
 
 use Linkhub\Authority;
+use Linkhub\LinkhubException;
 
 class PopbillBase
 {

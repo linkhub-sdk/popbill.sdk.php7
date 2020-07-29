@@ -231,11 +231,11 @@ class PopbillStatement extends PopbillBase {
     	}
 		return $this->executeCURL('/Statement/'.$itemCode.'/'.$MgtKey.'?TG=POPUP',$CorpNum,$UserID)->url;
 	}
-  public function GetPDFURL($CorpNum,$itemCode,$MgtKey,$UserID = null){
+  public function GetViewURL($CorpNum,$itemCode,$MgtKey,$UserID = null){
 		if(is_null($MgtKey) || empty($MgtKey)) {
     		throw new PopbillException('문서번호가 입력되지 않았습니다.');
     	}
-		return $this->executeCURL('/Statement/'.$itemCode.'/'.$MgtKey.'?TG=PDF',$CorpNum,$UserID)->url;
+		return $this->executeCURL('/Statement/'.$itemCode.'/'.$MgtKey.'?TG=VIEW',$CorpNum,$UserID)->url;
 	}
 	#인쇄 URL 호출
 	public function GetPrintURL($CorpNum,$itemCode,$MgtKey,$UserID = null){

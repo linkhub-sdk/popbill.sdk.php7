@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2020-07-29
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -317,6 +317,8 @@ class KakaoSentInfoDetail
     public $reserveDT;
     public $receiptNum;
     public $requestNum;
+    public $interOPRefKey;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->state) ? ($this->state = $jsonInfo->state) : null;
@@ -335,6 +337,7 @@ class KakaoSentInfoDetail
         isset($jsonInfo->reserveDT) ? ($this->reserveDT = $jsonInfo->reserveDT) : null;
         isset($jsonInfo->receiptNum) ? ($this->receiptNum = $jsonInfo->receiptNum) : null;
         isset($jsonInfo->requestNum) ? ($this->requestNum = $jsonInfo->requestNum) : null;
+        isset($jsonInfo->interOPRefKey) ? ($this->interOPRefKey = $jsonInfo->interOPRefKey) : null;
     }
 }
 class KakaoButton

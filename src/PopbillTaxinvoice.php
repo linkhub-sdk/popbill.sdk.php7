@@ -891,8 +891,10 @@ class TaxinvoiceLog
     public $log;
     public $procType;
     public $procCorpName;
+    public $procContactName;
     public $procMemo;
     public $regDT;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->ip) ? $this->ip = $jsonInfo->ip : null;
@@ -900,6 +902,7 @@ class TaxinvoiceLog
         isset($jsonInfo->log) ? $this->log = $jsonInfo->log : null;
         isset($jsonInfo->procType) ? $this->procType = $jsonInfo->procType : null;
         isset($jsonInfo->procCorpName) ? $this->procCorpName = $jsonInfo->procCorpName : null;
+        isset($jsonInfo->procContactName) ? $this->procContactName = $jsonInfo->procContactName : null;
         isset($jsonInfo->procMemo) ? $this->procMemo = $jsonInfo->procMemo : null;
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }

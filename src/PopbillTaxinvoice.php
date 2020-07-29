@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2020-07-29
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -399,7 +399,8 @@ class PopbillTaxinvoice extends PopbillBase
     }
     //세금계산서 조회
     public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly, $Page, $PerPage, $Order,
-                           $TaxRegIDType = null, $TaxRegIDYN = null, $TaxRegID = null, $QString = null, $InterOPYN = null, $UserID = null, $IssueType = array())
+                           $TaxRegIDType = null, $TaxRegIDYN = null, $TaxRegID = null, $QString = null, $InterOPYN = null, $UserID = null, $IssueType = array(),
+                           $CloseDownState = array(), $MgtKey = null, $RegType = array())
     {
         if (is_null($DType) || $DType === "") {
             throw new PopbillException(-99999999, '일자유형이 입력되지 않았습니다.');
@@ -426,6 +427,13 @@ class PopbillTaxinvoice extends PopbillBase
         if (!is_null($IssueType) || !empty($IssueType)) {
             $uri .= '&IssueType=' . implode(',', $IssueType);
         }
+        if (!is_null($RegType) || !empty($RegType)) {
+            $uri .= '&RegType=' . implode(',', $RegType);
+        }
+        if (!is_null($CloseDownState) || !empty($CloseDownState)) {
+            $uri .= '&CloseDownState=' . implode(',', $CloseDownState);
+        }
+
         if (!is_null($LateOnly) || !empty($LateOnly)) {
             $uri .= '&LateOnly=' . $LateOnly;
         }
@@ -438,6 +446,9 @@ class PopbillTaxinvoice extends PopbillBase
         $uri .= '&TaxRegID=' . $TaxRegID;
         if (!is_null($QString) || !empty($QString)) {
             $uri .= '&QString=' . $QString;
+        }
+        if (!is_null($MgtKey) || !empty($MgtKey)) {
+            $uri .= '&MgtKey=' . $MgtKey;
         }
         $uri .= '&Order=' . $Order;
         $uri .= '&Page=' . $Page;

@@ -32,7 +32,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function CheckMgtKeyInUse($CorpNum,$MgtKey) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     try
     {
@@ -100,20 +100,20 @@ class PopbillCashbill extends PopbillBase {
   }
   public function Delete($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'DELETE','');
   }
   public function Update($CorpNum,$MgtKey,$Cashbill, $UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $postdata = json_encode($Cashbill);
     return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true, 'PATCH', $postdata);
   }
   public function Issue($CorpNum,$MgtKey,$Memo = '', $UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $Request = new CBIssueRequest();
     $Request->memo = $Memo;
@@ -122,7 +122,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function CancelIssue($CorpNum,$MgtKey,$Memo = '',$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $Request = new CBMemoRequest();
     $Request->memo = $Memo;
@@ -131,7 +131,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function SendEmail($CorpNum,$MgtKey,$Receiver,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $Request = array('receiver' => $Receiver);
     $postdata = json_encode($Request);
@@ -139,7 +139,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function SendSMS($CorpNum,$MgtKey,$Sender,$Receiver,$Contents,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $Request = array('receiver' => $Receiver,'sender'=>$Sender,'contents' => $Contents);
     $postdata = json_encode($Request);
@@ -147,7 +147,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function SendFAX($CorpNum,$MgtKey,$Sender,$Receiver,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호 배열이 입력되지 않았습니다.');
+      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
     }
     $Request = array('receiver' => $Receiver,'sender'=>$Sender);
     $postdata = json_encode($Request);
@@ -155,7 +155,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function GetInfo($CorpNum,$MgtKey) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $result = $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum);
   $CashbillInfo = new CashbillInfo();
@@ -164,7 +164,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function GetDetailInfo($CorpNum,$MgtKey) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
   $result = $this->executeCURL('/Cashbill/'.$MgtKey.'?Detail', $CorpNum);
   $CashbillDetail = new Cashbill();
@@ -173,7 +173,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function GetInfos($CorpNum,$MgtKeyList = array()) {
     if(is_null($MgtKeyList) || empty($MgtKeyList)) {
-      throw new PopbillException('관리번호 배열이 입력되지 않았습니다.');
+      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
     }
     $postdata = json_encode($MgtKeyList);
     $result = $this->executeCURL('/Cashbill/States', $CorpNum, null, true,null,$postdata);
@@ -187,7 +187,7 @@ class PopbillCashbill extends PopbillBase {
   }
   public function GetLogs($CorpNum,$MgtKey) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     $result = $this->executeCURL('/Cashbill/'.$MgtKey.'/Logs', $CorpNum);
   $CashbillLogList = array();
@@ -200,31 +200,31 @@ class PopbillCashbill extends PopbillBase {
   }
   public function GetPopUpURL($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=POPUP', $CorpNum,$UserID)->url;
   }
   public function GetPrintURL($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PRINT', $CorpNum,$UserID)->url;
   }
   public function GetEPrintURL($CorpNum,$MgtKey,$UserID = null) {
       if(is_null($MgtKey) || empty($MgtKey)) {
-          throw new PopbillException('관리번호가 입력되지 않았습니다.');
+          throw new PopbillException('문서번호가 입력되지 않았습니다.');
       }
       return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=EPRINT', $CorpNum,$UserID)->url;
   }
   public function GetMailURL($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
     return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=MAIL', $CorpNum,$UserID)->url;
   }
   public function GetMassPrintURL($CorpNum,$MgtKeyList = array(),$UserID = null) {
     if(is_null($MgtKeyList) || empty($MgtKeyList)) {
-      throw new PopbillException('관리번호 배열이 입력되지 않았습니다.');
+      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
     }
     $postdata = json_encode($MgtKeyList);
     return $this->executeCURL('/Cashbill/Prints', $CorpNum, $UserID, true,null,$postdata)->url;
@@ -297,7 +297,7 @@ class PopbillCashbill extends PopbillBase {
 
   public function GetPDFURL($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('관리번호가 입력되지 않았습니다.');
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
     }
 
     return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PDF', $CorpNum,$UserID)->url;
@@ -307,7 +307,7 @@ class PopbillCashbill extends PopbillBase {
   public function GetPDF($CorpNum, $MgtKey, $UserID = null)
   {
       if (is_null($MgtKey) || empty($MgtKey)) {
-          throw new PopbillException('관리번호가 입력되지 않았습니다.');
+          throw new PopbillException('문서번호가 입력되지 않았습니다.');
       }
 
       return $this->executeCURL('/Cashbill/' . $MgtKey . '?PDF', $CorpNum, $UserID);

@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-07-29
+ * Updated : 2020-10-15
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -356,6 +356,14 @@ class PopbillTaxinvoice extends PopbillBase
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINT', $CorpNum, $UserID)->url;
+    }
+    //구버전 양식 인쇄URL
+    public function GetOldPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINTOLD', $CorpNum, $UserID)->url;
     }
     //공급받는자 인쇄URL
     public function GetEPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)

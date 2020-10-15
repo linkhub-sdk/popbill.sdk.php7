@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-07-16
+ * Updated : 2020-10-15
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -38,6 +38,7 @@ class PopbillBase
     private $IsTest = false;
     private $IPRestrictOnOff = true;
     private $UseStaticIP = false;
+    private $UseLocalTimeYN = true;
 
     private $scopes = array();
     private $__requestMode = LINKHUB_COMM_MODE;
@@ -53,6 +54,10 @@ class PopbillBase
     public function UseStaticIP($V)
     {
         $this->UseStaticIP = $V;
+    }
+    public function UseLocalTimeYN($V)
+    {
+        $this->UseLocalTimeYN = $V;
     }
     public function IsTest($T)
     {
@@ -75,12 +80,12 @@ class PopbillBase
           $Refresh = true;
         } else {
           $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
-          $now = $this->Linkhub->getTime($this->UseStaticIP);
+          $now = $this->Linkhub->getTime($this->UseStaticIP, $this->UseLocalTimeYN);
           $Refresh = $Expiration < $now;
         }
         if ($Refresh) {
 
-          $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP);
+          $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN);
 
           $this->Token_Table[$CorpNum] = $targetToken;
         }
@@ -192,10 +197,9 @@ class PopbillBase
             throw new PopbillException($le->message, $le->code);
         }
     }
-    protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null)
+    protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false)
     {
         if ($this->__requestMode != "STREAM") {
-
             if($this->UseStaticIP){
               $targetURL = $this->IsTest ? PopbillBase::ServiceURL_GA_TEST : PopbillBase::ServiceURL_GA_REAL;
             } else {
@@ -220,23 +224,33 @@ class PopbillBase
                     $header[] = 'Content-Type: Application/json';
                 }
             } else {
-                // PHP 5.6 이상 CURL 파일전송 처리
-                if ((version_compare(PHP_VERSION, '5.5') >= 0)) {
-                    curl_setopt($http, CURLOPT_SAFE_UPLOAD, true);
-                    foreach ($postdata as $key => $value) {
-                        if (strpos($value, '@') === 0) {
-                            $filename = ltrim($value, '@');
-                            if ($key == 'Filedata') {
-                                $filename = substr($filename, 0, strpos($filename, ';filename'));
+                if ($isBinary) {
+                    $boundary = md5(time());
+                    $header[] = "Content-Type: multipart/form-data; boundary=" . $boundary;
+                    $postbody = $this -> binaryPostbody($boundary, $postdata);
+                } else {
+                    // PHP 5.6 이상 CURL 파일전송 처리
+                    if ((version_compare(PHP_VERSION, '5.5') >= 0)) {
+                        curl_setopt($http, CURLOPT_SAFE_UPLOAD, true);
+                        foreach ($postdata as $key => $value) {
+                            if (strpos($value, '@') === 0) {
+                                $filename = ltrim($value, '@');
+                                if ($key == 'Filedata') {
+                                    $filename = substr($filename, 0, strpos($filename, ';filename'));
+                                }
+                                $postdata[$key] = new \CURLFile($filename);
                             }
-                            $postdata[$key] = new \CURLFile($filename);
-                        }
-                    } // end of foreach
+                        } // end of foreach
+                    }
                 }
             }
             if ($isPost) {
                 curl_setopt($http, CURLOPT_POST, 1);
-                curl_setopt($http, CURLOPT_POSTFIELDS, $postdata);
+                if ($isBinary) {
+                    curl_setopt($http, CURLOPT_POSTFIELDS, $postbody);
+                } else {
+                    curl_setopt($http, CURLOPT_POSTFIELDS, $postdata);
+                }
             }
             curl_setopt($http, CURLOPT_HTTPHEADER, $header);
             curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
@@ -286,44 +300,48 @@ class PopbillBase
                 $postbody = '';
                 $mime_boundary = md5(time());
                 $header[] = 'Content-Type: multipart/form-data; boundary=' . $mime_boundary . $eol;
-                if (array_key_exists('form', $postdata)) {
-                    $postbody .= '--' . $mime_boundary . $eol;
-                    $postbody .= 'content-disposition: form-data; name="form"' . $eol;
-                    $postbody .= 'content-type: Application/json;' . $eol . $eol;
-                    $postbody .= $postdata['form'] . $eol;
-                    foreach ($postdata as $key => $value) {
-                        if (substr($key, 0, 4) == 'file') {
-                            if (substr($value, 0, 1) == '@') {
-                                $value = substr($value, 1);
+                if ($isBinary) {
+                    $postbody = $this -> binaryPostbody($mime_boundary, $postdata);
+                } else {
+                    if (array_key_exists('form', $postdata)) {
+                        $postbody .= '--' . $mime_boundary . $eol;
+                        $postbody .= 'content-disposition: form-data; name="form"' . $eol;
+                        $postbody .= 'content-type: Application/json;' . $eol . $eol;
+                        $postbody .= $postdata['form'] . $eol;
+                        foreach ($postdata as $key => $value) {
+                            if (substr($key, 0, 4) == 'file') {
+                                if (substr($value, 0, 1) == '@') {
+                                    $value = substr($value, 1);
+                                }
+                                if (file_exists($value) == FALSE) {
+                                    throw new PopbillException("전송할 파일이 존재하지 않습니다.", -99999999);
+                                }
+                                $fileContents = file_get_contents($value);
+                                $postbody .= '--' . $mime_boundary . $eol;
+                                $postbody .= "Content-Disposition: form-data; name=\"file\"; filename=\"" . basename($value) . "\"" . $eol;
+                                $postbody .= "Content-Type: Application/octet-stream" . $eol . $eol;
+                                $postbody .= $fileContents . $eol;
                             }
-                            if (file_exists($value) == FALSE) {
-                                throw new PopbillException("전송할 파일이 존재하지 않습니다.", -99999999);
-                            }
-                            $fileContents = file_get_contents($value);
-                            $postbody .= '--' . $mime_boundary . $eol;
-                            $postbody .= "Content-Disposition: form-data; name=\"file\"; filename=\"" . basename($value) . "\"" . $eol;
-                            $postbody .= "Content-Type: Application/octet-stream" . $eol . $eol;
-                            $postbody .= $fileContents . $eol;
                         }
                     }
-                }
-                if (array_key_exists('Filedata', $postdata)) {
-                    $postbody .= '--' . $mime_boundary . $eol;
-                    if (substr($postdata['Filedata'], 0, 1) == '@') {
-                        $value = substr($postdata['Filedata'], 1);
-                        $splitStr = explode(';', $value);
-                        $path = $splitStr[0];
-                        $fileName = substr($splitStr[1], 9);
+                    if (array_key_exists('Filedata', $postdata)) {
+                        $postbody .= '--' . $mime_boundary . $eol;
+                        if (substr($postdata['Filedata'], 0, 1) == '@') {
+                            $value = substr($postdata['Filedata'], 1);
+                            $splitStr = explode(';', $value);
+                            $path = $splitStr[0];
+                            $fileName = substr($splitStr[1], 9);
+                        }
+                        if (file_exists($path) == FALSE) {
+                            throw new PopbillException("전송할 파일이 존재하지 않습니다.", -99999999);
+                        }
+                        $fileContents = file_get_contents($path);
+                        $postbody .= 'content-disposition: form-data; name="Filedata"; filename="' . basename($fileName) . '"' . $eol;
+                        $postbody .= 'content-type: Application/octet-stream;' . $eol . $eol;
+                        $postbody .= $fileContents . $eol;
                     }
-                    if (file_exists($path) == FALSE) {
-                        throw new PopbillException("전송할 파일이 존재하지 않습니다.", -99999999);
-                    }
-                    $fileContents = file_get_contents($path);
-                    $postbody .= 'content-disposition: form-data; name="Filedata"; filename="' . basename($fileName) . '"' . $eol;
-                    $postbody .= 'content-type: Application/octet-stream;' . $eol . $eol;
-                    $postbody .= $fileContents . $eol;
+                    $postbody .= '--' . $mime_boundary . '--' . $eol;
                 }
-                $postbody .= '--' . $mime_boundary . '--' . $eol;
             }
             $params = array(
                 'http' => array(
@@ -370,9 +388,30 @@ class PopbillBase
                     }
                 }
             }
-
             return json_decode($response);
         }
+    }
+    protected function binaryPostbody($mime_boundary, $postdata)
+    {
+        $postbody = '';
+        $eol = "\r\n";
+        $postbody .= "--" . $mime_boundary . $eol
+          . 'Content-Disposition: form-data; name="form"' . $eol . $eol . $postdata['form'] . $eol;
+
+        foreach ($postdata as $key => $value) {
+          if (substr($key, 0, 4) == 'name') {
+              $fileName = $value;
+          }
+          if (substr($key, 0, 4) == 'file') {
+              $postbody .= "--" . $mime_boundary . $eol
+                . 'Content-Disposition: form-data; name="' . 'file' . '"; filename="' . $fileName . '"' . $eol
+                . 'Content-Type: Application/octetstream' . $eol . $eol;
+              $postbody .= $value . $eol;
+          }
+        }
+        $postbody .= "--" . $mime_boundary . "--". $eol;
+
+        return $postbody;
     }
 }
 class JoinForm

@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2020-10-15
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -55,6 +55,36 @@ class PopbillFax extends PopbillBase
             $postdata['file[' . $i++ . ']'] = '@' . $FilePath;
         }
         return $this->executeCURL('/FAX', $CorpNum, $UserID, true, null, $postdata, true)->receiptNum;
+    }
+    public function SendFAXBinary($CorpNum, $Sender, $Receivers = array(), $FileDatas = array(), $ReserveDT = null, $UserID = null, $SenderName = null, $adsYN = False, $title = null, $RequestNum = null)
+    {
+      if (empty($Receivers)) {
+          throw new PopbillException('수신자 정보가 입력되지 않았습니다..');
+      }
+      $RequestForm = array();
+      $RequestForm['snd'] = $Sender;
+      $RequestForm['sndnm'] = $SenderName;
+      $RequestForm['title'] = $title;
+      $RequestForm['fCnt'] = count($FileDatas);
+      $RequestForm['rcvs'] = $Receivers;
+      if (!empty($ReserveDT)) $RequestForm['sndDT'] = $ReserveDT;
+      if (!empty($RequestNum)) $RequestForm['requestNum'] = $RequestNum;
+      if ($adsYN) $RequestForm['adsYN'] = $adsYN;
+      $postdata = array();
+      $postdata['form'] = json_encode($RequestForm);
+      $i = 0;
+      foreach ($FileDatas as $key => $data) {
+          foreach ($data as $key => $value) {
+            if ($key == 'fileName') {
+              $postdata['name[' . $i . ']'] = $value;
+            }
+            if ($key == 'fileData') {
+              $postdata['file[' . $i++ . ']'] =  $value;
+            }
+          }
+      }
+      $isBinary= true;
+      return $this->executeCURL('/FAX', $CorpNum, $UserID, true, null, $postdata, true, null, $isBinary)->receiptNum;
     }
     public function ResendFAX($CorpNum, $ReceiptNum, $SenderNum, $SenderName, $Receivers, $ReserveDT = null, $UserID = null, $title = null, $RequestNum = null)
     {

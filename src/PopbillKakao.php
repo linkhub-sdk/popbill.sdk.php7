@@ -113,6 +113,17 @@ class PopbillKakao extends PopbillBase
         $response = $this->executeCURL('/KakaoTalk/?TG=TEMPLATE', $CorpNum, $UserID);
         return $response->url;
     }
+
+    //알림톡 템플릿 정보 확인
+    public function GetATSTemplate($CorpNum, $TemplateCode, $UserID = null)
+    {
+        if (is_null($TemplateCode) || $TemplateCode === "") {
+            throw new PopbillException('템플릿코드가 입력되지 않았습니다.');
+        }
+
+        return  $this->executeCURL('/KakaoTalk/GetATSTemplate/'.$TemplateCode, $CorpNum, $UserID);
+    }
+    
     //카카오톡 전송내역 팝업 URL
     public function GetSentListURL($CorpNum, $UserID)
     {

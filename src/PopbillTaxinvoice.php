@@ -561,6 +561,12 @@ class PopbillTaxinvoice extends PopbillBase
 
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?PDF', $CorpNum, $UserID);
     }
+
+    // 국세청 즉시전송 확인함수
+    public function GetSendToNTSConfig($CorpNum, $UserID = null)
+    {
+        return $this->executeCURL('/Taxinvoice/SendToNTSConfig', $CorpNum, $UserID)->sendToNTS;
+    }
 }
 class Taxinvoice
 {

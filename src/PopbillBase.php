@@ -114,6 +114,12 @@ class PopbillBase
         $postdata = json_encode($ContactInfo);
         return $this->executeCURL('/IDs', $CorpNum, $UserID, true, null, $postdata);
     }
+    // 담당자 정보 확인
+    public function GetContactInfo($CorpNum, $ContactID, $UserID = null)
+    {
+        $postdata = '{"id":' . '"' . $ContactID . '"}';
+        return $this->executeCURL('/Contact', $CorpNum, $UserID, true, null, $postdata);
+    }
     // 담당자 목록 조회
     public function ListContact($CorpNum, $UserID = null)
     {
@@ -172,7 +178,7 @@ class PopbillBase
         $response = $this->executeCURL('/?TG=USEHISTORY', $CorpNum, $UserID);
         return $response->url;
     }
-    
+
     //가입여부 확인
     public function CheckIsMember($CorpNum, $LinkID)
     {

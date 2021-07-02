@@ -107,6 +107,23 @@ class PopbillEasyFinBank extends PopbillBase {
     return $this->executeCURL($uri, $CorpNum, $UserID, true, null, null);
   }
 
+  public function DeleteBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
+  {
+	if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
+        throw new PopbillException ('은행코드가 올바르지 않습니다.');
+    }
+
+    if ( empty($AccountNumber) || $AccountNumber === "" ) {
+        throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+    }
+
+    $uri = '/EasyFin/Bank/BankAccount/Delete';
+
+    $postdata = '{"BankCode":' . '"' . $BankCode . '"' . ', "AccountNumber":' . '"' . $AccountNumber . '"' .'}';
+
+    return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
+  }
+
   public function GetBankAccountInfo ( $CorpNum, $BankCode, $AccountNumber, $UserID = null)
   {
     if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {

@@ -218,7 +218,7 @@ class PopbillBase
             throw new PopbillException($le->message, $le->code);
         }
     }
-    protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false)
+    protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false, $SubmitID = null)
     {
         if ($this->__requestMode != "STREAM") {
             if($this->UseStaticIP){
@@ -237,7 +237,12 @@ class PopbillBase
             }
             if (is_null($action) == false) {
                 $header[] = 'X-HTTP-Method-Override: ' . $action;
+                if($action == 'BULKISSUE') {
+                    $header[] = 'x-pb-message-digest: ' . base64_encode(hash('sha1',$postdata,true));
+                    $header[] = 'x-pb-submit-id: ' . $SubmitID;
+                }
             }
+
             if ($isMultiPart == false) {
                 if (is_null($contentsType) == false) {
                     $header[] = 'Content-Type: ' . $contentsType;
@@ -308,7 +313,12 @@ class PopbillBase
             }
             if (is_null($action) == false) {
                 $header[] = 'X-HTTP-Method-Override: ' . $action;
+                if($action == 'BULKISSUE') {
+                    $header[] = 'x-pb-message-digest: ' . base64_encode(hash('sha1',$postdata,true));
+                    $header[] = 'x-pb-submit-id: ' . $SubmitID;
+                }
             }
+
             if ($isMultiPart == false) {
                 if (is_null($contentsType) == false) {
                     $header[] = 'Content-Type: ' . $contentsType;
@@ -450,6 +460,7 @@ class JoinForm
     public $ContactTEL;
     public $ID;
     public $PWD;
+    public $Password;
 }
 class CorpInfo
 {
@@ -471,10 +482,12 @@ class ContactInfo
 {
     public $id;
     public $pwd;
+    public $Password;
     public $email;
     public $hp;
     public $personName;
     public $searchAllAllowYN;
+    public $searchRole;
     public $tel;
     public $fax;
     public $mgrYN;
@@ -487,6 +500,7 @@ class ContactInfo
         isset($jsonInfo->hp) ? $this->hp = $jsonInfo->hp : null;
         isset($jsonInfo->personName) ? $this->personName = $jsonInfo->personName : null;
         isset($jsonInfo->searchAllAllowYN) ? $this->searchAllAllowYN = $jsonInfo->searchAllAllowYN : null;
+        isset($jsonInfo->searchRole) ? $this->searchRole = $jsonInfo->searchRole : null;
         isset($jsonInfo->tel) ? $this->tel = $jsonInfo->tel : null;
         isset($jsonInfo->fax) ? $this->fax = $jsonInfo->fax : null;
         isset($jsonInfo->mgrYN) ? $this->mgrYN = $jsonInfo->mgrYN : null;

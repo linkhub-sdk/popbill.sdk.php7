@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-07-29
+ * Updated : 2021-07-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -123,7 +123,7 @@ class PopbillKakao extends PopbillBase
 
         return  $this->executeCURL('/KakaoTalk/GetATSTemplate/'.$TemplateCode, $CorpNum, $UserID);
     }
-    
+
     //카카오톡 전송내역 팝업 URL
     public function GetSentListURL($CorpNum, $UserID)
     {

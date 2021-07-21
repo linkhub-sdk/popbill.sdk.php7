@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2021-07-21
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -73,15 +73,16 @@ class CorpState
     public $corpNum;
     public $state;
     public $type;
+    public $taxType;
     public $stateDate;
     public $checkDate;
-    //과세유형 전환일자 추가 (2017/08/17)
     public $typeDate;
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->corpNum) ? $this->corpNum = $jsonInfo->corpNum : null;
         isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
         isset($jsonInfo->type) ? $this->type = $jsonInfo->type : null;
+        isset($jsonInfo->taxType) ? $this->taxType = $jsonInfo->taxType : null;
         isset($jsonInfo->stateDate) ? $this->stateDate = $jsonInfo->stateDate : null;
         isset($jsonInfo->checkDate) ? $this->checkDate = $jsonInfo->checkDate : null;
         isset($jsonInfo->typeDate) ? $this->typeDate = $jsonInfo->typeDate : null;

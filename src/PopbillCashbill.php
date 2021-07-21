@@ -211,9 +211,10 @@ class PopbillCashbill extends PopbillBase {
     return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PRINT', $CorpNum,$UserID)->url;
   }
   public function GetViewURL($CorpNum,$MgtKey,$UserID = null) {
-  if(is_null($MgtKey) || empty($MgtKey)) {
-	throw new PopbillException('문서번호가 입력되지 않았습니다.');
-	return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=VIEW', $CorpNum,$UserID)->url;
+    if(is_null($MgtKey) || empty($MgtKey)) {
+      throw new PopbillException('문서번호가 입력되지 않았습니다.');
+    }
+    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=VIEW', $CorpNum,$UserID)->url;
   }
   public function GetEPrintURL($CorpNum,$MgtKey,$UserID = null) {
       if(is_null($MgtKey) || empty($MgtKey)) {

@@ -211,7 +211,7 @@ class PopbillTaxinvoice extends PopbillBase
     }
 
     // 전자세금계산서 초대량 발행 접수
-    public function BulkSubmit($CorpNum, $SubmitID, $taxinvoiceList, $ForceIssue, $UserID = null)
+    public function BulkSubmit($CorpNum, $SubmitID, $taxinvoiceList, $ForceIssue=null, $UserID = null)
     {
         if (is_null($SubmitID) || empty($SubmitID)) {
             throw new PopbillException('제출아이디가 입력되지 않았습니다.');
@@ -221,7 +221,9 @@ class PopbillTaxinvoice extends PopbillBase
         }
 
         $Request = new BulkRequest();
-        $Request->forceIssue = $ForceIssue;
+        if($ForceIssue == true){
+            $Request->forceIssue = $ForceIssue;
+        }
         $Request->invoices = $taxinvoiceList;
 
         $postdata = json_encode($Request);

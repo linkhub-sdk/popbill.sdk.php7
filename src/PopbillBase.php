@@ -228,14 +228,8 @@ class PopbillBase
     protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false, $SubmitID = null)
     {
         if ($this->__requestMode != "STREAM") {
-            if($this->UseGAIP){
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_GA_TEST : PopbillBase::ServiceURL_GA_REAL);
-            } else if($this->UseStaticIP){
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_Static_TEST : PopbillBase::ServiceURL_Static_REAL);
-            } else {
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_TEST : PopbillBase::ServiceURL_REAL);
-            }
 
+            $targetURL = $this->getTargetURL();
             $http = curl_init($targetURL . $uri);
             $header = array();
             if (is_null($CorpNum) == false) {
@@ -402,14 +396,7 @@ class PopbillBase
             }
             $ctx = stream_context_create($params);
 
-            if($this->UseGAIP){
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_GA_TEST : PopbillBase::ServiceURL_GA_REAL);
-            } else if($this->UseStaticIP){
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_Static_TEST : PopbillBase::ServiceURL_Static_REAL);
-            } else {
-                $targetURL = ($this->IsTest ? PopbillBase::ServiceURL_TEST : PopbillBase::ServiceURL_REAL);
-            }
-
+            $targetURL = $this->getTargetURL();
 
             $response = file_get_contents($targetURL . $uri, false, $ctx);
             $is_gzip = 0 === mb_strpos($response, "\x1f" . "\x8b" . "\x08");
@@ -454,6 +441,16 @@ class PopbillBase
         $postbody .= "--" . $mime_boundary . "--". $eol;
 
         return $postbody;
+    }
+    private function getTargetURL()
+    {
+        if($this->UseGAIP){
+            return ($this->IsTest ? PopbillBase::ServiceURL_GA_TEST : PopbillBase::ServiceURL_GA_REAL);
+        } else if($this->UseStaticIP){
+            return ($this->IsTest ? PopbillBase::ServiceURL_Static_TEST : PopbillBase::ServiceURL_Static_REAL);
+        } else {
+            return ($this->IsTest ? PopbillBase::ServiceURL_TEST : PopbillBase::ServiceURL_REAL);
+        }
     }
 }
 class JoinForm

@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-07-02
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -238,7 +238,7 @@ class PopbillCashbill extends PopbillBase {
   public function GetUnitCost($CorpNum) {
     return $this->executeCURL('/Cashbill?cfg=UNITCOST', $CorpNum)->unitCost;
   }
-  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(), $Page, $PerPage, $Order, $QString, $TradeOpt = array(null)){
+  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(), $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null)){
     if(is_null($DType) || empty($DType)) {
       throw new PopbillException('일자유형(DType)이 입력되지 않았습니다.');
     }

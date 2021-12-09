@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-07-29
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -267,7 +267,7 @@ class PopbillStatement extends PopbillBase {
 		return $this->executeCURL('/Statement/'.$itemCode.'/'.$MgtKey.'?TG=MAIL',$CorpNum,$UserID)->url;
 	}
   //전자명세서 목록조회
-  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $ItemCode = array(), $Page, $PerPage, $Order, $QString){
+  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $ItemCode = array(), $Page = null, $PerPage = null, $Order = null, $QString = null){
     if(is_null($DType) || empty($DType)) {
     		throw new PopbillException('조회일자 유형이 입력되지 않았습니다.');
   	}

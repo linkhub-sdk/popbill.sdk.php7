@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-07-05
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -442,7 +442,7 @@ class PopbillTaxinvoice extends PopbillBase
         return $this->executeCURL('/Taxinvoice/EmailPublicKeys', $CorpNum);
     }
     //세금계산서 조회
-    public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly, $Page, $PerPage, $Order,
+    public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly = null, $Page = null, $PerPage = null, $Order = null,
                            $TaxRegIDType = null, $TaxRegIDYN = null, $TaxRegID = null, $QString = null, $InterOPYN = null, $UserID = null, $IssueType = array(),
                            $CloseDownState = array(), $MgtKey = null, $RegType = array())
     {

@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2020-10-15
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -184,7 +184,7 @@ class PopbillFax extends PopbillBase
         $response = $this->executeCURL('/FAX/?TG=SENDER', $CorpNum, $UserID);
         return $response->url;
     }
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $ReserveYN, $SenderOnly, $Page, $PerPage, $Order, $UserID = null, $QString = null)
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $ReserveYN = null, $SenderOnly = null, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
             throw new PopbillException('시작일자가 입력되지 않았습니다.');

@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -68,7 +68,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
 		}
     return $JobList;
   }
-  public function Search ( $CorpNum, $JobID, $Type, $TaxType, $PurposeType, $TaxRegIDYN = null, $TaxRegIDType = null, $TaxRegID = null, $Page, $PerPage, $Order, $UserID = null, $SearchString = null )
+  public function Search ( $CorpNum, $JobID, $Type, $TaxType, $PurposeType, $TaxRegIDYN = null, $TaxRegIDType = null, $TaxRegID = null, $Page = null, $PerPage = null, $Order = null, $UserID = null, $SearchString = null )
   {
     if ( strlen ( $JobID ) != 18 ) {
       throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');

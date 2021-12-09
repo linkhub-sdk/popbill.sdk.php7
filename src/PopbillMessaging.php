@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2019-10-24
+ * Updated : 2021-12-09
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -230,7 +230,7 @@ class PopbillMessaging extends PopbillBase
         return $response->url;
     }
     //문자 전송내역 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = false, $SenderYN = false, $Page, $PerPage, $Order, $UserID = null, $QString = null)
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = false, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
             throw new PopbillException(-99999999, '시작일자가 입력되지 않았습니다.');

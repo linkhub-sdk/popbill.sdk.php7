@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-12-09
+ * Updated : 2021-12-16
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -66,7 +66,16 @@ class PopbillKakao extends PopbillBase
     }
     public function ListATSTemplate($CorpNum)
     {
-        return $this->executeCURL('/KakaoTalk/ListATSTemplate', $CorpNum);
+        $result = $this->executeCURL('/KakaoTalk/ListATSTemplate', $CorpNum);
+
+        $TemplateList = array();
+        for ($i = 0; $i < Count($result); $i++) {
+            $TemplateObj = new ATSTemplate();
+            $TemplateObj->fromJsonInfo($result[$i]);
+            $TemplateList[$i] = $TemplateObj;
+        }
+
+        return $TemplateList;
     }
     public function GetSenderNumberList($CorpNum)
     {
@@ -121,7 +130,12 @@ class PopbillKakao extends PopbillBase
             throw new PopbillException('템플릿코드가 입력되지 않았습니다.');
         }
 
-        return  $this->executeCURL('/KakaoTalk/GetATSTemplate/'.$TemplateCode, $CorpNum, $UserID);
+        $result = $this->executeCURL('/KakaoTalk/GetATSTemplate/'.$TemplateCode, $CorpNum, $UserID);
+
+        $TemplateInfo = new ATSTemplate();
+        $TemplateInfo->fromJsonInfo($result);
+
+        return $TemplateInfo;
     }
 
     //카카오톡 전송내역 팝업 URL
@@ -351,6 +365,38 @@ class KakaoSentInfoDetail
         isset($jsonInfo->interOPRefKey) ? ($this->interOPRefKey = $jsonInfo->interOPRefKey) : null;
     }
 }
+
+class ATSTemplate
+{
+    public $templateCode;
+    public $templateName;
+    public $template;
+    public $plusFriendID;
+    public $ads;
+    public $appendix;
+    public $btns;
+
+    public function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->templateCode) ? $this->templateCode = $jsonInfo->templateCode : null;
+        isset($jsonInfo->templateName) ? $this->templateName = $jsonInfo->templateName : null;
+        isset($jsonInfo->template) ? $this->template = $jsonInfo->template : null;
+        isset($jsonInfo->plusFriendID) ? $this->plusFriendID = $jsonInfo->plusFriendID : null;
+        isset($jsonInfo->ads) ? $this->ads = $jsonInfo->ads : null;
+        isset($jsonInfo->appendix) ? $this->appendix = $jsonInfo->appendix : null;
+
+        if(isset($jsonInfo->btns)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
+                $InfoObj = new KakaoButton();
+                $InfoObj->fromJsonInfo($jsonInfo->btns[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->btns = $InfoList;
+        }
+    }
+}
+
 class KakaoButton
 {
     public $n;

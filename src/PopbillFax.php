@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-12-09
+ * Updated : 2021-12-16
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -255,6 +255,7 @@ class FaxState
     public $failPageCnt;
     public $refundPageCnt;
     public $cancelPageCnt;
+    public $receiveNumType;
     public $reserveDT;
     public $sendDT;
     public $resultDT;
@@ -263,6 +264,9 @@ class FaxState
     public $receiptDT;
     public $receiptNum;
     public $requestNum;
+    public $chargePageCnt;
+    public $tiffFileSize;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
@@ -279,6 +283,7 @@ class FaxState
         isset($jsonInfo->failPageCnt) ? $this->failPageCnt = $jsonInfo->failPageCnt : null;
         isset($jsonInfo->refundPageCnt) ? $this->refundPageCnt = $jsonInfo->refundPageCnt : null;
         isset($jsonInfo->cancelPageCnt) ? $this->cancelPageCnt = $jsonInfo->cancelPageCnt : null;
+        isset($jsonInfo->receiveNumType) ? $this->receiveNumType = $jsonInfo->receiveNumType : null;
         isset($jsonInfo->reserveDT) ? $this->reserveDT = $jsonInfo->reserveDT : null;
         isset($jsonInfo->sendDT) ? $this->sendDT = $jsonInfo->sendDT : null;
         isset($jsonInfo->resultDT) ? $this->resultDT = $jsonInfo->resultDT : null;
@@ -288,6 +293,7 @@ class FaxState
         isset($jsonInfo->requestNum) ? $this->requestNum = $jsonInfo->requestNum : null;
         isset($jsonInfo->chargePageCnt) ? $this->chargePageCnt = $jsonInfo->chargePageCnt : null;
         isset($jsonInfo->tiffFileSize) ? $this->tiffFileSize = $jsonInfo->tiffFileSize : null;
+
         if (isset ($jsonInfo->fileNames)) {
             $fileNameList = array();
             for ($i = 0; $i < Count($jsonInfo->fileNames); $i++) {

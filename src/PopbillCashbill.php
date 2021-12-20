@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-12-09
+ * Updated : 2021-12-20
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -238,7 +238,8 @@ class PopbillCashbill extends PopbillBase {
   public function GetUnitCost($CorpNum) {
     return $this->executeCURL('/Cashbill?cfg=UNITCOST', $CorpNum)->unitCost;
   }
-  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(), $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null)){
+  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(),
+                            $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null), $FranchiseTaxRegID = null){
     if(is_null($DType) || empty($DType)) {
       throw new PopbillException('일자유형(DType)이 입력되지 않았습니다.');
     }
@@ -253,26 +254,28 @@ class PopbillCashbill extends PopbillBase {
     $uri .= '&SDate='.$SDate;
     $uri .= '&EDate='.$EDate;
     if(!is_null($State) || !empty($State)){
-			$uri .= '&State=' . implode(',',$State);
-		}
+      $uri .= '&State=' . implode(',',$State);
+    }
     if(!is_null($TradeType) || !empty($TradeType)){
-			$uri .= '&TradeType=' . implode(',',$TradeType);
-		}
+      $uri .= '&TradeType=' . implode(',',$TradeType);
+    }
     if(!is_null($TradeUsage) || !empty($TradeUsage)){
-			$uri .= '&TradeUsage=' . implode(',',$TradeUsage);
-		}
-		if(!is_null($TradeOpt) || !empty($TradeOpt)){
-			$uri .= '&TradeOpt=' . implode(',',$TradeOpt);
-		}
+      $uri .= '&TradeUsage=' . implode(',',$TradeUsage);
+    }
+    if(!is_null($TradeOpt) || !empty($TradeOpt)){
+      $uri .= '&TradeOpt=' . implode(',',$TradeOpt);
+    }
     if(!is_null($TaxationType) || !empty($TaxationType)){
-			$uri .= '&TaxationType=' . implode(',',$TaxationType);
-		}
+      $uri .= '&TaxationType=' . implode(',',$TaxationType);
+    }
+    $uri .= '&FranchiseTaxRegID=' . $FranchiseTaxRegID;
+
     $uri .= '&Page='.$Page;
     $uri .= '&PerPage='.$PerPage;
     $uri .= '&Order='.$Order;
     if(!is_null($QString) || !empty($QString)){
-			$uri .= '&QString=' . $QString;
-		}
+      $uri .= '&QString=' . $QString;
+    }
     $response = $this->executeCURL($uri, $CorpNum, "");
     $SearchList = new CBSearchResult();
     $SearchList->fromJsonInfo($response);
@@ -286,20 +289,20 @@ class PopbillCashbill extends PopbillBase {
     return $ChargeInfo;
   }
   public function ListEmailConfig($CorpNum, $UserID = null) {
-		$EmailSendConfigList = array();
-		$result = $this->executeCURL('/Cashbill/EmailSendConfig', $CorpNum, $UserID);
-		for($i=0; $i<Count($result); $i++){
-			$EmailSendConfig = new CBEmailSendConfig();
-			$EmailSendConfig->fromJsonInfo($result[$i]);
-			$EmailSendConfigList[$i] = $EmailSendConfig;
-		}
-		return $EmailSendConfigList;
+    $EmailSendConfigList = array();
+    $result = $this->executeCURL('/Cashbill/EmailSendConfig', $CorpNum, $UserID);
+    for($i=0; $i<Count($result); $i++){
+      $EmailSendConfig = new CBEmailSendConfig();
+      $EmailSendConfig->fromJsonInfo($result[$i]);
+      $EmailSendConfigList[$i] = $EmailSendConfig;
+    }
+    return $EmailSendConfigList;
   }
-	public function UpdateEmailConfig($corpNum, $emailType, $sendYN, $userID = null) {
-		$sendYNString = $sendYN ? 'True' : 'False';
-		$uri = '/Cashbill/EmailSendConfig?EmailType='.$emailType.'&SendYN='.$sendYNString;
-		return $result = $this->executeCURL($uri, $corpNum, $userID, true);
-	}
+  public function UpdateEmailConfig($corpNum, $emailType, $sendYN, $userID = null) {
+    $sendYNString = $sendYN ? 'True' : 'False';
+    $uri = '/Cashbill/EmailSendConfig?EmailType='.$emailType.'&SendYN='.$sendYNString;
+    return $result = $this->executeCURL($uri, $corpNum, $userID, true);
+  }
 
   public function GetPDFURL($CorpNum,$MgtKey,$UserID = null) {
     if(is_null($MgtKey) || empty($MgtKey)) {
@@ -365,6 +368,7 @@ class Cashbill
     public $faxsendYN;
     public $cancelType;
     public $emailSubject;
+    public $franchiseTaxRegID;
 
     function fromJsonInfo($jsonInfo)
     {
@@ -396,6 +400,7 @@ class Cashbill
         isset($jsonInfo->fax) ? $this->fax = $jsonInfo->fax : null;
         isset($jsonInfo->faxsendYN) ? $this->faxsendYN = $jsonInfo->faxsendYN : null;
         isset($jsonInfo->cancelType) ? $this->cancelType = $jsonInfo->cancelType : null;
+        isset($jsonInfo->franchiseTaxRegID) ? $this->franchiseTaxRegID = $jsonInfo->franchiseTaxRegID : null;
     }
 }
 class CashbillInfo

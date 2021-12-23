@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-12-09
+ * Updated : 2021-12-23
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -296,6 +296,12 @@ class PopbillStatement extends PopbillBase {
 		$SearchList = new DocSearchResult();
 		$SearchList->fromJsonInfo($response);
 		return $SearchList;
+  }
+  //팝빌 인감 및 첨부문서 등록 URL
+  public function GetSealURL($CorpNum, $UserID = null) {
+
+  $response = $this->executeCURL('/?TG=SEAL', $CorpNum, $UserID);
+  return $response->url;
   }
   // 전자명세서 첨부
   public function AttachStatement ( $CorpNum, $ItemCode, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null ) {

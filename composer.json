@@ -24,7 +24,7 @@
     },
     "require": {
         "php": ">=7.1.3",
-        "linkhub/linkhub": "1.4.0"
+        "linkhub/linkhub": "1.4.1"
     },
     "autoload": {
       "psr-4": {

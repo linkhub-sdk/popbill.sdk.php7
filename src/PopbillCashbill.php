@@ -11,7 +11,7 @@
  * http://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhub.co.kr)
  * Written : 2019-02-08
- * Updated : 2021-12-20
+ * Updated : 2021-12-23
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.

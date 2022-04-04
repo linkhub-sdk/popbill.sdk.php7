@@ -22,321 +22,352 @@ namespace Linkhub\Popbill;
 
 
 class PopbillCashbill extends PopbillBase {
-	public function __construct($LinkID,$SecretKey) {
-    	parent::__construct($LinkID,$SecretKey);
-    	$this->AddScope('140');
-  }
-  public function GetURL($CorpNum,$UserID,$TOGO) {
-    $response = $this->executeCURL('/Cashbill/?TG='.$TOGO,$CorpNum,$UserID);
-    return $response->url;
-  }
-  public function CheckMgtKeyInUse($CorpNum,$MgtKey) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
+    public function __construct($LinkID,$SecretKey) {
+        parent::__construct($LinkID,$SecretKey);
+        $this->AddScope('140');
     }
-    try
+
+    public function GetURL($CorpNum,$UserID,$TOGO) {
+        $response = $this->executeCURL('/Cashbill/?TG='.$TOGO,$CorpNum,$UserID);
+        return $response->url;
+    }
+
+    public function CheckMgtKeyInUse($CorpNum,$MgtKey) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        try
+        {
+            $response = $this->executeCURL('/Cashbill/'.$MgtKey,$CorpNum);
+            return is_null($response->itemKey) == false;
+        }catch(PopbillException $pe) {
+            if($pe->getCode() == -14000003) {return false;}
+           throw $pe;
+        }
+    }
+
+    public function RegistIssue($CorpNum, $Cashbill, $Memo, $UserID = null, $EmailSubject = null) {
+        if(!is_null($Memo) || !empty($Memo)){
+          $Cashbill->memo = $Memo;
+        }
+
+        if ( !is_null($EmailSubject) || !empty($EmailSubject) ) {
+          $Cashbill->emailSubject = $EmailSubject;
+        }
+
+
+        $postdata = json_encode($Cashbill);
+        return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'ISSUE',$postdata);
+    }
+
+    public function Register($CorpNum, $Cashbill, $UserID = null) {
+        $postdata = json_encode($Cashbill);
+        return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,null,$postdata);
+    }
+
+    // 취소현금영수증 즉시발행 추가(RevokeRegistIssue). 2017/08/17
+    public function RevokeRegistIssue($CorpNum, $mgtKey, $orgConfirmNum, $orgTradeDate, $smssendYN = false, $memo = null,
+                                      $UserID = null, $isPartCancel = false, $cancelType = null, $supplyCost = null,
+                                      $tax = null, $serviceFee = null, $totalAmount = null)
     {
-      $response = $this->executeCURL('/Cashbill/'.$MgtKey,$CorpNum);
-      return is_null($response->itemKey) == false;
-    }catch(PopbillException $pe) {
-      if($pe->getCode() == -14000003) {return false;}
-      throw $pe;
-    }
-  }
-  public function RegistIssue($CorpNum, $Cashbill, $Memo, $UserID = null, $EmailSubject = null) {
-    if(!is_null($Memo) || !empty($Memo)){
-      $Cashbill->memo = $Memo;
-    }
-
-    if ( !is_null($EmailSubject) || !empty($EmailSubject) ) {
-      $Cashbill->emailSubject = $EmailSubject;
-    }
-
-
-    $postdata = json_encode($Cashbill);
-    return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'ISSUE',$postdata);
-  }
-
-  public function Register($CorpNum, $Cashbill, $UserID = null) {
-    $postdata = json_encode($Cashbill);
-    return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,null,$postdata);
-  }
-  // 취소현금영수증 즉시발행 추가(RevokeRegistIssue). 2017/08/17
-  public function RevokeRegistIssue($CorpNum, $mgtKey, $orgConfirmNum, $orgTradeDate, $smssendYN = false, $memo = null,
-    $UserID = null, $isPartCancel = false, $cancelType = null, $supplyCost = null, $tax = null, $serviceFee = null, $totalAmount = null){
-    $request = array(
-      'mgtKey' => $mgtKey,
-      'orgConfirmNum' => $orgConfirmNum,
-      'orgTradeDate' => $orgTradeDate,
-      'smssendYN' => $smssendYN,
-      'memo' => $memo,
-      'isPartCancel' => $isPartCancel,
-      'cancelType' => $cancelType,
-      'supplyCost' => $supplyCost,
-      'tax' => $tax,
-      'serviceFee' => $serviceFee,
-      'totalAmount' => $totalAmount,
-    );
-    $postdata = json_encode($request);
-    return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'REVOKEISSUE',$postdata);
-  }
-  // 취소현금영수증 임시저장 추가(RevokeRegister). 2017/08/17
-  public function RevokeRegister($CorpNum, $mgtKey, $orgConfirmNum, $orgTradeDate, $smssendYN = false, $UserID = null,
-    $isPartCancel = false, $cancelType = null, $supplyCost = null, $tax = null, $serviceFee = null, $totalAmount = null){
-    $request = array(
-      'mgtKey' => $mgtKey,
-      'orgConfirmNum' => $orgConfirmNum,
-      'orgTradeDate' => $orgTradeDate,
-      'smssendYN' => $smssendYN,
-      'isPartCancel' => $isPartCancel,
-      'cancelType' => $cancelType,
-      'supplyCost' => $supplyCost,
-      'tax' => $tax,
-      'serviceFee' => $serviceFee,
-      'totalAmount' => $totalAmount,
-    );
-    $postdata = json_encode($request);
-    return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'REVOKE',$postdata);
-  }
-  public function Delete($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'DELETE','');
-  }
-  public function Update($CorpNum,$MgtKey,$Cashbill, $UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $postdata = json_encode($Cashbill);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true, 'PATCH', $postdata);
-  }
-  public function Issue($CorpNum,$MgtKey,$Memo = '', $UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $Request = new CBIssueRequest();
-    $Request->memo = $Memo;
-    $postdata = json_encode($Request);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'ISSUE',$postdata);
-  }
-  public function CancelIssue($CorpNum,$MgtKey,$Memo = '',$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $Request = new CBMemoRequest();
-    $Request->memo = $Memo;
-    $postdata = json_encode($Request);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'CANCELISSUE',$postdata);
-  }
-  public function SendEmail($CorpNum,$MgtKey,$Receiver,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $Request = array('receiver' => $Receiver);
-    $postdata = json_encode($Request);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'EMAIL',$postdata);
-  }
-  public function SendSMS($CorpNum,$MgtKey,$Sender,$Receiver,$Contents,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $Request = array('receiver' => $Receiver,'sender'=>$Sender,'contents' => $Contents);
-    $postdata = json_encode($Request);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'SMS',$postdata);
-  }
-  public function SendFAX($CorpNum,$MgtKey,$Sender,$Receiver,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
-    }
-    $Request = array('receiver' => $Receiver,'sender'=>$Sender);
-    $postdata = json_encode($Request);
-    return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'FAX',$postdata);
-  }
-  public function GetInfo($CorpNum,$MgtKey) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $result = $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum);
-  $CashbillInfo = new CashbillInfo();
-  $CashbillInfo->fromJsonInfo($result);
-  return $CashbillInfo;
-  }
-  public function GetDetailInfo($CorpNum,$MgtKey) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-  $result = $this->executeCURL('/Cashbill/'.$MgtKey.'?Detail', $CorpNum);
-  $CashbillDetail = new Cashbill();
-  $CashbillDetail->fromJsonInfo($result);
-  return $CashbillDetail;
-  }
-  public function GetInfos($CorpNum,$MgtKeyList = array()) {
-    if(is_null($MgtKeyList) || empty($MgtKeyList)) {
-      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
-    }
-    $postdata = json_encode($MgtKeyList);
-    $result = $this->executeCURL('/Cashbill/States', $CorpNum, null, true,null,$postdata);
-  $CashbillInfoList = array();
-  for($i=0; $i<Count($result); $i++){
-    $CashbillInfoObj = new CashbillInfo();
-    $CashbillInfoObj->fromJsonInfo($result[$i]);
-    $CashbillInfoList[$i] = $CashbillInfoObj;
-  }
-  return $CashbillInfoList;
-  }
-  public function GetLogs($CorpNum,$MgtKey) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    $result = $this->executeCURL('/Cashbill/'.$MgtKey.'/Logs', $CorpNum);
-  $CashbillLogList = array();
-  for($i=0; $i<Count($result); $i++){
-    $CashbillLog = new CashbillLog();
-    $CashbillLog->fromJsonInfo($result[$i]);
-    $CashbillLogList[$i] = $CashbillLog;
-  }
-  return $CashbillLogList;
-  }
-  public function GetPopUpURL($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=POPUP', $CorpNum,$UserID)->url;
-  }
-  public function GetPrintURL($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PRINT', $CorpNum,$UserID)->url;
-  }
-  public function GetViewURL($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=VIEW', $CorpNum,$UserID)->url;
-  }
-  public function GetEPrintURL($CorpNum,$MgtKey,$UserID = null) {
-      if(is_null($MgtKey) || empty($MgtKey)) {
-          throw new PopbillException('문서번호가 입력되지 않았습니다.');
-      }
-      return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=EPRINT', $CorpNum,$UserID)->url;
-  }
-  public function GetMailURL($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
-    }
-    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=MAIL', $CorpNum,$UserID)->url;
-  }
-  public function GetMassPrintURL($CorpNum,$MgtKeyList = array(),$UserID = null) {
-    if(is_null($MgtKeyList) || empty($MgtKeyList)) {
-      throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
-    }
-    $postdata = json_encode($MgtKeyList);
-    return $this->executeCURL('/Cashbill/Prints', $CorpNum, $UserID, true,null,$postdata)->url;
-  }
-  public function GetUnitCost($CorpNum) {
-    return $this->executeCURL('/Cashbill?cfg=UNITCOST', $CorpNum)->unitCost;
-  }
-  public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(),
-                            $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null), $FranchiseTaxRegID = null){
-    if(is_null($DType) || empty($DType)) {
-      throw new PopbillException('일자유형(DType)이 입력되지 않았습니다.');
-    }
-    if(is_null($SDate) || empty($SDate)) {
-      throw new PopbillException('시작일자(SDate)가 입력되지 않았습니다.');
-    }
-    if(is_null($EDate) || empty($EDate)) {
-      throw new PopbillException('종료일자(EDate)가 입력되지 않았습니다.');
-    }
-    $uri = '/Cashbill/Search';
-    $uri .= '?DType='.$DType;
-    $uri .= '&SDate='.$SDate;
-    $uri .= '&EDate='.$EDate;
-    if(!is_null($State) || !empty($State)){
-      $uri .= '&State=' . implode(',',$State);
-    }
-    if(!is_null($TradeType) || !empty($TradeType)){
-      $uri .= '&TradeType=' . implode(',',$TradeType);
-    }
-    if(!is_null($TradeUsage) || !empty($TradeUsage)){
-      $uri .= '&TradeUsage=' . implode(',',$TradeUsage);
-    }
-    if(!is_null($TradeOpt) || !empty($TradeOpt)){
-      $uri .= '&TradeOpt=' . implode(',',$TradeOpt);
-    }
-    if(!is_null($TaxationType) || !empty($TaxationType)){
-      $uri .= '&TaxationType=' . implode(',',$TaxationType);
-    }
-    $uri .= '&FranchiseTaxRegID=' . $FranchiseTaxRegID;
-
-    $uri .= '&Page='.$Page;
-    $uri .= '&PerPage='.$PerPage;
-    $uri .= '&Order='.$Order;
-    if(!is_null($QString) || !empty($QString)){
-      $uri .= '&QString=' . $QString;
-    }
-    $response = $this->executeCURL($uri, $CorpNum, "");
-    $SearchList = new CBSearchResult();
-    $SearchList->fromJsonInfo($response);
-    return $SearchList;
-  }
-  public function GetChargeInfo ( $CorpNum, $UserID = null) {
-    $uri = '/Cashbill/ChargeInfo';
-    $response = $this->executeCURL($uri, $CorpNum, $UserID);
-    $ChargeInfo = new ChargeInfo();
-    $ChargeInfo->fromJsonInfo($response);
-    return $ChargeInfo;
-  }
-  public function ListEmailConfig($CorpNum, $UserID = null) {
-    $EmailSendConfigList = array();
-    $result = $this->executeCURL('/Cashbill/EmailSendConfig', $CorpNum, $UserID);
-    for($i=0; $i<Count($result); $i++){
-      $EmailSendConfig = new CBEmailSendConfig();
-      $EmailSendConfig->fromJsonInfo($result[$i]);
-      $EmailSendConfigList[$i] = $EmailSendConfig;
-    }
-    return $EmailSendConfigList;
-  }
-  public function UpdateEmailConfig($corpNum, $emailType, $sendYN, $userID = null) {
-    $sendYNString = $sendYN ? 'True' : 'False';
-    $uri = '/Cashbill/EmailSendConfig?EmailType='.$emailType.'&SendYN='.$sendYNString;
-    return $result = $this->executeCURL($uri, $corpNum, $userID, true);
-  }
-
-  public function GetPDFURL($CorpNum,$MgtKey,$UserID = null) {
-    if(is_null($MgtKey) || empty($MgtKey)) {
-      throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        $request = array(
+            'mgtKey' => $mgtKey,
+            'orgConfirmNum' => $orgConfirmNum,
+            'orgTradeDate' => $orgTradeDate,
+            'smssendYN' => $smssendYN,
+            'memo' => $memo,
+            'isPartCancel' => $isPartCancel,
+            'cancelType' => $cancelType,
+            'supplyCost' => $supplyCost,
+            'tax' => $tax,
+            'serviceFee' => $serviceFee,
+            'totalAmount' => $totalAmount,
+        );
+        $postdata = json_encode($request);
+        return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'REVOKEISSUE',$postdata);
     }
 
-    return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PDF', $CorpNum,$UserID)->url;
-  }
+    // 취소현금영수증 임시저장 추가(RevokeRegister). 2017/08/17
+    public function RevokeRegister($CorpNum, $mgtKey, $orgConfirmNum, $orgTradeDate, $smssendYN = false, $UserID = null,
+                                   $isPartCancel = false, $cancelType = null, $supplyCost = null, $tax = null,
+                                   $serviceFee = null, $totalAmount = null)
+    {
+        $request = array(
+            'mgtKey' => $mgtKey,
+            'orgConfirmNum' => $orgConfirmNum,
+            'orgTradeDate' => $orgTradeDate,
+            'smssendYN' => $smssendYN,
+            'isPartCancel' => $isPartCancel,
+            'cancelType' => $cancelType,
+            'supplyCost' => $supplyCost,
+            'tax' => $tax,
+            'serviceFee' => $serviceFee,
+            'totalAmount' => $totalAmount,
+        );
+        $postdata = json_encode($request);
+        return $this->executeCURL('/Cashbill',$CorpNum,$UserID,true,'REVOKE',$postdata);
+    }
 
-  // get PDF
-  public function GetPDF($CorpNum, $MgtKey, $UserID = null)
-  {
-      if (is_null($MgtKey) || empty($MgtKey)) {
-          throw new PopbillException('문서번호가 입력되지 않았습니다.');
-      }
+    public function Delete($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'DELETE','');
+    }
 
-      return $this->executeCURL('/Cashbill/' . $MgtKey . '?PDF', $CorpNum, $UserID);
-  }
+    public function Update($CorpNum,$MgtKey,$Cashbill, $UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $postdata = json_encode($Cashbill);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true, 'PATCH', $postdata);
+    }
 
-  public function AssignMgtKey($CorpNum, $itemKey, $MgtKey, $UserID = null)
-  {
-      if (is_null($itemKey) || empty($itemKey)) {
-          throw new PopbillException('아이템키가 입력되지 않았습니다.');
-      }
+    public function Issue($CorpNum,$MgtKey,$Memo = '', $UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $Request = new CBIssueRequest();
+        $Request->memo = $Memo;
+        $postdata = json_encode($Request);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'ISSUE',$postdata);
+    }
 
-      if (is_null($MgtKey) || empty($MgtKey)) {
-          throw new PopbillException('할당할 문서번호가 입력되지 않았습니다.');
-      }
-      $uri = '/Cashbill/' . $itemKey;
-      $postdata = 'MgtKey=' . $MgtKey;
+    public function CancelIssue($CorpNum,$MgtKey,$Memo = '',$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $Request = new CBMemoRequest();
+        $Request->memo = $Memo;
+        $postdata = json_encode($Request);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'CANCELISSUE',$postdata);
+    }
 
-      return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata, false, 'application/x-www-form-urlencoded; charset=utf-8');
-  }
+    public function SendEmail($CorpNum,$MgtKey,$Receiver,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $Request = array('receiver' => $Receiver);
+        $postdata = json_encode($Request);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'EMAIL',$postdata);
+    }
+
+    public function SendSMS($CorpNum,$MgtKey,$Sender,$Receiver,$Contents,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $Request = array('receiver' => $Receiver,'sender'=>$Sender,'contents' => $Contents);
+        $postdata = json_encode($Request);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'SMS',$postdata);
+    }
+
+    public function SendFAX($CorpNum,$MgtKey,$Sender,$Receiver,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
+        }
+        $Request = array('receiver' => $Receiver,'sender'=>$Sender);
+        $postdata = json_encode($Request);
+        return $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum, $UserID, true,'FAX',$postdata);
+    }
+
+    public function GetInfo($CorpNum,$MgtKey) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $result = $this->executeCURL('/Cashbill/'.$MgtKey, $CorpNum);
+        $CashbillInfo = new CashbillInfo();
+        $CashbillInfo->fromJsonInfo($result);
+        return $CashbillInfo;
+    }
+
+    public function GetDetailInfo($CorpNum,$MgtKey) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $result = $this->executeCURL('/Cashbill/'.$MgtKey.'?Detail', $CorpNum);
+        $CashbillDetail = new Cashbill();
+        $CashbillDetail->fromJsonInfo($result);
+        return $CashbillDetail;
+    }
+
+    public function GetInfos($CorpNum,$MgtKeyList = array()) {
+        if(is_null($MgtKeyList) || empty($MgtKeyList)) {
+            throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
+        }
+        $postdata = json_encode($MgtKeyList);
+        $result = $this->executeCURL('/Cashbill/States', $CorpNum, null, true,null,$postdata);
+        $CashbillInfoList = array();
+        for($i=0; $i<Count($result); $i++){
+            $CashbillInfoObj = new CashbillInfo();
+            $CashbillInfoObj->fromJsonInfo($result[$i]);
+            $CashbillInfoList[$i] = $CashbillInfoObj;
+        }
+        return $CashbillInfoList;
+    }
+
+    public function GetLogs($CorpNum,$MgtKey) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        $result = $this->executeCURL('/Cashbill/'.$MgtKey.'/Logs', $CorpNum);
+        $CashbillLogList = array();
+        for($i=0; $i<Count($result); $i++){
+            $CashbillLog = new CashbillLog();
+            $CashbillLog->fromJsonInfo($result[$i]);
+            $CashbillLogList[$i] = $CashbillLog;
+        }
+        return $CashbillLogList;
+    }
+
+    public function GetPopUpURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=POPUP', $CorpNum,$UserID)->url;
+    }
+
+    public function GetPrintURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PRINT', $CorpNum,$UserID)->url;
+    }
+
+    public function GetViewURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=VIEW', $CorpNum,$UserID)->url;
+    }
+
+    public function GetEPrintURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+              throw new PopbillException('문서번호가 입력되지 않았습니다.');
+          }
+          return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=EPRINT', $CorpNum,$UserID)->url;
+    }
+
+    public function GetMailURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=MAIL', $CorpNum,$UserID)->url;
+    }
+
+    public function GetMassPrintURL($CorpNum,$MgtKeyList = array(),$UserID = null) {
+        if(is_null($MgtKeyList) || empty($MgtKeyList)) {
+            throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
+        }
+        $postdata = json_encode($MgtKeyList);
+        return $this->executeCURL('/Cashbill/Prints', $CorpNum, $UserID, true,null,$postdata)->url;
+    }
+
+    public function GetUnitCost($CorpNum) {
+        return $this->executeCURL('/Cashbill?cfg=UNITCOST', $CorpNum)->unitCost;
+    }
+
+    public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(),
+                           $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null), $FranchiseTaxRegID = null)
+    {
+        if(is_null($DType) || empty($DType)) {
+            throw new PopbillException('일자유형(DType)이 입력되지 않았습니다.');
+        }
+        if(is_null($SDate) || empty($SDate)) {
+            throw new PopbillException('시작일자(SDate)가 입력되지 않았습니다.');
+        }
+        if(is_null($EDate) || empty($EDate)) {
+            throw new PopbillException('종료일자(EDate)가 입력되지 않았습니다.');
+        }
+        $uri = '/Cashbill/Search';
+        $uri .= '?DType='.$DType;
+        $uri .= '&SDate='.$SDate;
+        $uri .= '&EDate='.$EDate;
+        if(!is_null($State) || !empty($State)){
+            $uri .= '&State=' . implode(',',$State);
+        }
+        if(!is_null($TradeType) || !empty($TradeType)){
+            $uri .= '&TradeType=' . implode(',',$TradeType);
+        }
+        if(!is_null($TradeUsage) || !empty($TradeUsage)){
+            $uri .= '&TradeUsage=' . implode(',',$TradeUsage);
+        }
+        if(!is_null($TradeOpt) || !empty($TradeOpt)){
+            $uri .= '&TradeOpt=' . implode(',',$TradeOpt);
+        }
+        if(!is_null($TaxationType) || !empty($TaxationType)){
+            $uri .= '&TaxationType=' . implode(',',$TaxationType);
+        }
+        $uri .= '&FranchiseTaxRegID=' . $FranchiseTaxRegID;
+
+        $uri .= '&Page='.$Page;
+        $uri .= '&PerPage='.$PerPage;
+        $uri .= '&Order='.$Order;
+        if(!is_null($QString) || !empty($QString)){
+            $uri .= '&QString=' . $QString;
+        }
+        $response = $this->executeCURL($uri, $CorpNum, "");
+        $SearchList = new CBSearchResult();
+        $SearchList->fromJsonInfo($response);
+        return $SearchList;
+    }
+
+    public function GetChargeInfo ( $CorpNum, $UserID = null) {
+        $uri = '/Cashbill/ChargeInfo';
+        $response = $this->executeCURL($uri, $CorpNum, $UserID);
+        $ChargeInfo = new ChargeInfo();
+        $ChargeInfo->fromJsonInfo($response);
+        return $ChargeInfo;
+    }
+
+    public function ListEmailConfig($CorpNum, $UserID = null) {
+        $EmailSendConfigList = array();
+        $result = $this->executeCURL('/Cashbill/EmailSendConfig', $CorpNum, $UserID);
+        for($i=0; $i<Count($result); $i++){
+            $EmailSendConfig = new CBEmailSendConfig();
+            $EmailSendConfig->fromJsonInfo($result[$i]);
+            $EmailSendConfigList[$i] = $EmailSendConfig;
+        }
+        return $EmailSendConfigList;
+    }
+
+    public function UpdateEmailConfig($corpNum, $emailType, $sendYN, $userID = null) {
+        $sendYNString = $sendYN ? 'True' : 'False';
+        $uri = '/Cashbill/EmailSendConfig?EmailType='.$emailType.'&SendYN='.$sendYNString;
+        return $result = $this->executeCURL($uri, $corpNum, $userID, true);
+    }
+
+    public function GetPDFURL($CorpNum,$MgtKey,$UserID = null) {
+        if(is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/'.$MgtKey.'?TG=PDF', $CorpNum,$UserID)->url;
+    }
+
+    // get PDF
+    public function GetPDF($CorpNum, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Cashbill/' . $MgtKey . '?PDF', $CorpNum, $UserID);
+    }
+
+    public function AssignMgtKey($CorpNum, $itemKey, $MgtKey, $UserID = null)
+    {
+        if (is_null($itemKey) || empty($itemKey)) {
+            throw new PopbillException('아이템키가 입력되지 않았습니다.');
+        }
+
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('할당할 문서번호가 입력되지 않았습니다.');
+        }
+        $uri = '/Cashbill/' . $itemKey;
+        $postdata = 'MgtKey=' . $MgtKey;
+
+        return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata, false, 'application/x-www-form-urlencoded; charset=utf-8');
+    }
 }
+
 class Cashbill
 {
     public $mgtKey;

@@ -27,11 +27,13 @@ class PopbillTaxinvoice extends PopbillBase
         parent::__construct($LinkID, $SecretKey);
         $this->AddScope('110');
     }
+
     //팝빌 세금계산서 연결 url
     public function GetURL($CorpNum, $UserID, $TOGO)
     {
         return $this->executeCURL('/Taxinvoice/?TG=' . $TOGO, $CorpNum, $UserID)->url;
     }
+
     //문서번호 사용여부 확인
     public function CheckMgtKeyInUse($CorpNum, $MgtKeyType, $MgtKey)
     {
@@ -48,6 +50,7 @@ class PopbillTaxinvoice extends PopbillBase
             throw $pe;
         }
     }
+
     //즉시발행
     public function RegistIssue($CorpNum, $Taxinvoice, $UserID = null, $writeSpecification = false, $forceIssue = false, $memo = null, $emailSubject = null, $dealInvoiceMgtKey = null)
     {
@@ -69,6 +72,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice', $CorpNum, $UserID, true, 'ISSUE', $postdata);
     }
+
     //임시저장
     public function Register($CorpNum, $Taxinvoice, $UserID = null, $writeSpecification = false)
     {
@@ -78,6 +82,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice', $CorpNum, $UserID, true, null, $postdata);
     }
+
     //삭제
     public function Delete($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -86,6 +91,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'DELETE', '');
     }
+
     //수정
     public function Update($CorpNum, $MgtKeyType, $MgtKey, $Taxinvoice, $UserID = null, $writeSpecification = false)
     {
@@ -98,6 +104,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'PATCH', $postdata);
     }
+
     //발행예정
     public function Send($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $EmailSubject = '', $UserID = null)
     {
@@ -110,6 +117,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'SEND', $postdata);
     }
+
     //발행예정취소
     public function CancelSend($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -121,6 +129,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELSEND', $postdata);
     }
+
     //발행예정 승인
     public function Accept($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -132,6 +141,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'ACCEPT', $postdata);
     }
+
     //발행예정 거부
     public function Deny($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -143,6 +153,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'DENY', $postdata);
     }
+
     //발행
     public function Issue($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $EmailSubject = null, $ForceIssue = false, $UserID = null)
     {
@@ -156,6 +167,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'ISSUE', $postdata);
     }
+
     //발행취소
     public function CancelIssue($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -167,6 +179,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELISSUE', $postdata);
     }
+
     //역)즉시 요청
     public function RegistRequest($CorpNum, $Taxinvoice, $Memo = '', $UserID = null)
     {
@@ -176,6 +189,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice', $CorpNum, $UserID, true, 'REQUEST', $postdata);
     }
+
     //역)발행요청
     public function Request($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -187,6 +201,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REQUEST', $postdata);
     }
+
     //역)발행요청 거부
     public function Refuse($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -198,6 +213,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REFUSE', $postdata);
     }
+
     //역)발행요청 취소
     public function CancelRequest($CorpNum, $MgtKeyType, $MgtKey, $Memo = '', $UserID = null)
     {
@@ -253,6 +269,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'NTS', '');
     }
+
     //알림메일 재전송
     public function SendEmail($CorpNum, $MgtKeyType, $MgtKey, $Receiver, $UserID = null)
     {
@@ -263,6 +280,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'EMAIL', $postdata);
     }
+
     //알림문자 재전송
     public function SendSMS($CorpNum, $MgtKeyType, $MgtKey, $Sender, $Receiver, $Contents, $UserID = null)
     {
@@ -273,6 +291,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'SMS', $postdata);
     }
+
     //알림팩스 재전송
     public function SendFAX($CorpNum, $MgtKeyType, $MgtKey, $Sender, $Receiver, $UserID = null)
     {
@@ -283,6 +302,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'FAX', $postdata);
     }
+
     //세금계산서 요약정보 및 상태정보 확인
     public function GetInfo($CorpNum, $MgtKeyType, $MgtKey)
     {
@@ -294,6 +314,7 @@ class PopbillTaxinvoice extends PopbillBase
         $TaxinvoiceInfo->fromJsonInfo($result);
         return $TaxinvoiceInfo;
     }
+
     //세금계산서 상세정보 확인
     public function GetDetailInfo($CorpNum, $MgtKeyType, $MgtKey)
     {
@@ -305,6 +326,7 @@ class PopbillTaxinvoice extends PopbillBase
         $TaxinvoiceDetail->fromJsonInfo($result);
         return $TaxinvoiceDetail;
     }
+
     //세금계산서 요약정보 다량확인 최대 1000건
     public function GetInfos($CorpNum, $MgtKeyType, $MgtKeyList = array())
     {
@@ -321,6 +343,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $TaxinvoiceInfoList;
     }
+
     //세금계산서 문서이력 확인
     public function GetLogs($CorpNum, $MgtKeyType, $MgtKey)
     {
@@ -336,6 +359,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $TaxinvoiceLogList;
     }
+
     //파일첨부
     public function AttachFile($CorpNum, $MgtKeyType, $MgtKey, $FilePath, $UserID = null)
     {
@@ -350,6 +374,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = array('Filedata' => '@' . $FilePath . ';filename=' . $FileName);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);
     }
+
     //첨부파일 목록 확인
     public function GetFiles($CorpNum, $MgtKeyType, $MgtKey)
     {
@@ -358,6 +383,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum);
     }
+
     //첨부파일 삭제
     public function DeleteFile($CorpNum, $MgtKeyType, $MgtKey, $FileID, $UserID = null)
     {
@@ -369,6 +395,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files/' . $FileID, $CorpNum, $UserID, true, 'DELETE', '');
     }
+
     //팝업URL
     public function GetPopUpURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -377,6 +404,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=POPUP', $CorpNum, $UserID)->url;
     }
+
     //팝업URL
     public function GetViewURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -385,6 +413,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=VIEW', $CorpNum, $UserID)->url;
     }
+
     //인쇄URL
     public function GetPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -393,6 +422,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINT', $CorpNum, $UserID)->url;
     }
+
     //구버전 양식 인쇄URL
     public function GetOldPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -401,6 +431,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINTOLD', $CorpNum, $UserID)->url;
     }
+
     //공급받는자 인쇄URL
     public function GetEPrintURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -409,6 +440,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=EPRINT', $CorpNum, $UserID)->url;
     }
+
     //공급받는자 메일URL
     public function GetMailURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -417,6 +449,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=MAIL', $CorpNum, $UserID)->url;
     }
+
     //세금계산서 다량인쇄 URL
     public function GetMassPrintURL($CorpNum, $MgtKeyType, $MgtKeyList = array(), $UserID = null)
     {
@@ -426,21 +459,25 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($MgtKeyList);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '?Print', $CorpNum, $UserID, true, null, $postdata)->url;
     }
+
     //회원인증서 만료일 확인
     public function GetCertificateExpireDate($CorpNum)
     {
         return $this->executeCURL('/Taxinvoice?cfg=CERT', $CorpNum)->certificateExpiration;
     }
+
     //발행단가 확인
     public function GetUnitCost($CorpNum)
     {
         return $this->executeCURL('/Taxinvoice?cfg=UNITCOST', $CorpNum)->unitCost;
     }
+
     //대용량 연계사업자 유통메일목록 확인
     public function GetEmailPublicKeys($CorpNum)
     {
         return $this->executeCURL('/Taxinvoice/EmailPublicKeys', $CorpNum);
     }
+
     //세금계산서 조회
     public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly = null, $Page = null, $PerPage = null, $Order = null,
                            $TaxRegIDType = null, $TaxRegIDYN = null, $TaxRegID = null, $QString = null, $InterOPYN = null, $UserID = null, $IssueType = array(),
@@ -477,7 +514,6 @@ class PopbillTaxinvoice extends PopbillBase
         if (!is_null($CloseDownState) || !empty($CloseDownState)) {
             $uri .= '&CloseDownState=' . implode(',', $CloseDownState);
         }
-
         if (!is_null($LateOnly) || !empty($LateOnly)) {
             $uri .= '&LateOnly=' . $LateOnly;
         }
@@ -503,6 +539,7 @@ class PopbillTaxinvoice extends PopbillBase
         $SearchList->fromJsonInfo($response);
         return $SearchList;
     }
+
     // 전자명세서 첨부
     public function AttachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
@@ -513,6 +550,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata);
     }
+
     // 전자명세서 첨부해제
     public function DetachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
@@ -523,6 +561,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata);
     }
+
     public function GetChargeInfo($CorpNum, $UserID = null)
     {
         $uri = '/Taxinvoice/ChargeInfo';
@@ -531,6 +570,7 @@ class PopbillTaxinvoice extends PopbillBase
         $ChargeInfo->fromJsonInfo($response);
         return $ChargeInfo;
     }
+
     // 문서번호 할당
     public function AssignMgtKey($CorpNum, $MgtKeyType, $itemKey, $MgtKey, $UserID = null)
     {
@@ -541,6 +581,7 @@ class PopbillTaxinvoice extends PopbillBase
         $postdata = 'MgtKey=' . $MgtKey;
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata, false, 'application/x-www-form-urlencoded; charset=utf-8');
     }
+
     //세금계산서 관련 메일전송 항목에 대한 전송여부 목록 반환
     public function ListEmailConfig($CorpNum, $UserID = null)
     {
@@ -553,6 +594,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         return $EmailSendConfigList;
     }
+
     // 전자세금계산서 관련 메일전송 항목에 대한 전송여부를 수정
     public function UpdateEmailConfig($corpNum, $emailType, $sendYN, $userID = null)
     {
@@ -560,17 +602,20 @@ class PopbillTaxinvoice extends PopbillBase
         $uri = '/Taxinvoice/EmailSendConfig?EmailType=' . $emailType . '&SendYN=' . $sendYNString;
         return $result = $this->executeCURL($uri, $corpNum, $userID, true);
     }
+
     // 공인인증서 유효성 확인
     public function CheckCertValidation($corpNum, $userID = null)
     {
         return $this->executeCURL('/Taxinvoice/CertCheck', $corpNum, $userID);
     }
+
     //팝빌 인감 및 첨부문서 등록 URL
     public function GetSealURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/?TG=SEAL', $CorpNum, $UserID);
         return $response->url;
     }
+
     //공인인증서 등록 URL
     public function GetTaxCertURL($CorpNum, $UserID)
     {

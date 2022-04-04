@@ -29,10 +29,12 @@ class PopbillKakao extends PopbillBase
         $this->AddScope('154');
         $this->AddScope('155');
     }
+
     public function GetUnitCost($CorpNum, $MessageType)
     {
         return $this->executeCURL('/KakaoTalk/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;
     }
+
     public function GetMessages($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
@@ -43,6 +45,7 @@ class PopbillKakao extends PopbillBase
         $DetailInfo->fromJsonInfo($response);
         return $DetailInfo;
     }
+
     public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -53,6 +56,7 @@ class PopbillKakao extends PopbillBase
         $DetailInfo->fromJsonInfo($response);
         return $DetailInfo;
     }
+
     public function ListPlusFriendID($CorpNum)
     {
         $PlusFriendList = array();
@@ -64,6 +68,7 @@ class PopbillKakao extends PopbillBase
         }
         return $PlusFriendList;
     }
+
     public function ListATSTemplate($CorpNum)
     {
         $result = $this->executeCURL('/KakaoTalk/ListATSTemplate', $CorpNum);
@@ -77,10 +82,12 @@ class PopbillKakao extends PopbillBase
 
         return $TemplateList;
     }
+
     public function GetSenderNumberList($CorpNum)
     {
         return $this->executeCURL('/Message/SenderNumber', $CorpNum);
     }
+
     public function CancelReserve($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
@@ -88,6 +95,7 @@ class PopbillKakao extends PopbillBase
         }
         return $this->executeCURL('/KakaoTalk/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
+
     public function CancelReserveRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -95,6 +103,7 @@ class PopbillKakao extends PopbillBase
         }
         return $this->executeCURL('/KakaoTalk/Cancel/' . $RequestNum, $CorpNum, $UserID);
     }
+
     public function GetURL($CorpNum, $UserID, $TOGO)
     {
         $URI = '/KakaoTalk/?TG=';
@@ -104,18 +113,21 @@ class PopbillKakao extends PopbillBase
         $response = $this->executeCURL($URI . $TOGO, $CorpNum, $UserID);
         return $response->url;
     }
+
     //플러스친구 계정관리 팝업 URL
     public function GetPlusFriendMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/KakaoTalk/?TG=PLUSFRIEND', $CorpNum, $UserID);
         return $response->url;
     }
+
     //발신번호 관리 팝업 URL
     public function GetSenderNumberMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/Message/?TG=SENDER', $CorpNum, $UserID);
         return $response->url;
     }
+
     //알림톡 템플릿관리 팝업 URL
     public function GetATSTemplateMgtURL($CorpNum, $UserID)
     {
@@ -144,6 +156,7 @@ class PopbillKakao extends PopbillBase
         $response = $this->executeCURL('/KakaoTalk/?TG=BOX', $CorpNum, $UserID);
         return $response->url;
     }
+
     public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = '', $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
@@ -175,6 +188,7 @@ class PopbillKakao extends PopbillBase
         $SearchList->fromJsonInfo($response);
         return $SearchList;
     }
+
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/KakaoTalk/ChargeInfo?Type=' . $MessageType;
@@ -183,6 +197,7 @@ class PopbillKakao extends PopbillBase
         $ChargeInfo->fromJsonInfo($response);
         return $ChargeInfo;
     }
+
     public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null)
     {
         $Request = array();
@@ -205,6 +220,7 @@ class PopbillKakao extends PopbillBase
         }
         return $this->executeCURL('/FMS', $CorpNum, $UserID, true, null, $postdata, true)->receiptNum;
     }
+
     public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null)
     {
         $Request = array();
@@ -221,6 +237,7 @@ class PopbillKakao extends PopbillBase
         $postdata = json_encode($Request);
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
+
     public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Buttons = null)
     {
         $Request = array();

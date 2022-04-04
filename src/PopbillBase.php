@@ -76,31 +76,32 @@ class PopbillBase
     }
     private function getsession_Token($CorpNum)
     {
-      $targetToken = null;
-      if (array_key_exists($CorpNum, $this->Token_Table)) {
-        $targetToken = $this->Token_Table[$CorpNum];
-      }
-
-      $Refresh = false;
-      try {
-        if (is_null($targetToken)) {
-          $Refresh = true;
-        } else {
-          $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
-          $now = $this->Linkhub->getTime($this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
-          $Refresh = $Expiration < $now;
+        $targetToken = null;
+        if (array_key_exists($CorpNum, $this->Token_Table)) {
+            $targetToken = $this->Token_Table[$CorpNum];
         }
-        if ($Refresh) {
 
-          $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
+        $Refresh = false;
+        try {
+            if (is_null($targetToken)) {
+                $Refresh = true;
+            } else {
+                $Expiration = new \DateTime($targetToken->expiration, new \DateTimeZone("UTC"));
+                $now = $this->Linkhub->getTime($this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
+                $Refresh = $Expiration < $now;
+            }
+            if ($Refresh) {
 
-          $this->Token_Table[$CorpNum] = $targetToken;
+                $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
+
+                $this->Token_Table[$CorpNum] = $targetToken;
+            }
+        } catch (LinkhubException $le) {
+            throw new PopbillException($le->getMessage(), $le->getCode());
         }
-      } catch (LinkhubException $le) {
-        throw new PopbillException($le->getMessage(), $le->getCode());
-      }
-      return $targetToken->session_token;
+        return $targetToken->session_token;
     }
+
     // ID 중복 확인
     public function CheckID($ID)
     {
@@ -109,24 +110,28 @@ class PopbillBase
         }
         return $this->executeCURL('/IDCheck?ID=' . $ID);
     }
+
     // 담당자 추가
     public function RegistContact($CorpNum, $ContactInfo, $UserID = null)
     {
         $postdata = json_encode($ContactInfo);
         return $this->executeCURL('/IDs/New', $CorpNum, $UserID, true, null, $postdata);
     }
+
     // 담당자 정보 수정
     public function UpdateContact($CorpNum, $ContactInfo, $UserID)
     {
         $postdata = json_encode($ContactInfo);
         return $this->executeCURL('/IDs', $CorpNum, $UserID, true, null, $postdata);
     }
+
     // 담당자 정보 확인
     public function GetContactInfo($CorpNum, $ContactID, $UserID = null)
     {
         $postdata = '{"id":' . '"' . $ContactID . '"}';
         return $this->executeCURL('/Contact', $CorpNum, $UserID, true, null, $postdata);
     }
+
     // 담당자 목록 조회
     public function ListContact($CorpNum, $UserID = null)
     {
@@ -139,6 +144,7 @@ class PopbillBase
         }
         return $ContactInfoList;
     }
+
     // 회사정보 확인
     public function GetCorpInfo($CorpNum, $UserID = null)
     {
@@ -147,24 +153,28 @@ class PopbillBase
         $CorpInfo->fromJsonInfo($response);
         return $CorpInfo;
     }
+
     // 회사정보 수정
     public function UpdateCorpInfo($CorpNum, $CorpInfo, $UserID = null)
     {
         $postdata = json_encode($CorpInfo);
         return $this->executeCURL('/CorpInfo', $CorpNum, $UserID, true, null, $postdata);
     }
+
     //팝빌 연결 URL함수
     public function GetPopbillURL($CorpNum, $UserID, $TOGO)
     {
         $response = $this->executeCURL('/?TG=' . $TOGO, $CorpNum, $UserID);
         return $response->url;
     }
+
     //팝빌 로그인 URL
     public function GetAccessURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/?TG=LOGIN', $CorpNum, $UserID);
         return $response->url;
     }
+
     //팝빌 연동회원 포인트 충전 URL
     public function GetChargeURL($CorpNum, $UserID)
     {
@@ -206,6 +216,7 @@ class PopbillBase
             throw new PopbillException($le->message, $le->code);
         }
     }
+
     // 파트너 포인트 충전 팝업 URL
     // - 2017/08/29 추가
     public function GetPartnerURL($CorpNum, $TOGO)
@@ -216,6 +227,7 @@ class PopbillBase
             throw new PopbillException($le->message, $le->code);
         }
     }
+
     //파트너 잔여포인트 확인
     public function GetPartnerBalance($CorpNum)
     {
@@ -225,6 +237,7 @@ class PopbillBase
             throw new PopbillException($le->message, $le->code);
         }
     }
+
     protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false, $SubmitID = null)
     {
         if ($this->__requestMode != "STREAM") {
@@ -420,6 +433,7 @@ class PopbillBase
             return json_decode($response);
         }
     }
+
     protected function binaryPostbody($mime_boundary, $postdata)
     {
         $postbody = '';
@@ -442,6 +456,7 @@ class PopbillBase
 
         return $postbody;
     }
+
     private function getTargetURL()
     {
         if($this->UseGAIP){
@@ -453,6 +468,7 @@ class PopbillBase
         }
     }
 }
+
 class JoinForm
 {
     public $LinkID;
@@ -470,6 +486,7 @@ class JoinForm
     public $PWD;
     public $Password;
 }
+
 class CorpInfo
 {
     public $ceoname;
@@ -486,6 +503,7 @@ class CorpInfo
         isset($jsonInfo->bizClass) ? $this->bizClass = $jsonInfo->bizClass : null;
     }
 }
+
 class ContactInfo
 {
     public $id;

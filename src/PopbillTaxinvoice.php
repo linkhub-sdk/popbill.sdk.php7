@@ -233,7 +233,7 @@ class PopbillTaxinvoice extends PopbillBase
             throw new PopbillException('제출아이디가 입력되지 않았습니다.');
         }
         if (is_null($taxinvoiceList) || empty($taxinvoiceList)) {
-            throw new PopbillException('세금계산 정보가 입력되지 않았습니다.');
+            throw new PopbillException('세금계산서 정보가 입력되지 않았습니다.');
         }
 
         $Request = new BulkRequest();
@@ -924,8 +924,8 @@ class BulkTaxinvoiceResult
 
 class BulkTaxinvoiceIssueResult
 {
-    public $invoicerMgtKye;
-    public $trusteeMgtKye;
+    public $invoicerMgtKey;
+    public $trusteeMgtKey;
     public $code;
     public $ntsconfirmNum;
     public $issueDT;

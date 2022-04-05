@@ -36,6 +36,14 @@ class PopbillMessaging extends PopbillBase
         return $this->executeCURL('/Message/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;
     }
 
+    public function CheckSenderNumber($CorpNum, $SenderNumber, $UserID=null)
+    {
+        if (empty($SenderNumber)) {
+            throw new PopbillException('발신번호가 입력되지 않았습니다.');
+        }
+        return $this->executeCURL('/Message/CheckSenderNumber/' . $SenderNumber, $CorpNum, $UserID);
+    }
+
     /* 단문메시지 전송
     *  $CorpNum     => 발송사업자번호
     *  $Sender      => 동보전송용 발신번호 미기재시 개별메시지 발신번호로 전송. 발신번호가 없는 개별메시지에만 동보처리함.

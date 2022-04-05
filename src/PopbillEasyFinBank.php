@@ -194,7 +194,7 @@ class PopbillEasyFinBank extends PopbillBase {
         $uri = '/EasyFin/Bank/'.$JobID;
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
         if ( !empty( $SearchString ) ) {
-            $uri .= '&SearchString=' . $SearchString;
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
@@ -213,7 +213,7 @@ class PopbillEasyFinBank extends PopbillBase {
         $uri = '/EasyFin/Bank/'.$JobID.'/Summary';
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
         if ( !empty( $SearchString ) ) {
-            $uri .= '&SearchString=' . $SearchString;
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
         $SummaryResult = new EasyFinBankSummaryResult();
@@ -228,7 +228,7 @@ class PopbillEasyFinBank extends PopbillBase {
         }
         $uri = '/EasyFin/Bank/SaveMemo';
         $uri .= '?TID=' . $TID;
-        $uri .= '&Memo=' . $Memo;
+        $uri .= '&Memo=' . urlencode($Memo);
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "");
     }
 

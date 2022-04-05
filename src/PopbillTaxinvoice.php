@@ -525,7 +525,7 @@ class PopbillTaxinvoice extends PopbillBase
         }
         $uri .= '&TaxRegID=' . $TaxRegID;
         if (!is_null($QString) || !empty($QString)) {
-            $uri .= '&QString=' . $QString;
+            $uri .= '&QString=' . urlencode($QString);
         }
         if (!is_null($MgtKey) || !empty($MgtKey)) {
             $uri .= '&MgtKey=' . $MgtKey;

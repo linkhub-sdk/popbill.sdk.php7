@@ -93,7 +93,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         $uri .= '&Order=' . $Order;
 
         if(!is_null($SearchString) || !empty($SearchString)){
-            $uri .= '&SearchString=' . $SearchString;
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
@@ -118,7 +118,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         $uri .= '&TaxRegID=' . $TaxRegID;
 
         if(!is_null($SearchString) || !empty($SearchString)){
-            $uri .= '&SearchString=' . $SearchString;
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );

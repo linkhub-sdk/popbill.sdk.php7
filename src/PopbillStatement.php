@@ -348,7 +348,7 @@ class PopbillStatement extends PopbillBase
             $uri .= '&ItemCode=' . implode(',', $ItemCode);
         }
         if (!is_null($QString) || !empty($QString)) {
-            $uri .= '&QString=' . $QString;
+            $uri .= '&QString=' . urlencode($QString);
         }
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;

@@ -270,7 +270,7 @@ class PopbillMessaging extends PopbillBase
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Order=' . $Order;
         if (!is_null($QString) || !empty($QString)) {
-            $uri .= '&QString=' . $QString;
+            $uri .= '&QString=' . urlencode($QString);
         }
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
         $SearchList = new MsgSearchResult();

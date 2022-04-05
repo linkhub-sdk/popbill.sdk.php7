@@ -206,12 +206,13 @@ class PopbillKakao extends PopbillBase
         return $ChargeInfo;
     }
 
-    public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null)
+    public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
         $Request = array();
         if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
+        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
         if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
         if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
@@ -229,12 +230,13 @@ class PopbillKakao extends PopbillBase
         return $this->executeCURL('/FMS', $CorpNum, $UserID, true, null, $postdata, true)->receiptNum;
     }
 
-    public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null)
+    public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
         $Request = array();
         if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
+        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
         if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
         if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
@@ -246,12 +248,13 @@ class PopbillKakao extends PopbillBase
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Buttons = null)
+    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Buttons = null, $AltSubject = null)
     {
         $Request = array();
         if (empty($TemplateCode) == false) $Request['templateCode'] = $TemplateCode;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
+        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
         if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
         if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
@@ -301,6 +304,7 @@ class KakaoSentInfo
     public $templateCode;
     public $plusFriendID;
     public $sendNum;
+    public $altSubject;
     public $altContent;
     public $altSendType;
     public $reserveDT;
@@ -319,6 +323,7 @@ class KakaoSentInfo
         isset($jsonInfo->templateCode) ? ($this->templateCode = $jsonInfo->templateCode) : null;
         isset($jsonInfo->plusFriendID) ? ($this->plusFriendID = $jsonInfo->plusFriendID) : null;
         isset($jsonInfo->sendNum) ? ($this->sendNum = $jsonInfo->sendNum) : null;
+        isset($jsonInfo->altSubject) ? ($this->altSubject = $jsonInfo->altSubject) : null;
         isset($jsonInfo->altContent) ? ($this->altContent = $jsonInfo->altContent) : null;
         isset($jsonInfo->altSendType) ? ($this->altSendType = $jsonInfo->altSendType) : null;
         isset($jsonInfo->reserveDT) ? ($this->reserveDT = $jsonInfo->reserveDT) : null;
@@ -358,6 +363,7 @@ class KakaoSentInfoDetail
     public $content;
     public $result;
     public $resultDT;
+    public $altSubject;
     public $altContent;
     public $contentType;
     public $altContentType;
@@ -378,6 +384,7 @@ class KakaoSentInfoDetail
         isset($jsonInfo->content) ? ($this->content = $jsonInfo->content) : null;
         isset($jsonInfo->result) ? ($this->result = $jsonInfo->result) : null;
         isset($jsonInfo->resultDT) ? ($this->resultDT = $jsonInfo->resultDT) : null;
+        isset($jsonInfo->altSubject) ? ($this->altSubject = $jsonInfo->altSubject) : null;
         isset($jsonInfo->altContent) ? ($this->altContent = $jsonInfo->altContent) : null;
         isset($jsonInfo->contentType) ? ($this->contentType = $jsonInfo->contentType) : null;
         isset($jsonInfo->altContentType) ? ($this->altContentType = $jsonInfo->altContentType) : null;

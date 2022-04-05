@@ -12,13 +12,13 @@
     "author":[
       {
         "name":"Linkhub Corp",
-        "email":"code@linkhub.co.kr",
+        "email":"code@linkhubcorp.com",
         "homepage":"https://github.com/linkhub-sdk/",
         "role":"Developer"
       }
     ],
     "support": {
-      "email": "code@linkhub.co.kr",
+      "email": "code@linkhubcorp.com",
       "issues": "https://github.com/linkhub-sdk/linkhub.auth.php7/issues",
       "source": "https://github.com/linkhub-sdk/linkhub.auth.php7"
     },

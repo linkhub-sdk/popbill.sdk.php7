@@ -482,6 +482,8 @@ class JoinForm
     public $ContactName;
     public $ContactEmail;
     public $ContactTEL;
+    public $ContactHP;
+    public $ContactFAX;
     public $ID;
     public $PWD;
     public $Password;

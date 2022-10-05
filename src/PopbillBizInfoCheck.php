@@ -34,9 +34,9 @@ class PopbillBizInfoCheck extends PopbillBase {
             throw new PopbillException('조회할 사업자번호가 입력되지 않았습니다.');
         }
         $result = $this->executeCURL('/BizInfo/Check?CN='.$CheckCorpNum, $MemberCorpNum, $UserId);
-            $BizCheckInfo = new BizCheckInfo();
-            $BizCheckInfo->fromJsonInfo($result);
-            return $BizCheckInfo;
+        $BizCheckInfo = new BizCheckInfo();
+        $BizCheckInfo->fromJsonInfo($result);
+        return $BizCheckInfo;
     }
 
     //조회단가 확인

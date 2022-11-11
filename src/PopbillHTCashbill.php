@@ -21,6 +21,7 @@
 namespace Linkhub\Popbill;
 
 class PopbillHTCashbill extends PopbillBase {
+
     public function __construct ( $LinkID, $SecretKey )
     {
         parent::__construct ( $LinkID, $SecretKey );
@@ -30,20 +31,25 @@ class PopbillHTCashbill extends PopbillBase {
     public function GetChargeInfo ( $CorpNum, $UserID = null)
     {
         $response = $this->executeCURL('/HomeTax/Cashbill/ChargeInfo', $CorpNum, $UserID);
+
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
 
     public function RequestJob ( $CorpNum, $CBType, $SDate, $EDate, $UserID = null ) {
-        if ( empty($SDate) || ( $SDate === "" ) ) {
+        if ( empty($SDate) || ( $SDate === "" ) )    {
             throw new PopbillException('시작일자가 입력되지 않았습니다.');
         }
-        if ( empty($EDate) || ( $EDate === "" ) ) {
+
+        if ( empty($EDate) || ( $EDate === "" ) )    {
             throw new PopbillException('종료일자가 입력되지 않았습니다.');
         }
+
         $uri = '/HomeTax/Cashbill/'.$CBType;
         $uri .= '?SDate='.$SDate.'&EDate='.$EDate;
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "")->jobID;
     }
 
@@ -52,21 +58,27 @@ class PopbillHTCashbill extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL('/HomeTax/Cashbill/'.$JobID.'/State', $CorpNum, $UserID);
-        $JobState = new HTCBJobState();
+
+        $JobState = new JobState();
         $JobState->fromJsonInfo($response);
+
         return $JobState;
     }
 
     public function ListActiveJob ( $CorpNum, $UserID = null )
     {
         $result = $this->executeCURL('/HomeTax/Cashbill/JobList', $CorpNum, $UserID);
+
         $JobList = array();
+
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $JobState = new HTCBJobState();
+            $JobState = new JobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
+
         return $JobList;
     }
 
@@ -75,15 +87,19 @@ class PopbillHTCashbill extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $uri = '/HomeTax/Cashbill/'.$JobID;
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
         $uri .= '&TradeUsage=' . implode ( ',' , $TradeUsage );
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Oder=' . $Order;
+
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $SearchResult = new HTCashbillSearch();
         $SearchResult->fromJsonInfo ( $response ) ;
+
         return $SearchResult;
     }
 
@@ -92,12 +108,16 @@ class PopbillHTCashbill extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다');
         }
+
         $uri = '/HomeTax/Cashbill/' . $JobID . '/Summary';
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
         $uri .= '&TradeUsage=' . implode ( ',' , $TradeUsage );
+
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $Summary = new HTCashbillSummary();
         $Summary->fromJsonInfo ( $response ) ;
+
         return $Summary;
     }
 
@@ -109,8 +129,10 @@ class PopbillHTCashbill extends PopbillBase {
     public function GetFlatRateState ( $CorpNum, $UserID = null )
     {
         $response = $this->executeCURL ( '/HomeTax/Cashbill/Contract', $CorpNum, $UserID ) ;
-        $FlatRateState = new HTCBFlatRate();
+
+        $FlatRateState = new FlatRate();
         $FlatRateState->fromJsonInfo ( $response );
+
         return $FlatRateState;
     }
 
@@ -143,10 +165,12 @@ class PopbillHTCashbill extends PopbillBase {
         if(is_null($deptUserPWD) || empty($deptUserPWD)) {
             throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
         }
-        $Request = new HTCBRegistDeptUserRequest();
+
+        $Request = new RegistDeptUserRequest();
         $Request->id = $deptUserID;
         $Request->pwd = $deptUserPWD;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/HomeTax/Cashbill/DeptUser', $CorpNum, $UserID, true, null, $postdata);
     }
 
@@ -175,7 +199,7 @@ class PopbillHTCashbill extends PopbillBase {
     }
 }
 
-class HTCBFlatRate
+class FlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -186,6 +210,7 @@ class HTCBFlatRate
     public $useRestrictYN;
     public $closeOnExpired;
     public $unPaidYN;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->referenceID) ? $this->referenceID = $jsonInfo->referenceID : null;
@@ -199,6 +224,7 @@ class HTCBFlatRate
         isset ($jsonInfo->unPaidYN) ? $this->unPaidYN = $jsonInfo->unPaidYN : null;
     }
 }
+
 class HTCashbillSummary
 {
     public $count;
@@ -206,6 +232,7 @@ class HTCashbillSummary
     public $taxTotal;
     public $serviceFeeTotal;
     public $amountTotal;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->count) ? $this->count = $jsonInfo->count : null;
@@ -215,6 +242,7 @@ class HTCashbillSummary
         isset ($jsonInfo->amountTotal) ? $this->amountTotal = $jsonInfo->amountTotal : null;
     }
 }
+
 class HTCashbill
 {
     public $ntsconfirmNum;
@@ -226,9 +254,11 @@ class HTCashbill
     public $tax;
     public $serviceFee;
     public $totalAmount;
+
     public $franchiseCorpNum;
     public $franchiseCorpName;
     public $franchiseCorpType;
+
     public $identityNum;
     public $identityNumType;
     public $customerName;
@@ -238,6 +268,7 @@ class HTCashbill
     * 매출/매입 구분 필드 추가 (2017/08/29)
     */
     public $invoiceType;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->ntsconfirmNum) ? $this->ntsconfirmNum = $jsonInfo->ntsconfirmNum : null;
@@ -249,17 +280,21 @@ class HTCashbill
         isset ($jsonInfo->tax) ? $this->tax = $jsonInfo->tax : null;
         isset ($jsonInfo->serviceFee) ? $this->serviceFee = $jsonInfo->serviceFee : null;
         isset ($jsonInfo->totalAmount) ? $this->totalAmount = $jsonInfo->totalAmount : null;
+
         isset ($jsonInfo->franchiseCorpNum) ? $this->franchiseCorpNum = $jsonInfo->franchiseCorpNum : null;
         isset ($jsonInfo->franchiseCorpName) ? $this->franchiseCorpName = $jsonInfo->franchiseCorpName : null;
         isset ($jsonInfo->franchiseCorpType) ? $this->franchiseCorpType = $jsonInfo->franchiseCorpType : null;
+
         isset ($jsonInfo->identityNum) ? $this->identityNum = $jsonInfo->identityNum : null;
         isset ($jsonInfo->identityNumType) ? $this->identityNumType = $jsonInfo->identityNumType : null;
         isset ($jsonInfo->customerName) ? $this->customerName = $jsonInfo->customerName : null;
         isset ($jsonInfo->cardOwnerName) ? $this->cardOwnerName = $jsonInfo->cardOwnerName : null;
         isset ($jsonInfo->deductionType) ? $this->deductionType = $jsonInfo->deductionType : null;
+
         isset ($jsonInfo->invoiceType) ? $this->invoiceType = $jsonInfo->invoiceType : null;
     }
 }
+
 class HTCashbillSearch
 {
     public $code;
@@ -269,6 +304,7 @@ class HTCashbillSearch
     public $pageNum;
     public $pageCount;
     public $list;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
@@ -277,6 +313,7 @@ class HTCashbillSearch
         isset ($jsonInfo->perPage) ? $this->perPage = $jsonInfo->perPage : null;
         isset ($jsonInfo->pageNum) ? $this->pageNum = $jsonInfo->pageNum : null;
         isset ($jsonInfo->pageCount) ? $this->pageCount = $jsonInfo->pageCount : null;
+
         $CashbillInfoList = array();
         for ($i = 0; $i < Count($jsonInfo->list); $i++) {
             $CashbillInfo = new HTCashbill();
@@ -286,7 +323,8 @@ class HTCashbillSearch
         $this->list = $CashbillInfoList;
     }
 }
-class HTCBJobState
+
+class JobState
 {
     public $jobID;
     public $jobState;
@@ -300,6 +338,7 @@ class HTCBJobState
     public $jobEndDT;
     public $collectCount;
     public $regDT;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->jobID) ? $this->jobID = $jsonInfo->jobID : null;
@@ -316,19 +355,23 @@ class HTCBJobState
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
-class HTCBKeyType
+
+class KeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
 }
-class HTCBRegistDeptUserRequest
+
+class RegistDeptUserRequest
 {
     public $id;
     public $pwd;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->id) ? $this->id = $jsonInfo->id : null;
         isset ($jsonInfo->pwd) ? $this->pwd = $jsonInfo->pwd : null;
     }
 }
+
 ?>

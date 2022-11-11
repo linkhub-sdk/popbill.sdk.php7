@@ -21,6 +21,7 @@
 namespace Linkhub\Popbill;
 
 class PopbillHTTaxinvoice extends PopbillBase {
+
     public function __construct ( $LinkID, $SecretKey )
     {
         parent::__construct ( $LinkID, $SecretKey );
@@ -30,24 +31,29 @@ class PopbillHTTaxinvoice extends PopbillBase {
     public function GetChargeInfo ( $CorpNum, $UserID = null)
     {
         $response = $this->executeCURL('/HomeTax/Taxinvoice/ChargeInfo', $CorpNum, $UserID);
+
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
 
-    public function RequestJob ( $CorpNum, $TIType, $DType, $SDate, $EDate, $UserID = null )
-    {
+    public function RequestJob ( $CorpNum, $TIType, $DType, $SDate, $EDate, $UserID = null ) {
         if ( empty($DType) || $DType === "") {
             throw new PopbillException('수집일자 유형이 입력되지 않았습니다.');
         }
-        if ( empty($SDate) || $SDate === "") {
+
+        if ( empty($SDate) || $SDate === "")    {
             throw new PopbillException('시작일자가 입력되지 않았습니다.');
         }
-        if(empty($EDate) || $EDate === "") {
+
+        if(empty($EDate) || $EDate === "")    {
             throw new PopbillException('종료일자가 입력되지 않았습니다.');
         }
+
         $uri = '/HomeTax/Taxinvoice/'.$TIType;
         $uri .= '?DType='.$DType.'&SDate='.$SDate.'&EDate='.$EDate;
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "")->jobID;
     }
 
@@ -56,21 +62,27 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$JobID.'/State', $CorpNum, $UserID);
-        $JobState = new HTTIJobState();
+
+        $JobState = new JobState();
         $JobState->fromJsonInfo($response);
+
         return $JobState;
     }
 
     public function ListActiveJob ( $CorpNum, $UserID = null )
     {
         $result = $this->executeCURL('/HomeTax/Taxinvoice/JobList', $CorpNum, $UserID);
+
         $JobList = array();
+
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $JobState = new HTTIJobState();
+            $JobState = new JobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
+
         return $JobList;
     }
 
@@ -79,51 +91,59 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $uri = '/HomeTax/Taxinvoice/'.$JobID;
         $uri .= '?Type=' . implode ( ',' , $Type );
         $uri .= '&TaxType=' . implode ( ',' , $TaxType );
         $uri .= '&PurposeType=' . implode ( ',' , $PurposeType );
+        
         if ( !empty( $TaxRegIDYN ) ) {
             $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
+        
         $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         $uri .= '&TaxRegID=' . $TaxRegID;
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Order=' . $Order;
-
-        if(!is_null($SearchString) || !empty($SearchString)){
-            $uri .= '&SearchString=' . urlencode($SearchString);
+        
+        if ( !empty( $SearchString ) ) {
+            $uri .= '&SearchString=' . urlencode($QString);
         }
-
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $SearchResult = new HTTaxinvoiceSearch();
         $SearchResult->fromJsonInfo($response);
+
         return $SearchResult;
     }
 
-    public function Summary ( $CorpNum, $JobID, $Type, $TaxType, $PurposeType, $TaxRegIDYN = null, $TaxRegIDType = null, $TaxRegID = null, $UserID = null, $SearchString = null  )
+    public function Summary ( $CorpNum, $JobID, $Type, $TaxType, $PurposeType, $TaxRegIDYN = null, $TaxRegIDType = null, $TaxRegID = null, $UserID = null, $SearchString = null)
     {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다');
         }
+
         $uri = '/HomeTax/Taxinvoice/' . $JobID .  '/Summary';
         $uri .= '?Type=' . implode ( ',' , $Type );
         $uri .= '&TaxType=' . implode ( ',' , $TaxType );
         $uri .= '&PurposeType=' . implode ( ',' , $PurposeType );
+
         if ( !empty( $TaxRegIDYN ) ) {
             $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
+        
         $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         $uri .= '&TaxRegID=' . $TaxRegID;
-
-        if(!is_null($SearchString) || !empty($SearchString)){
-            $uri .= '&SearchString=' . urlencode($SearchString);
+        
+        if ( !empty( $SearchString ) ) {
+            $uri .= '&SearchString=' . urlencode($QString);
         }
-
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $Summary = new HTTaxinvoieSummary();
         $Summary->fromJsonInfo ( $response ) ;
+
         return $Summary;
     }
 
@@ -132,9 +152,12 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ($NTSConfirmNum) != 24 ) {
             throw new PopbillException ('국세청승인번호가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL( '/HomeTax/Taxinvoice/' . $NTSConfirmNum, $CorpNum, $UserID );
+
         $HTTaxinvoice = new HTTaxinvoice();
         $HTTaxinvoice->fromJsonInfo ( $response ) ;
+
         return $HTTaxinvoice;
     }
 
@@ -143,9 +166,12 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ( $NTSConfirmNum ) != 24 ) {
             throw new PopbillException ('국세청승인번호가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL ( '/HomeTax/Taxinvoice/' . $NTSConfirmNum .'?T=xml', $CorpNum, $UserID );
+
         $HTTaxinvoiceXML = new HTTaxinvoiceXML();
         $HTTaxinvoiceXML->fromJsonInfo ( $response ) ;
+
         return $HTTaxinvoiceXML;
     }
 
@@ -157,8 +183,10 @@ class PopbillHTTaxinvoice extends PopbillBase {
     public function GetFlatRateState ( $CorpNum, $UserID = null )
     {
         $response = $this->executeCURL ( '/HomeTax/Taxinvoice/Contract', $CorpNum, $UserID ) ;
-        $FlatRateState = new HTTIFlatRate();
+
+        $FlatRateState = new FlatRate();
         $FlatRateState->fromJsonInfo ( $response );
+
         return $FlatRateState;
     }
 
@@ -180,6 +208,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ($NTSConfirmNum) != 24 ) {
             throw new PopbillException ('국세청승인번호가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$NTSConfirmNum.'/PopUp', $CorpNum, $UserID);
         return $response->url;
     }
@@ -192,6 +221,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( strlen ($NTSConfirmNum) != 24 ) {
             throw new PopbillException ('국세청승인번호가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$NTSConfirmNum.'/Print', $CorpNum, $UserID);
         return $response->url;
     }
@@ -217,10 +247,12 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if(is_null($deptUserPWD) || empty($deptUserPWD)) {
             throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
         }
-        $Request = new HTTIRegistDeptUserRequest();
+
+        $Request = new RegistDeptUserRequest();
         $Request->id = $deptUserID;
         $Request->pwd = $deptUserPWD;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum, $UserID, true, null, $postdata);
     }
 
@@ -251,7 +283,8 @@ class PopbillHTTaxinvoice extends PopbillBase {
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum, $UserID, true, 'DELETE', null);
     }
 }
-class HTTIFlatRate
+
+class FlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -262,6 +295,7 @@ class HTTIFlatRate
     public $useRestrictYN;
     public $closeOnExpired;
     public $unPaidYN;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->referenceID) ? $this->referenceID = $jsonInfo->referenceID : null;
@@ -275,11 +309,13 @@ class HTTIFlatRate
         isset ($jsonInfo->unPaidYN) ? $this->unPaidYN = $jsonInfo->unPaidYN : null;
     }
 }
+
 class HTTaxinvoiceXML
 {
     public $ResultCode;
     public $Message;
     public $retObject;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->ResultCode) ? $this->ResultCode = $jsonInfo->ResultCode : null;
@@ -287,6 +323,7 @@ class HTTaxinvoiceXML
         isset ($jsonInfo->retObject) ? $this->retObject = $jsonInfo->retObject : null;
     }
 }
+
 class HTTaxinvoice
 {
     public $writeDate;
@@ -306,8 +343,10 @@ class HTTaxinvoice
     public $remark2;
     public $remark3;
     public $ntsconfirmNum;
+
     public $modifyCode;
     public $orgNTSConfirmNum;
+
     public $invoicerCorpNum;
     public $invoicerMgtKey;
     public $invoicerTaxRegID;
@@ -320,6 +359,7 @@ class HTTaxinvoice
     public $inovicerDeptaName;
     public $invoicerTEL;
     public $invoicerEmail;
+
     public $invoiceeCorpNum;
     public $invoiceeType;
     public $invoiceeMgtKey;
@@ -337,6 +377,7 @@ class HTTaxinvoice
     public $invoiceeDeptName2;
     public $invoiceeTEL2;
     public $invoiceeEmail2;
+
     public $trusteeCorpNum;
     public $trusteeMgtKey;
     public $trusteeTaxRegID;
@@ -349,7 +390,9 @@ class HTTaxinvoice
     public $trusteeDeptName;
     public $trusteeTEL;
     public $trusteeEmail;
+
     public $detailList;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->writeDate) ? $this->writeDate = $jsonInfo->writeDate : null;
@@ -369,6 +412,7 @@ class HTTaxinvoice
         isset ($jsonInfo->remark2) ? $this->remark2 = $jsonInfo->remark2 : null;
         isset ($jsonInfo->remark3) ? $this->remark3 = $jsonInfo->remark3 : null;
         isset ($jsonInfo->ntsconfirmNum) ? $this->ntsconfirmNum = $jsonInfo->ntsconfirmNum : null;
+
         isset ($jsonInfo->invoicerCorpNum) ? $this->invoicerCorpNum = $jsonInfo->invoicerCorpNum : null;
         isset ($jsonInfo->invoicerMgtKey) ? $this->invoicerMgtKey = $jsonInfo->invoicerMgtKey : null;
         isset ($jsonInfo->invoicerTaxRegID) ? $this->invoicerTaxRegID = $jsonInfo->invoicerTaxRegID : null;
@@ -381,6 +425,7 @@ class HTTaxinvoice
         isset ($jsonInfo->invoicerDeptName) ? $this->invoicerDeptName = $jsonInfo->invoicerDeptName : null;
         isset ($jsonInfo->invoicerTEL) ? $this->invoicerTEL = $jsonInfo->invoicerTEL : null;
         isset ($jsonInfo->invoicerEmail) ? $this->invoicerEmail = $jsonInfo->invoicerEmail : null;
+
         isset ($jsonInfo->invoiceeCorpNum) ? $this->invoiceeCorpNum = $jsonInfo->invoiceeCorpNum : null;
         isset ($jsonInfo->invoiceeType) ? $this->invoiceeType = $jsonInfo->invoiceeType : null;
         isset ($jsonInfo->invoiceeMgtKey) ? $this->invoiceeMgtKey = $jsonInfo->invoiceeMgtKey : null;
@@ -398,6 +443,7 @@ class HTTaxinvoice
         isset ($jsonInfo->invoiceeDeptName2) ? $this->invoiceeDeptName2 = $jsonInfo->invoiceeDeptName2 : null;
         isset ($jsonInfo->invoiceeTEL2) ? $this->invoiceeTEL2 = $jsonInfo->invoiceeTEL2 : null;
         isset ($jsonInfo->invoiceeEmail2) ? $this->invoiceeEmail2 = $jsonInfo->invoiceeEmail2 : null;
+
         isset ($jsonInfo->trusteeCorpNum) ? $this->trusteeCorpNum = $jsonInfo->trusteeCorpNum : null;
         isset ($jsonInfo->trusteeMgtKey) ? $this->trusteeMgtKey = $jsonInfo->trusteeMgtKey : null;
         isset ($jsonInfo->trusteeTaxRegID) ? $this->trusteeTaxRegID = $jsonInfo->trusteeTaxRegID : null;
@@ -410,8 +456,10 @@ class HTTaxinvoice
         isset ($jsonInfo->trusteeDeptName) ? $this->trusteeDeptName = $jsonInfo->trusteeDeptName : null;
         isset ($jsonInfo->trusteeTEL) ? $this->trusteeTEL = $jsonInfo->trusteeTEL : null;
         isset ($jsonInfo->trusteeEmail) ? $this->trusteeEmail = $jsonInfo->trusteeEmail : null;
+
         isset ($jsonInfo->modifyCode) ? $this->modifyCode = $jsonInfo->modifyCode : null;
         isset ($jsonInfo->orgNTSConfirmNum) ? $this->orgNTSConfirmNum = $jsonInfo->orgNTSConfirmNum : null;
+
         $DetailList = array();
         for ($i = 0; $i < Count($jsonInfo->detailList); $i++) {
             $TaxinvoiceDetail = new HTTaxinvoiceDetail();
@@ -421,6 +469,7 @@ class HTTaxinvoice
         $this->detailList = $DetailList;
     }
 }
+
 class HTTaxinvoiceDetail
 {
     public $serialNum;
@@ -432,6 +481,7 @@ class HTTaxinvoiceDetail
     public $supplyCost;
     public $tax;
     public $remark;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->serialNum) ? $this->serialNum = $jsonInfo->serialNum : null;
@@ -445,12 +495,14 @@ class HTTaxinvoiceDetail
         isset ($jsonInfo->remark) ? $this->remark = $jsonInfo->remark : null;
     }
 }
+
 class HTTaxinvoieSummary
 {
     public $count;
     public $supplyCostTotal;
     public $taxTotal;
     public $amountTotal;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->count) ? $this->count = $jsonInfo->count : null;
@@ -459,6 +511,8 @@ class HTTaxinvoieSummary
         isset ($jsonInfo->amountTotal) ? $this->amountTotal = $jsonInfo->amountTotal : null;
     }
 }
+
+
 class HTTaxinvoiceSearch
 {
     public $code;
@@ -468,6 +522,7 @@ class HTTaxinvoiceSearch
     public $pageNum;
     public $pageCount;
     public $list;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
@@ -476,6 +531,7 @@ class HTTaxinvoiceSearch
         isset ($jsonInfo->perPage) ? $this->perPage = $jsonInfo->perPage : null;
         isset ($jsonInfo->pageNum) ? $this->pageNum = $jsonInfo->pageNum : null;
         isset ($jsonInfo->pageCount) ? $this->pageCount = $jsonInfo->pageCount : null;
+
         $TaxinvoiceList = array();
         for ($i = 0; $i < Count($jsonInfo->list); $i++) {
             $TaxinvoiceAbbr = new HTTaxinvoiceAbbr();
@@ -485,6 +541,7 @@ class HTTaxinvoiceSearch
         $this->list = $TaxinvoiceList;
     }
 }
+
 class HTTaxinvoiceAbbr
 {
     public $ntsconfirmNum;
@@ -497,8 +554,10 @@ class HTTaxinvoiceAbbr
     public $taxTotal;
     public $totalAmount;
     public $remark1;
+
     public $modifyYN;
     public $orgNTSConfirmNum;
+
     public $purchaseDate;
     public $itemName;
     public $spec;
@@ -507,11 +566,13 @@ class HTTaxinvoiceAbbr
     public $supplyCost;
     public $tax;
     public $remark;
+
     public $invoicerCorpNum;
     public $invoicerTaxRegID;
     public $invoicerCorpName;
     public $invoicerCEOName;
     public $invoicerEmail;
+
     public $inoviceeCorpNum;
     public $invoiceeType;
     public $invoiceeTaxRegID;
@@ -519,15 +580,18 @@ class HTTaxinvoiceAbbr
     public $invoiceeCEOName;
     public $invoiceeEmail1;
     public $invoiceeEmail2;
+
     public $trusteeCorpNum;
     public $trusteeTaxRegID;
     public $trusteeCorpName;
     public $trusteeCEOName;
     public $trusteeEmail;
+
     /*
     * 매출/매입 구분 필드 추가 (2017/08/29)
     */
     public $invoiceType;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->ntsconfirmNum) ? $this->ntsconfirmNum = $jsonInfo->ntsconfirmNum : null;
@@ -540,13 +604,16 @@ class HTTaxinvoiceAbbr
         isset ($jsonInfo->taxTotal) ? $this->taxTotal = $jsonInfo->taxTotal : null;
         isset ($jsonInfo->totalAmount) ? $this->totalAmount = $jsonInfo->totalAmount : null;
         isset ($jsonInfo->remark1) ? $this->remark1 = $jsonInfo->remark1 : null;
+
         isset ($jsonInfo->modifyYN) ? $this->modifyYN = $jsonInfo->modifyYN : null;
         isset ($jsonInfo->orgNTSConfirmNum) ? $this->orgNTSConfirmNum = $jsonInfo->orgNTSConfirmNum : null;
+
         isset ($jsonInfo->invoicerCorpNum) ? $this->invoicerCorpNum = $jsonInfo->invoicerCorpNum : null;
         isset ($jsonInfo->invoicerTaxRegID) ? $this->invoicerTaxRegID = $jsonInfo->invoicerTaxRegID : null;
         isset ($jsonInfo->invoicerCorpName) ? $this->invoicerCorpName = $jsonInfo->invoicerCorpName : null;
         isset ($jsonInfo->invoicerCEOName) ? $this->invoicerCEOName = $jsonInfo->invoicerCEOName : null;
         isset ($jsonInfo->invoicerEmail) ? $this->invoicerEmail = $jsonInfo->invoicerEmail : null;
+
         isset ($jsonInfo->invoiceeCorpNum) ? $this->invoiceeCorpNum = $jsonInfo->invoiceeCorpNum : null;
         isset ($jsonInfo->invoiceeType) ? $this->invoiceeType = $jsonInfo->invoiceeType : null;
         isset ($jsonInfo->invoiceeTaxRegID) ? $this->invoiceeTaxRegID = $jsonInfo->invoiceeTaxRegID : null;
@@ -554,6 +621,7 @@ class HTTaxinvoiceAbbr
         isset ($jsonInfo->invoiceeCEOName) ? $this->invoiceeCEOName = $jsonInfo->invoiceeCEOName : null;
         isset ($jsonInfo->invoiceeEmail1) ? $this->invoiceeEmail1 = $jsonInfo->invoiceeEmail1 : null;
         isset ($jsonInfo->invoiceeEmail2) ? $this->invoiceeEmail2 = $jsonInfo->invoiceeEmail2 : null;
+
         isset ($jsonInfo->purchaseDate) ? $this->purchaseDate = $jsonInfo->purchaseDate : null;
         isset ($jsonInfo->itemName) ? $this->itemName = $jsonInfo->itemName : null;
         isset ($jsonInfo->spec) ? $this->spec = $jsonInfo->spec : null;
@@ -562,15 +630,18 @@ class HTTaxinvoiceAbbr
         isset ($jsonInfo->supplyCost) ? $this->supplyCost = $jsonInfo->supplyCost : null;
         isset ($jsonInfo->tax) ? $this->tax = $jsonInfo->tax : null;
         isset ($jsonInfo->remark) ? $this->remark = $jsonInfo->remark : null;
+
         isset ($jsonInfo->trusteeCorpNum) ? $this->trusteeCorpNum = $jsonInfo->trusteeCorpNum : null;
         isset ($jsonInfo->trusteeTaxRegID) ? $this->trusteeTaxRegID = $jsonInfo->trusteeTaxRegID : null;
         isset ($jsonInfo->trusteeCorpName) ? $this->trusteeCorpName = $jsonInfo->trusteeCorpName : null;
         isset ($jsonInfo->trusteeCEOName) ? $this->trusteeCEOName = $jsonInfo->trusteeCEOName : null;
         isset ($jsonInfo->trusteeEmail) ? $this->trusteeCEOName = $jsonInfo->trusteeCEOName : null;
+
         isset ($jsonInfo->invoiceType) ? $this->invoiceType = $jsonInfo->invoiceType : null;
     }
 }
-class HTTIJobState
+
+class JobState
 {
     public $jobID;
     public $jobState;
@@ -584,6 +655,7 @@ class HTTIJobState
     public $jobEndDT;
     public $collectCount;
     public $regDT;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->jobID) ? $this->jobID = $jsonInfo->jobID : null;
@@ -600,20 +672,24 @@ class HTTIJobState
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
-class HTTIKeyType
+
+class KeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
-class HTTIRegistDeptUserRequest
+
+class RegistDeptUserRequest
 {
     public $id;
     public $pwd;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->id) ? $this->id = $jsonInfo->id : null;
         isset ($jsonInfo->pwd) ? $this->pwd = $jsonInfo->pwd : null;
     }
 }
+
 ?>

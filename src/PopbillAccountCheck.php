@@ -47,9 +47,9 @@ class PopbillAccountCheck extends PopbillBase {
         $uri .= "&n=" . $AccountNumber;
 
         $result = $this->executeCURL($uri, $MemberCorpNum, $UserID, true, null, null);
+
         $AccountInfo = new AccountCheckInfo();
         $AccountInfo->fromJsonInfo($result);
-
         return $AccountInfo;
     }
 
@@ -96,13 +96,14 @@ class PopbillAccountCheck extends PopbillBase {
         return $DepositorCheckInfo;
     }
 
+    // 조회단가 확인
     public function GetUnitCost($CorpNum, $ServiceType = null, $UserID = null) {
-
         $uri = "/EasyFin/AccountCheck/UnitCost?serviceType=". $ServiceType;
 
         return $this->executeCURL($uri, $CorpNum, $UserID)->unitCost;
     }
 
+    // 과금정보 확인
     public function GetChargeInfo ( $CorpNum, $UserID = null, $ServiceType = null) {
         $uri = '/EasyFin/AccountCheck/ChargeInfo?serviceType='. $ServiceType;
 
@@ -159,4 +160,5 @@ class DepositorCheckInfo
         isset($jsonInfo->checkDate) ? $this->checkDate = $jsonInfo->checkDate : null;
     }
 }
+
 ?>

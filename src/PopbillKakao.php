@@ -20,8 +20,8 @@
 
 namespace Linkhub\Popbill;
 
-class PopbillKakao extends PopbillBase
-{
+class PopbillKakao extends PopbillBase {
+
     public function __construct($LinkID, $SecretKey)
     {
         parent::__construct($LinkID, $SecretKey);
@@ -38,22 +38,24 @@ class PopbillKakao extends PopbillBase
     public function GetMessages($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
-            throw new PopbillException('카카오톡 접수번호를 입력하지 않았습니다.');
+            throw new PopbillException('카카오톡 접수번호가 입력되지 않았습니다.');
         }
         $response = $this->executeCURL('/KakaoTalk/' . $ReceiptNum, $CorpNum, $UserID);
         $DetailInfo = new KakaoSentInfo();
         $DetailInfo->fromJsonInfo($response);
+
         return $DetailInfo;
     }
 
     public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
-            throw new PopbillException('카카오톡 전송요청번호를 입력하지 않았습니다.');
+            throw new PopbillException('카카오톡 전송요청번호가 입력되지 않았습니다.');
         }
         $response = $this->executeCURL('/KakaoTalk/Get/' . $RequestNum, $CorpNum, $UserID);
         $DetailInfo = new KakaoSentInfo();
         $DetailInfo->fromJsonInfo($response);
+
         return $DetailInfo;
     }
 
@@ -61,11 +63,13 @@ class PopbillKakao extends PopbillBase
     {
         $PlusFriendList = array();
         $response = $this->executeCURL('/KakaoTalk/ListPlusFriendID', $CorpNum);
+
         for ($i = 0; $i < Count($response); $i++) {
             $PlusFriendObj = new PlusFriend();
             $PlusFriendObj->fromJsonInfo($response[$i]);
             $PlusFriendList[$i] = $PlusFriendObj;
         }
+
         return $PlusFriendList;
     }
 
@@ -99,7 +103,7 @@ class PopbillKakao extends PopbillBase
     public function CancelReserve($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
-            throw new PopbillException('예약전송을 취소할 접수번호를 입력하지 않았습니다.');
+            throw new PopbillException('예약전송을 취소할 접수번호가 입력되지 않았습니다.');
         }
         return $this->executeCURL('/KakaoTalk/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
@@ -107,7 +111,7 @@ class PopbillKakao extends PopbillBase
     public function CancelReserveRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
-            throw new PopbillException('예약전송을 취소할 전송요청번호를 입력하지 않았습니다.');
+            throw new PopbillException('예약전송을 취소할 전송요청번호가 입력되지 않았습니다.');
         }
         return $this->executeCURL('/KakaoTalk/Cancel/' . $RequestNum, $CorpNum, $UserID);
     }
@@ -115,9 +119,11 @@ class PopbillKakao extends PopbillBase
     public function GetURL($CorpNum, $UserID, $TOGO)
     {
         $URI = '/KakaoTalk/?TG=';
+
         if ($TOGO == "SENDER") {
             $URI = '/Message/?TG=';
         }
+
         $response = $this->executeCURL($URI . $TOGO, $CorpNum, $UserID);
         return $response->url;
     }
@@ -165,50 +171,66 @@ class PopbillKakao extends PopbillBase
         return $response->url;
     }
 
+
     public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = '', $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
-            throw new PopbillException(-99999999, '시작일자가 입력되지 않았습니다.');
+            throw new PopbillException('시작일자가 입력되지 않았습니다.');
         }
+
         if (is_null($EDate) || $EDate === "") {
-            throw new PopbillException(-99999999, '종료일자가 입력되지 않았습니다.');
+            throw new PopbillException('종료일자가 입력되지 않았습니다.');
         }
+
         $uri = '/KakaoTalk/Search?SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
+
         if (!is_null($State) || !empty($State)) {
             $uri .= '&State=' . implode(',', $State);
         }
         if (!is_null($Item) || !empty($Item)) {
             $uri .= '&Item=' . implode(',', $Item);
         }
+
         $uri .= '&ReserveYN=' . $ReserveYN;
+
         if ($SenderYN) {
             $uri .= '&SenderYN=1';
         }
+
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Order=' . $Order;
+
         if (!is_null($QString) || !empty($QString)) {
             $uri .= '&QString=' . urlencode($QString);
         }
+
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
+
         $SearchList = new KakaoSearchResult();
         $SearchList->fromJsonInfo($response);
+
         return $SearchList;
+
     }
 
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/KakaoTalk/ChargeInfo?Type=' . $MessageType;
+
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
 
     public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
+
         $Request = array();
+
         if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
@@ -219,20 +241,25 @@ class PopbillKakao extends PopbillBase
         if (empty($AdsYN) == false) $Request['adsYN'] = $AdsYN;
         if (empty($ImageURL) == false) $Request['imageURL'] = $ImageURL;
         if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
+
         $Request['msgs'] = $Messages;
         $Request['btns'] = $Btns;
         $postdata = array();
         $postdata['form'] = json_encode($Request);
+
         $i = 0;
+
         foreach ($FilePaths as $FilePath) {
             $postdata['file'] = '@' . $FilePath;
         }
+
         return $this->executeCURL('/FMS', $CorpNum, $UserID, true, null, $postdata, true)->receiptNum;
     }
 
     public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
         $Request = array();
+
         if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
@@ -242,15 +269,18 @@ class PopbillKakao extends PopbillBase
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
         if (empty($AdsYN) == false) $Request['adsYN'] = $AdsYN;
         if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
+
         $Request['msgs'] = $Messages;
         $Request['btns'] = $Btns;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Buttons = null, $AltSubject = null)
+    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = null, $AltSubject = null)
     {
         $Request = array();
+
         if (empty($TemplateCode) == false) $Request['templateCode'] = $TemplateCode;
         if (empty($Sender) == false) $Request['snd'] = $Sender;
         if (empty($Content) == false) $Request['content'] = $Content;
@@ -260,18 +290,21 @@ class PopbillKakao extends PopbillBase
         if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
         if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
         $Request['msgs'] = $Messages;
-        if (is_null($Buttons) == false) $Request['btns'] = $Buttons;
+        if (is_null($Btns) == false) $Request['btns'] = $Btns;
 
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/ATS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 }
+
 class ENumKakaoType
 {
     const ATS = 'ATS';
     const FTS = 'FTS';
     const FMS = 'FMS';
 }
+
 class KakaoSearchResult
 {
     public $code;
@@ -280,15 +313,19 @@ class KakaoSearchResult
     public $perPage;
     public $pageNum;
     public $pageCount;
+
     public $list;
+
     function fromJsonInfo($jsonInfo)
     {
+
         isset($jsonInfo->code) ? ($this->code = $jsonInfo->code) : null;
         isset($jsonInfo->message) ? ($this->message = $jsonInfo->message) : null;
         isset($jsonInfo->total) ? ($this->total = $jsonInfo->total) : null;
         isset($jsonInfo->perPage) ? ($this->perPage = $jsonInfo->perPage) : null;
         isset($jsonInfo->pageNum) ? ($this->pageNum = $jsonInfo->pageNum) : null;
         isset($jsonInfo->pageCount) ? ($this->pageCount = $jsonInfo->pageCount) : null;
+
         $DetailList = array();
         for ($i = 0; $i < Count($jsonInfo->list); $i++) {
             $SentInfo = new KakaoSentInfoDetail();
@@ -298,6 +335,7 @@ class KakaoSearchResult
         $this->list = $DetailList;
     }
 }
+
 class KakaoSentInfo
 {
     public $contentType;
@@ -315,10 +353,13 @@ class KakaoSentInfo
     public $failCnt;
     public $altCnt;
     public $cancelCnt;
+
     public $msgs;
     public $btns;
+
     function fromJsonInfo($jsonInfo)
     {
+
         isset($jsonInfo->contentType) ? ($this->contentType = $jsonInfo->contentType) : null;
         isset($jsonInfo->templateCode) ? ($this->templateCode = $jsonInfo->templateCode) : null;
         isset($jsonInfo->plusFriendID) ? ($this->plusFriendID = $jsonInfo->plusFriendID) : null;
@@ -334,6 +375,7 @@ class KakaoSentInfo
         isset($jsonInfo->failCnt) ? ($this->failCnt = $jsonInfo->failCnt) : null;
         isset($jsonInfo->altCnt) ? ($this->altCnt = $jsonInfo->altCnt) : null;
         isset($jsonInfo->cancelCnt) ? ($this->cancelCnt = $jsonInfo->cancelCnt) : null;
+
         if (isset($jsonInfo->msgs)) {
             $msgsList = array();
             for ($i = 0; $i < Count($jsonInfo->msgs); $i++) {
@@ -343,6 +385,7 @@ class KakaoSentInfo
             }
             $this->msgs = $msgsList;
         } // end of if
+
         if (isset($jsonInfo->btns)) {
             $btnsList = array();
             for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
@@ -352,8 +395,11 @@ class KakaoSentInfo
             }
             $this->btns = $btnsList;
         }
+
     }
+
 } // end of KakaoSentInfo class
+
 class KakaoSentInfoDetail
 {
     public $state;
@@ -407,6 +453,9 @@ class ATSTemplate
     public $ads;
     public $appendix;
     public $btns;
+    public $secureYN;
+    public $state;
+    public $stateDT;
 
     public function fromJsonInfo($jsonInfo)
     {
@@ -416,6 +465,9 @@ class ATSTemplate
         isset($jsonInfo->plusFriendID) ? $this->plusFriendID = $jsonInfo->plusFriendID : null;
         isset($jsonInfo->ads) ? $this->ads = $jsonInfo->ads : null;
         isset($jsonInfo->appendix) ? $this->appendix = $jsonInfo->appendix : null;
+        isset($jsonInfo->secureYN) ? $this->secureYN = $jsonInfo->secureYN : null;
+        isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+        isset($jsonInfo->stateDT) ? $this->stateDT = $jsonInfo->stateDT : null;
 
         if(isset($jsonInfo->btns)){
             $InfoList = array();
@@ -435,6 +487,7 @@ class KakaoButton
     public $t;
     public $u1;
     public $u2;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->n) ? $this->n = $jsonInfo->n : null;
@@ -443,6 +496,7 @@ class KakaoButton
         isset($jsonInfo->u2) ? $this->u2 = $jsonInfo->u2 : null;
     }
 }
+
 class PlusFriend
 {
     public $plusFriendID;
@@ -450,6 +504,7 @@ class PlusFriend
     public $regDT;
     public $state;
     public $stateDT;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->plusFriendID) ? $this->plusFriendID = $jsonInfo->plusFriendID : null;
@@ -459,4 +514,6 @@ class PlusFriend
         isset($jsonInfo->stateDT) ? $this->stateDT = $jsonInfo->stateDT : null;
     }
 }
+
+
 ?>

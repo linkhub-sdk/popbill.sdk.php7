@@ -300,7 +300,7 @@ class PopbillBase
             $responseJson = curl_exec($http);
 
             if ($responseJson != true){
-              throw new PopbillException(curl_error($http));
+                throw new PopbillException(curl_error($http));
             }
 
             $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);
@@ -313,7 +313,7 @@ class PopbillBase
             }
 
             if( 0 === mb_strpos($contentType, 'application/pdf')) {
-              return $responseJson;
+                return $responseJson;
             }
             return json_decode($responseJson);
 
@@ -426,7 +426,7 @@ class PopbillBase
                 if( preg_match('/^Content-Type:/i', $v, $out )) {
                     $contentType = trim($t[1]);
                     if( 0 === mb_strpos($contentType, 'application/pdf')) {
-                      return $response;
+                        return $response;
                     }
                 }
             }
@@ -439,22 +439,31 @@ class PopbillBase
         $postbody = '';
         $eol = "\r\n";
         $postbody .= "--" . $mime_boundary . $eol
-          . 'Content-Disposition: form-data; name="form"' . $eol . $eol . $postdata['form'] . $eol;
+            . 'Content-Disposition: form-data; name="form"' . $eol . $eol . $postdata['form'] . $eol;
 
         foreach ($postdata as $key => $value) {
-          if (substr($key, 0, 4) == 'name') {
-              $fileName = $value;
-          }
-          if (substr($key, 0, 4) == 'file') {
-              $postbody .= "--" . $mime_boundary . $eol
+            if (substr($key, 0, 4) == 'name') {
+                $fileName = $value;
+            }
+            if (substr($key, 0, 4) == 'file') {
+                $postbody .= "--" . $mime_boundary . $eol
                 . 'Content-Disposition: form-data; name="' . 'file' . '"; filename="' . $fileName . '"' . $eol
                 . 'Content-Type: Application/octetstream' . $eol . $eol;
-              $postbody .= $value . $eol;
-          }
+                $postbody .= $value . $eol;
+            }
         }
         $postbody .= "--" . $mime_boundary . "--". $eol;
 
         return $postbody;
+    }
+
+    //파일명 추출
+    protected function GetBasename($path){
+        $pattern = '/[^\/\\\\]*$/';
+        if (preg_match($pattern, $path, $matches)){
+            return $matches[0];
+        }
+        throw new PopbillException("파일명 추출에 실패 하였습니다.", -99999999);
     }
 
     private function getTargetURL()

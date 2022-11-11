@@ -20,8 +20,8 @@
 
 namespace Linkhub\Popbill;
 
-class PopbillTaxinvoice extends PopbillBase
-{
+class PopbillTaxinvoice extends PopbillBase {
+
     public function __construct($LinkID, $SecretKey)
     {
         parent::__construct($LinkID, $SecretKey);
@@ -60,6 +60,7 @@ class PopbillTaxinvoice extends PopbillBase
         if ($forceIssue) {
             $Taxinvoice->forceIssue = $forceIssue;
         }
+
         if (!is_null($memo) || !empty($memo)) {
             $Taxinvoice->memo = $memo;
         }
@@ -69,6 +70,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (!is_null($dealInvoiceMgtKey) || !empty($dealInvoiceMgtKey)) {
             $Taxinvoice->dealInvoiceMgtKey = $dealInvoiceMgtKey;
         }
+
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice', $CorpNum, $UserID, true, 'ISSUE', $postdata);
     }
@@ -101,6 +103,7 @@ class PopbillTaxinvoice extends PopbillBase
         if ($writeSpecification) {
             $Taxinvoice->writeSpecification = $writeSpecification;
         }
+
         $postdata = json_encode($Taxinvoice);
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'PATCH', $postdata);
     }
@@ -111,10 +114,12 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $Request->emailSubject = $EmailSubject;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'SEND', $postdata);
     }
 
@@ -127,6 +132,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELSEND', $postdata);
     }
 
@@ -139,6 +145,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'ACCEPT', $postdata);
     }
 
@@ -151,6 +158,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'DENY', $postdata);
     }
 
@@ -165,6 +173,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request->emailSubject = $EmailSubject;
         $Request->forceIssue = $ForceIssue;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'ISSUE', $postdata);
     }
 
@@ -177,6 +186,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELISSUE', $postdata);
     }
 
@@ -186,7 +196,9 @@ class PopbillTaxinvoice extends PopbillBase
         if (!is_null($Memo) || !empty($memo)) {
             $Taxinvoice->memo = $Memo;
         }
+
         $postdata = json_encode($Taxinvoice);
+
         return $this->executeCURL('/Taxinvoice', $CorpNum, $UserID, true, 'REQUEST', $postdata);
     }
 
@@ -199,6 +211,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REQUEST', $postdata);
     }
 
@@ -211,6 +224,7 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'REFUSE', $postdata);
     }
 
@@ -223,11 +237,12 @@ class PopbillTaxinvoice extends PopbillBase
         $Request = new TIMemoRequest();
         $Request->memo = $Memo;
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'CANCELREQUEST', $postdata);
     }
 
     // 전자세금계산서 초대량 발행 접수
-    public function BulkSubmit($CorpNum, $SubmitID, $taxinvoiceList, $ForceIssue=null, $UserID = null)
+    public function BulkSubmit($CorpNum, $SubmitID, $taxinvoiceList, $ForceIssue = null, $UserID = null)
     {
         if (is_null($SubmitID) || empty($SubmitID)) {
             throw new PopbillException('제출아이디가 입력되지 않았습니다.');
@@ -236,7 +251,7 @@ class PopbillTaxinvoice extends PopbillBase
             throw new PopbillException('세금계산서 정보가 입력되지 않았습니다.');
         }
 
-        $Request = new BulkRequest();
+        $Request = new TIBulkRequest();
         if($ForceIssue == true){
             $Request->forceIssue = $ForceIssue;
         }
@@ -267,6 +282,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'NTS', '');
     }
 
@@ -276,8 +292,10 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $Request = array('receiver' => $Receiver);
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'EMAIL', $postdata);
     }
 
@@ -287,8 +305,10 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $Request = array('receiver' => $Receiver, 'sender' => $Sender, 'contents' => $Contents);
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'SMS', $postdata);
     }
 
@@ -298,8 +318,10 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.', -99999999);
         }
+
         $Request = array('receiver' => $Receiver, 'sender' => $Sender);
         $postdata = json_encode($Request);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum, $UserID, true, 'FAX', $postdata);
     }
 
@@ -310,6 +332,7 @@ class PopbillTaxinvoice extends PopbillBase
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum);
+
         $TaxinvoiceInfo = new TaxinvoiceInfo();
         $TaxinvoiceInfo->fromJsonInfo($result);
         return $TaxinvoiceInfo;
@@ -321,9 +344,12 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?Detail', $CorpNum);
+
         $TaxinvoiceDetail = new Taxinvoice();
         $TaxinvoiceDetail->fromJsonInfo($result);
+
         return $TaxinvoiceDetail;
     }
 
@@ -333,14 +359,19 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKeyList) || empty($MgtKeyList)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $postdata = json_encode($MgtKeyList);
+
         $TaxinvoiceInfoList = array();
+
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType, $CorpNum, null, true, null, $postdata);
+
         for ($i = 0; $i < Count($result); $i++) {
             $TaxinvoiceInfo = new TaxinvoiceInfo();
             $TaxinvoiceInfo->fromJsonInfo($result[$i]);
             $TaxinvoiceInfoList[$i] = $TaxinvoiceInfo;
         }
+
         return $TaxinvoiceInfoList;
     }
 
@@ -352,11 +383,13 @@ class PopbillTaxinvoice extends PopbillBase
         }
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Logs', $CorpNum);
         $TaxinvoiceLogList = array();
+
         for ($i = 0; $i < Count($result); $i++) {
             $TaxinvoiceLog = new TaxinvoiceLog();
             $TaxinvoiceLog->fromJsonInfo($result[$i]);
             $TaxinvoiceLogList[$i] = $TaxinvoiceLog;
         }
+
         return $TaxinvoiceLogList;
     }
 
@@ -366,14 +399,16 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        if (mb_detect_encoding(basename($FilePath)) == 'ASCII') {
-            $FileName = iconv('CP949', 'UTF8', $FilePath);
-        } else {
-            $FileName = basename($FilePath);
+
+        if (mb_detect_encoding($this->GetBasename($FilePath)) == 'CP949') {
+            $FilePath = iconv('CP949', 'UTF-8', $FilePath);
         }
+        $FileName = $this->GetBasename($FilePath);
         $postdata = array('Filedata' => '@' . $FilePath . ';filename=' . $FileName);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);
     }
+
 
     //첨부파일 목록 확인
     public function GetFiles($CorpNum, $MgtKeyType, $MgtKey)
@@ -402,16 +437,8 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=POPUP', $CorpNum, $UserID)->url;
-    }
 
-    //팝업URL
-    public function GetViewURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
-    {
-        if (is_null($MgtKey) || empty($MgtKey)) {
-            throw new PopbillException('문서번호가 입력되지 않았습니다.');
-        }
-        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=VIEW', $CorpNum, $UserID)->url;
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=POPUP', $CorpNum, $UserID)->url;
     }
 
     //인쇄URL
@@ -420,6 +447,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINT', $CorpNum, $UserID)->url;
     }
 
@@ -429,7 +457,18 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=PRINTOLD', $CorpNum, $UserID)->url;
+    }
+
+    //인쇄URL
+    public function GetViewURL($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
+    {
+        if (is_null($MgtKey) || empty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=VIEW', $CorpNum, $UserID)->url;
     }
 
     //공급받는자 인쇄URL
@@ -438,6 +477,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=EPRINT', $CorpNum, $UserID)->url;
     }
 
@@ -447,6 +487,7 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?TG=MAIL', $CorpNum, $UserID)->url;
     }
 
@@ -456,7 +497,9 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($MgtKeyList) || empty($MgtKeyList)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
+
         $postdata = json_encode($MgtKeyList);
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '?Print', $CorpNum, $UserID, true, null, $postdata)->url;
     }
 
@@ -496,68 +539,90 @@ class PopbillTaxinvoice extends PopbillBase
         if (is_null($DType) || $DType === "") {
             throw new PopbillException(-99999999, '일자유형이 입력되지 않았습니다.');
         }
+
         if (is_null($SDate) || $SDate === "") {
             throw new PopbillException(-99999999, '시작일자가 입력되지 않았습니다.');
         }
+
         if (is_null($EDate) || $EDate === "") {
             throw new PopbillException(-99999999, '종료일자가 입력되지 않았습니다.');
         }
+
         $uri = '/Taxinvoice/' . $MgtKeyType . '?';
         $uri .= 'DType=' . $DType;
         $uri .= '&SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
+
         if (!is_null($State) || !empty($State)) {
             $uri .= '&State=' . implode(',', $State);
         }
+
         if (!is_null($Type) || !empty($Type)) {
             $uri .= '&Type=' . implode(',', $Type);
         }
+
         if (!is_null($TaxType) || !empty($TaxType)) {
             $uri .= '&TaxType=' . implode(',', $TaxType);
         }
+
         if (!is_null($IssueType) || !empty($IssueType)) {
             $uri .= '&IssueType=' . implode(',', $IssueType);
         }
+
         if (!is_null($RegType) || !empty($RegType)) {
             $uri .= '&RegType=' . implode(',', $RegType);
         }
-        if (!is_null($CloseDownState) || !empty($CloseDownState)) {
-            $uri .= '&CloseDownState=' . implode(',', $CloseDownState);
-        }
+
         if (!is_null($LateOnly) || !empty($LateOnly)) {
             $uri .= '&LateOnly=' . $LateOnly;
         }
+
+        if (!is_null($CloseDownState) || !empty($CloseDownState)) {
+            $uri .= '&CloseDownState=' . implode(',', $CloseDownState);
+        }
+
         if (!empty($TaxRegIDType)) {
             $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         }
+
         if (!empty($TaxRegIDType)) {
             $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
+
         $uri .= '&TaxRegID=' . $TaxRegID;
+
         if (!is_null($QString) || !empty($QString)) {
             $uri .= '&QString=' . urlencode($QString);
         }
-        if (!is_null($MgtKey) || !empty($MgtKey)) {
-            $uri .= '&MgtKey=' . $MgtKey;
-        }
+
         $uri .= '&Order=' . $Order;
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&InterOPYN=' . $InterOPYN;
+
+        if (!empty($MgtKey)) {
+            $uri .= '&MgtKey=' . $MgtKey;
+        }
+
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
+
         $SearchList = new TISearchResult();
         $SearchList->fromJsonInfo($response);
+
         return $SearchList;
+
     }
 
     // 전자명세서 첨부
     public function AttachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
         $uri = '/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/AttachStmt';
+
         $Request = new TIStmtRequest();
         $Request->ItemCode = $SubItemCode;
         $Request->MgtKey = $SubMgtKey;
         $postdata = json_encode($Request);
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata);
     }
 
@@ -565,19 +630,23 @@ class PopbillTaxinvoice extends PopbillBase
     public function DetachStatement($CorpNum, $MgtKeyType, $MgtKey, $SubItemCode, $SubMgtKey, $UserID = null)
     {
         $uri = '/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/DetachStmt';
+
         $Request = new TIStmtRequest();
         $Request->ItemCode = $SubItemCode;
         $Request->MgtKey = $SubMgtKey;
         $postdata = json_encode($Request);
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata);
     }
 
     public function GetChargeInfo($CorpNum, $UserID = null)
     {
         $uri = '/Taxinvoice/ChargeInfo';
+
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
 
@@ -585,24 +654,27 @@ class PopbillTaxinvoice extends PopbillBase
     public function AssignMgtKey($CorpNum, $MgtKeyType, $itemKey, $MgtKey, $UserID = null)
     {
         if (is_null($MgtKey) || empty($MgtKey)) {
-            throw new PopbillException('할당할 문서번호가 입력되지 않았습니다.');
+            throw new PopbillException('할당할 문서문서번호가 입력되지 않았습니다.');
         }
         $uri = '/Taxinvoice/' . $itemKey . '/' . $MgtKeyType;
         $postdata = 'MgtKey=' . $MgtKey;
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata, false, 'application/x-www-form-urlencoded; charset=utf-8');
     }
 
     //세금계산서 관련 메일전송 항목에 대한 전송여부 목록 반환
     public function ListEmailConfig($CorpNum, $UserID = null)
     {
-        $EmailSendConfigList = array();
+        $TIEmailSendConfigList = array();
+
         $result = $this->executeCURL('/Taxinvoice/EmailSendConfig', $CorpNum, $UserID);
+
         for ($i = 0; $i < Count($result); $i++) {
-            $EmailSendConfig = new TIEmailSendConfig();
-            $EmailSendConfig->fromJsonInfo($result[$i]);
-            $EmailSendConfigList[$i] = $EmailSendConfig;
+            $TIEmailSendConfig = new TIEmailSendConfig();
+            $TIEmailSendConfig->fromJsonInfo($result[$i]);
+            $TIEmailSendConfigList[$i] = $TIEmailSendConfig;
         }
-        return $EmailSendConfigList;
+        return $TIEmailSendConfigList;
     }
 
     // 전자세금계산서 관련 메일전송 항목에 대한 전송여부를 수정
@@ -610,6 +682,7 @@ class PopbillTaxinvoice extends PopbillBase
     {
         $sendYNString = $sendYN ? 'True' : 'False';
         $uri = '/Taxinvoice/EmailSendConfig?EmailType=' . $emailType . '&SendYN=' . $sendYNString;
+
         return $result = $this->executeCURL($uri, $corpNum, $userID, true);
     }
 
@@ -653,12 +726,6 @@ class PopbillTaxinvoice extends PopbillBase
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '?PDF', $CorpNum, $UserID);
     }
 
-    // 국세청 즉시전송 확인함수
-    public function GetSendToNTSConfig($CorpNum, $UserID = null)
-    {
-        return $this->executeCURL('/Taxinvoice/SendToNTSConfig', $CorpNum, $UserID)->sendToNTS;
-    }
-
     // get XML
     public function GetXML($CorpNum, $MgtKeyType, $MgtKey, $UserID = null)
     {
@@ -673,15 +740,24 @@ class PopbillTaxinvoice extends PopbillBase
 
         return $TaxinvoiceXML;
     }
+
+    // 국세청 즉시전송 확인함수
+    public function GetSendToNTSConfig($CorpNum, $UserID = null)
+    {
+        return $this->executeCURL('/Taxinvoice/SendToNTSConfig', $CorpNum, $UserID)->sendToNTS;
+    }
 }
+
 class Taxinvoice
 {
     public $closeDownState;
     public $closeDownStateDate;
+
     public $writeSpecification;
     public $emailSubject;
     public $memo;
     public $dealInvoiceMgtKey;
+
     public $writeDate;
     public $chargeDirection;
     public $issueType;
@@ -701,6 +777,7 @@ class Taxinvoice
     public $invoicerHP;
     public $invoicerEmail;
     public $invoicerSMSSendYN;
+
     public $invoiceeCorpNum;
     public $invoiceeType;
     public $invoiceeMgtKey;
@@ -721,6 +798,7 @@ class Taxinvoice
     public $invoiceeHP2;
     public $invoiceeEmail1;
     public $invoiceeSMSSendYN;
+
     public $trusteeCorpNum;
     public $trusteeMgtKey;
     public $trusteeTaxRegID;
@@ -735,6 +813,7 @@ class Taxinvoice
     public $trusteeHP;
     public $trusteeEmail;
     public $trusteeSMSSendYN;
+
     public $taxTotal;
     public $supplyCostTotal;
     public $totalAmount;
@@ -761,11 +840,11 @@ class Taxinvoice
 
     public $orgNTSConfirmNum;
 
-
     function fromjsonInfo($jsonInfo)
     {
         isset($jsonInfo->closeDownState) ? ($this->closeDownState = $jsonInfo->closeDownState) : null;
         isset($jsonInfo->closeDownStateDate) ? ($this->closeDownStateDate = $jsonInfo->closeDownStateDate) : null;
+
         isset($jsonInfo->writeSpecification) ? ($this->writeSpecification = $jsonInfo->writeSpecification) : null;
         isset($jsonInfo->writeDate) ? ($this->writeDate = $jsonInfo->writeDate) : null;
         isset($jsonInfo->chargeDirection) ? ($this->chargeDirection = $jsonInfo->chargeDirection) : null;
@@ -786,6 +865,7 @@ class Taxinvoice
         isset($jsonInfo->invoicerHP) ? ($this->invoicerHP = $jsonInfo->invoicerHP) : null;
         isset($jsonInfo->invoicerEmail) ? ($this->invoicerEmail = $jsonInfo->invoicerEmail) : null;
         isset($jsonInfo->invoicerSMSSendYN) ? ($this->invoicerSMSSendYN = $jsonInfo->invoicerSMSSendYN) : null;
+
         isset($jsonInfo->invoiceeCorpNum) ? ($this->invoiceeCorpNum = $jsonInfo->invoiceeCorpNum) : null;
         isset($jsonInfo->invoiceeType) ? ($this->invoiceeType = $jsonInfo->invoiceeType) : null;
         isset($jsonInfo->invoiceeMgtKey) ? ($this->invoiceeMgtKey = $jsonInfo->invoiceeMgtKey) : null;
@@ -806,6 +886,7 @@ class Taxinvoice
         isset($jsonInfo->invoiceeHP2) ? ($this->invoiceeHP2 = $jsonInfo->invoiceeHP2) : null;
         isset($jsonInfo->invoiceeEmail1) ? ($this->invoiceeEmail1 = $jsonInfo->invoiceeEmail1) : null;
         isset($jsonInfo->invoiceeSMSSendYN) ? ($this->invoiceeSMSSendYN = $jsonInfo->invoiceeSMSSendYN) : null;
+
         isset($jsonInfo->trusteeCorpNum) ? ($this->trusteeCorpNum = $jsonInfo->trusteeCorpNum) : null;
         isset($jsonInfo->trusteeMgtKey) ? ($this->trusteeMgtKey = $jsonInfo->trusteeMgtKey) : null;
         isset($jsonInfo->trusteeTaxRegID) ? ($this->trusteeTaxRegID = $jsonInfo->trusteeTaxRegID) : null;
@@ -820,6 +901,7 @@ class Taxinvoice
         isset($jsonInfo->trusteeHP) ? ($this->trusteeHP = $jsonInfo->trusteeHP) : null;
         isset($jsonInfo->trusteeEmail) ? ($this->trusteeEmail = $jsonInfo->trusteeEmail) : null;
         isset($jsonInfo->trusteeSMSSendYN) ? ($this->trusteeSMSSendYN = $jsonInfo->trusteeSMSSendYN) : null;
+
         isset($jsonInfo->taxTotal) ? ($this->taxTotal = $jsonInfo->taxTotal) : null;
         isset($jsonInfo->supplyCostTotal) ? ($this->supplyCostTotal = $jsonInfo->supplyCostTotal) : null;
         isset($jsonInfo->totalAmount) ? ($this->totalAmount = $jsonInfo->totalAmount) : null;
@@ -840,9 +922,9 @@ class Taxinvoice
         isset($jsonInfo->faxsendYN) ? ($this->faxsendYN = $jsonInfo->faxsendYN) : null;
         isset($jsonInfo->faxreceiveNum) ? ($this->faxreceiveNum = $jsonInfo->faxreceiveNum) : null;
         isset($jsonInfo->originalTaxinvoiceKey) ? ($this->originalTaxinvoiceKey = $jsonInfo->originalTaxinvoiceKey) : null;
-        isset($jsonInfo->ntsconfirmNum) ? ($this->ntsconfirmNum = $jsonInfo->ntsconfirmNum) : null;
 
         isset($jsonInfo->orgNTSConfirmNum) ? ($this->orgNTSConfirmNum = $jsonInfo->orgNTSConfirmNum) : null;
+        isset($jsonInfo->ntsconfirmNum) ? ($this->ntsconfirmNum = $jsonInfo->ntsconfirmNum) : null;
 
         if (isset($jsonInfo->detailList)) {
             $DetailList = array();
@@ -853,6 +935,7 @@ class Taxinvoice
             }
             $this->detailList = $DetailList;
         }
+
         if (isset($jsonInfo->addContactList)) {
             $contactList = array();
             for ($i = 0; $i < Count($jsonInfo->addContactList); $i++) {
@@ -860,10 +943,13 @@ class Taxinvoice
                 $TaxinvoiceContactObj->fromJsonInfo($jsonInfo->addContactList[$i]);
                 $contactList[$i] = $TaxinvoiceContactObj;
             }
+
             $this->addContactList = $contactList;
         }
     }
+
 }
+
 class TaxinvoiceDetail
 {
     public $serialNum;
@@ -875,6 +961,7 @@ class TaxinvoiceDetail
     public $supplyCost;
     public $tax;
     public $remark;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->serialNum) ? $this->serialNum = $jsonInfo->serialNum : null;
@@ -887,9 +974,10 @@ class TaxinvoiceDetail
         isset($jsonInfo->tax) ? $this->tax = $jsonInfo->tax : null;
         isset($jsonInfo->remark) ? $this->remark = $jsonInfo->remark : null;
     }
+
 }
 
-class BulkRequest
+class TIBulkRequest
 {
     public $forceIssue;
     public $invoices;
@@ -942,6 +1030,7 @@ class BulkTaxinvoiceIssueResult
     public $invoicerMgtKey;
     public $trusteeMgtKey;
     public $code;
+    public $message;
     public $ntsconfirmNum;
     public $issueDT;
 
@@ -950,6 +1039,7 @@ class BulkTaxinvoiceIssueResult
         isset($jsonInfo->invoicerMgtKey) ? $this->invoicerMgtKey = $jsonInfo->invoicerMgtKey : null;
         isset($jsonInfo->trusteeMgtKey) ? $this->trusteeMgtKey = $jsonInfo->trusteeMgtKey : null;
         isset($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
+        isset($jsonInfo->message) ? $this->message = $jsonInfo->message : null;
         isset($jsonInfo->ntsconfirmNum) ? $this->ntsconfirmNum = $jsonInfo->ntsconfirmNum : null;
         isset($jsonInfo->issueDT) ? $this->issueDT = $jsonInfo->issueDT : null;
     }
@@ -960,6 +1050,7 @@ class TaxinvoiceAddContact
     public $serialNum;
     public $email;
     public $contactName;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->serialNum) ? $this->serialNum = $jsonInfo->serialNum : null;
@@ -967,6 +1058,7 @@ class TaxinvoiceAddContact
         isset($jsonInfo->contactName) ? $this->contactName = $jsonInfo->contactName : null;
     }
 }
+
 class TISearchResult
 {
     public $code;
@@ -976,6 +1068,7 @@ class TISearchResult
     public $pageCount;
     public $message;
     public $list;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
@@ -984,7 +1077,9 @@ class TISearchResult
         isset($jsonInfo->pageCount) ? $this->pageCount = $jsonInfo->pageCount : null;
         isset($jsonInfo->pageNum) ? $this->pageNum = $jsonInfo->pageNum : null;
         isset($jsonInfo->message) ? $this->message = $jsonInfo->message : null;
+
         $InfoList = array();
+
         for ($i = 0; $i < Count($jsonInfo->list); $i++) {
             $InfoObj = new TaxinvoiceInfo();
             $InfoObj->fromJsonInfo($jsonInfo->list[$i]);
@@ -993,10 +1088,13 @@ class TISearchResult
         $this->list = $InfoList;
     }
 }
+
+
 class TaxinvoiceInfo
 {
     public $closeDownState;
     public $closeDownStateDate;
+
     public $itemKey;
     public $stateCode;
     public $taxType;
@@ -1030,11 +1128,14 @@ class TaxinvoiceInfo
     public $ntsresultDT;
     public $ntssendErrCode;
     public $stateMemo;
+
     public $interOPYN;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->closeDownState) ? ($this->closeDownState = $jsonInfo->closeDownState) : null;
         isset($jsonInfo->closeDownStateDate) ? ($this->closeDownStateDate = $jsonInfo->closeDownStateDate) : null;
+
         isset($jsonInfo->itemKey) ? $this->itemKey = $jsonInfo->itemKey : null;
         isset($jsonInfo->stateCode) ? $this->stateCode = $jsonInfo->stateCode : null;
         isset($jsonInfo->taxType) ? $this->taxType = $jsonInfo->taxType : null;
@@ -1071,6 +1172,8 @@ class TaxinvoiceInfo
         isset($jsonInfo->interOPYN) ? $this->interOPYN = $jsonInfo->interOPYN : null;
     }
 }
+
+
 class TaxinvoiceLog
 {
     public $ip;
@@ -1094,6 +1197,7 @@ class TaxinvoiceLog
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
     }
 }
+
 class TaxinvoiceCertificate
 {
     public $regDT;
@@ -1117,6 +1221,7 @@ class TaxinvoiceCertificate
         isset($jsonInfo->regContactID) ? $this->regContactID = $jsonInfo->regContactID : null;
     }
 }
+
 class TaxinvoiceXML
 {
     public $code;
@@ -1130,36 +1235,43 @@ class TaxinvoiceXML
         isset($jsonInfo->retObject) ? $this->retObject = $jsonInfo->retObject : null;
     }
 }
-class TIENumMgtKeyType
+
+class ENumMgtKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
+
 class TIMemoRequest
 {
     public $memo;
     public $emailSubject;
 }
+
 class TIIssueRequest
 {
     public $memo;
     public $emailSubject;
     public $forceIssue;
 }
+
 class TIStmtRequest
 {
     public $ItemCode;
     public $MgtKey;
 }
+
 class TIEmailSendConfig
 {
     public $emailType;
     public $sendYN;
+
     function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->emailType) ? $this->emailType = $jsonInfo->emailType : null;
         isset($jsonInfo->sendYN) ? $this->sendYN = $jsonInfo->sendYN : null;
     }
 }
+
 ?>

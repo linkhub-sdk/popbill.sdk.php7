@@ -21,6 +21,7 @@
 namespace Linkhub\Popbill;
 
 class PopbillEasyFinBank extends PopbillBase {
+
     public function __construct ( $LinkID, $SecretKey )
     {
         parent::__construct ( $LinkID, $SecretKey );
@@ -30,18 +31,6 @@ class PopbillEasyFinBank extends PopbillBase {
     public function GetBankAccountMgtURL ( $CorpNum, $UserID = null )
     {
         return $this->executeCURL ( '/EasyFin/Bank?TG=BankAccount', $CorpNum, $UserID )->url;
-    }
-
-    public function ListBankAccount ( $CorpNum, $UserID = null )
-    {
-        $result = $this->executeCURL('/EasyFin/Bank/ListBankAccount', $CorpNum, $UserID);
-        $BankAccountList = array();
-        for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $BankAccountInfo = new EasyFinBankAccount();
-            $BankAccountInfo->fromJsonInfo($result[$i]);
-            $BankAccountList[$i] = $BankAccountInfo;
-        }
-        return $BankAccountList;
     }
 
     public function RegistBankAccount($CorpNum, $BankAccountInfo, $UserID = null)
@@ -145,21 +134,42 @@ class PopbillEasyFinBank extends PopbillBase {
         return $BankInfo;
     }
 
+    public function ListBankAccount ( $CorpNum, $UserID = null )
+    {
+        $result = $this->executeCURL('/EasyFin/Bank/ListBankAccount', $CorpNum, $UserID);
+
+        $BankAccountList = array();
+
+        for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
+            $BankAccountInfo = new EasyFinBankAccount();
+            $BankAccountInfo->fromJsonInfo($result[$i]);
+            $BankAccountList[$i] = $BankAccountInfo;
+        }
+
+        return $BankAccountList;
+    }
+
     public function RequestJob ( $CorpNum, $BankCode, $AccountNumber, $SDate, $EDate, $UserID = null ) {
+
         if ( empty($BankCode) || $BankCode === "")    {
             throw new PopbillException('기관코드가 입력되지 않았습니다.');
         }
+
         if(empty($AccountNumber) || $AccountNumber === "")    {
             throw new PopbillException('계좌번호가 입력되지 않았습니다.');
         }
+
         if(empty($SDate) || $SDate === "")    {
             throw new PopbillException('조회 시작일자가 입력되지 않았습니다.');
         }
+
         if(empty($EDate) || $EDate === "")    {
             throw new PopbillException('조회 종료일자가 입력되지 않았습니다.');
         }
+
         $uri = '/EasyFin/Bank/BankAccount?BankCode='.$BankCode.'&AccountNumber='.$AccountNumber;
         $uri .= '&SDate='.$SDate.'&EDate='.$EDate;
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "")->jobID;
     }
 
@@ -168,21 +178,27 @@ class PopbillEasyFinBank extends PopbillBase {
         if ( empty($JobID) || strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디가 올바르지 않습니다.');
         }
+
         $response = $this->executeCURL('/EasyFin/Bank/'.$JobID.'/State', $CorpNum, $UserID);
+
         $JobState = new EasyFinBankJobState();
         $JobState->fromJsonInfo($response);
+
         return $JobState;
     }
 
     public function ListActiveJob ( $CorpNum, $UserID = null )
     {
         $result = $this->executeCURL('/EasyFin/Bank/JobList', $CorpNum, $UserID);
+
         $JobList = array();
+
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
             $JobState = new EasyFinBankJobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
+
         return $JobList;
     }
 
@@ -191,17 +207,23 @@ class PopbillEasyFinBank extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $uri = '/EasyFin/Bank/'.$JobID;
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
+
         if ( !empty( $SearchString ) ) {
             $uri .= '&SearchString=' . urlencode($SearchString);
         }
+
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Order=' . $Order;
+
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $SearchResult = new EasyFinBankSearchResult();
         $SearchResult->fromJsonInfo($response);
+
         return $SearchResult;
     }
 
@@ -210,14 +232,19 @@ class PopbillEasyFinBank extends PopbillBase {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
         }
+
         $uri = '/EasyFin/Bank/'.$JobID.'/Summary';
         $uri .= '?TradeType=' . implode ( ',' , $TradeType );
+
         if ( !empty( $SearchString ) ) {
             $uri .= '&SearchString=' . urlencode($SearchString);
         }
+
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
+
         $SummaryResult = new EasyFinBankSummaryResult();
         $SummaryResult->fromJsonInfo($response);
+
         return $SummaryResult;
     }
 
@@ -226,10 +253,13 @@ class PopbillEasyFinBank extends PopbillBase {
         if(empty($TID) || $TID === "")    {
             throw new PopbillException('거래내역 아이디가 입력되지 않았습니다.');
         }
+
         $uri = '/EasyFin/Bank/SaveMemo';
         $uri .= '?TID=' . $TID;
         $uri .= '&Memo=' . urlencode($Memo);
+
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "");
+
     }
 
     public function GetFlatRatePopUpURL ( $CorpNum, $UserID = null )
@@ -240,18 +270,24 @@ class PopbillEasyFinBank extends PopbillBase {
     public function GetFlatRateState ( $CorpNum, $BankCode, $AccountNumber, $UserID = null )
     {
         $response = $this->executeCURL ( '/EasyFin/Bank/Contract/'.$BankCode.'/'.$AccountNumber, $CorpNum, $UserID ) ;
+
         $FlatRateState = new EasyFinBankFlatRate();
         $FlatRateState->fromJsonInfo ( $response );
+
         return $FlatRateState;
     }
 
     public function GetChargeInfo ( $CorpNum, $UserID = null)
     {
         $response = $this->executeCURL('/EasyFin/Bank/ChargeInfo', $CorpNum, $UserID);
+
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
+
+
 }
 
 class EasyFinBankSummaryResult
@@ -261,6 +297,7 @@ class EasyFinBankSummaryResult
     public $cntAccOut;
     public $totalAccIn;
     public $totalAccOut;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->count) ? $this->count = $jsonInfo->count : null;
@@ -268,8 +305,10 @@ class EasyFinBankSummaryResult
         isset ($jsonInfo->cntAccOut) ? $this->cntAccOut = $jsonInfo->cntAccOut : null;
         isset ($jsonInfo->totalAccIn) ? $this->totalAccIn = $jsonInfo->totalAccIn : null;
         isset ($jsonInfo->totalAccOut) ? $this->totalAccOut = $jsonInfo->totalAccOut : null;
+
     }
 }
+
 class EasyFinBankFlatRate
 {
     public $referenceID;
@@ -281,6 +320,7 @@ class EasyFinBankFlatRate
     public $useRestrictYN;
     public $closeOnExpired;
     public $unPaidYN;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->referenceID) ? $this->referenceID = $jsonInfo->referenceID : null;
@@ -294,6 +334,7 @@ class EasyFinBankFlatRate
         isset ($jsonInfo->unPaidYN) ? $this->unPaidYN = $jsonInfo->unPaidYN : null;
     }
 }
+
 class EasyFinBankSearchResult
 {
     public $code;
@@ -303,8 +344,8 @@ class EasyFinBankSearchResult
     public $pageNum;
     public $pageCount;
     public $lastScrapDT;
-
     public $list;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
@@ -324,6 +365,7 @@ class EasyFinBankSearchResult
         $this->list = $SearchDetailList;
     }
 }
+
 class EasyFinBankSearchDetail
 {
     public $tid;
@@ -339,6 +381,7 @@ class EasyFinBankSearchDetail
     public $remark4;
     public $regDT;
     public $memo;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset ($jsonInfo->tid) ? $this->tid = $jsonInfo->tid : null;
@@ -357,6 +400,32 @@ class EasyFinBankSearchDetail
     }
 }
 
+class EasyFinBankJobState
+{
+    public $jobID;
+    public $jobState;
+    public $startDate;
+    public $endDate;
+    public $errorCode;
+    public $errorReason;
+    public $jobStartDT;
+    public $jobEndDT;
+    public $regDT;
+
+    public function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->jobID) ? $this->jobID = $jsonInfo->jobID : null;
+        isset($jsonInfo->jobState) ? $this->jobState = $jsonInfo->jobState : null;
+        isset($jsonInfo->startDate) ? $this->startDate = $jsonInfo->startDate : null;
+        isset($jsonInfo->endDate) ? $this->endDate = $jsonInfo->endDate : null;
+        isset($jsonInfo->errorCode) ? $this->errorCode = $jsonInfo->errorCode : null;
+        isset($jsonInfo->errorReason) ? $this->errorReason = $jsonInfo->errorReason : null;
+        isset($jsonInfo->jobStartDT) ? $this->jobStartDT = $jsonInfo->jobStartDT : null;
+        isset($jsonInfo->jobEndDT) ? $this->jobEndDT = $jsonInfo->jobEndDT : null;
+        isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
+    }
+}
+
 class EasyFinBankAccountForm
 {
     public $BankCode;
@@ -372,7 +441,6 @@ class EasyFinBankAccountForm
     public $Memo;
 }
 
-
 class UpdateEasyFinBankAccountForm
 {
     public $AccountPWD;
@@ -383,30 +451,7 @@ class UpdateEasyFinBankAccountForm
     public $Memo;
 }
 
-class EasyFinBankJobState
-{
-    public $jobID;
-    public $jobState;
-    public $startDate;
-    public $endDate;
-    public $errorCode;
-    public $errorReason;
-    public $jobStartDT;
-    public $jobEndDT;
-    public $regDT;
-    public function fromJsonInfo($jsonInfo)
-    {
-        isset($jsonInfo->jobID) ? $this->jobID = $jsonInfo->jobID : null;
-        isset($jsonInfo->jobState) ? $this->jobState = $jsonInfo->jobState : null;
-        isset($jsonInfo->startDate) ? $this->startDate = $jsonInfo->startDate : null;
-        isset($jsonInfo->endDate) ? $this->endDate = $jsonInfo->endDate : null;
-        isset($jsonInfo->errorCode) ? $this->errorCode = $jsonInfo->errorCode : null;
-        isset($jsonInfo->errorReason) ? $this->errorReason = $jsonInfo->errorReason : null;
-        isset($jsonInfo->jobStartDT) ? $this->jobStartDT = $jsonInfo->jobStartDT : null;
-        isset($jsonInfo->jobEndDT) ? $this->jobEndDT = $jsonInfo->jobEndDT : null;
-        isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
-    }
-}
+
 class EasyFinBankAccount
 {
     public $bankCode;
@@ -416,6 +461,7 @@ class EasyFinBankAccount
     public $state;
     public $regDT;
     public $memo;
+
     public $contractDT;
     public $baseDate;
     public $useEndDate;
@@ -424,6 +470,7 @@ class EasyFinBankAccount
     public $useRestrictYN;
     public $closeOnExpired;
     public $unPaidYN;
+
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->bankCode) ? $this->bankCode = $jsonInfo->bankCode : null;
@@ -444,4 +491,5 @@ class EasyFinBankAccount
         isset($jsonInfo->unPaidYN) ? $this->unPaidYN = $jsonInfo->unPaidYN : null;
     }
 }
+
 ?>

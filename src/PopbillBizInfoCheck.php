@@ -20,6 +20,7 @@
 namespace Linkhub\Popbill;
 
 class PopbillBizInfoCheck extends PopbillBase {
+
     public function __construct($LinkID,$SecretKey) {
         parent::__construct($LinkID,$SecretKey);
         $this->AddScope('171');
@@ -30,13 +31,17 @@ class PopbillBizInfoCheck extends PopbillBase {
         if(is_null($MemberCorpNum) || empty($MemberCorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-          if(is_null($CheckCorpNum) || empty($CheckCorpNum)) {
+
+        if(is_null($CheckCorpNum) || empty($CheckCorpNum)) {
             throw new PopbillException('조회할 사업자번호가 입력되지 않았습니다.');
         }
+
         $result = $this->executeCURL('/BizInfo/Check?CN='.$CheckCorpNum, $MemberCorpNum, $UserId);
+
         $BizCheckInfo = new BizCheckInfo();
         $BizCheckInfo->fromJsonInfo($result);
         return $BizCheckInfo;
+
     }
 
     //조회단가 확인
@@ -46,9 +51,11 @@ class PopbillBizInfoCheck extends PopbillBase {
 
     public function GetChargeInfo ( $CorpNum, $UserID = null) {
         $uri = '/BizInfo/ChargeInfo';
+
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
         $ChargeInfo = new ChargeInfo();
         $ChargeInfo->fromJsonInfo($response);
+
         return $ChargeInfo;
     }
 }

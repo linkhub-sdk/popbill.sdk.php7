@@ -169,7 +169,7 @@ class PopbillStatement extends PopbillBase {
     }
 
     # 첨부파일 삭제
-    public function DeleteFile($CorpNum, $itemCode, $MgtKey, $FileID, $UserID = null
+    public function DeleteFile($CorpNum, $itemCode, $MgtKey, $FileID, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');

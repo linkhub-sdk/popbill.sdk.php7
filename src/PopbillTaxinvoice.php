@@ -987,7 +987,7 @@ class BulkTaxinvoiceResult
 {
     public $code;
     public $message;
-    public $submitID;
+    public $submitID;ㅁ
     public $submitCount;
     public $successCount;
     public $failCount;

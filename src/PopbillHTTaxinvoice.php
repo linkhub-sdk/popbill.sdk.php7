@@ -673,6 +673,13 @@ class JobState
     }
 }
 
+class HTTIKeyType
+{
+    const SELL = 'SELL';
+    const BUY = 'BUY';
+    const TRUSTEE = 'TRUSTEE';
+}
+
 class KeyType
 {
     const SELL = 'SELL';

@@ -1236,6 +1236,13 @@ class TaxinvoiceXML
     }
 }
 
+class TIENumMgtKeyType
+{
+    const SELL = 'SELL';
+    const BUY = 'BUY';
+    const TRUSTEE = 'TRUSTEE';
+}
+
 class ENumMgtKeyType
 {
     const SELL = 'SELL';

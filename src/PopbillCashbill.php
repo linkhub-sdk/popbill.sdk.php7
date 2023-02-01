@@ -631,7 +631,7 @@ class BulkCashbillIssueResult
     public $message;
     public $confirmNum;
     public $tradeDate;
-    public $tradeDT;
+    public $issueDT;
     
     function fromJsonInfo($jsonInfo)
     {
@@ -640,7 +640,7 @@ class BulkCashbillIssueResult
         isset($jsonInfo->message) ? $this->message = $jsonInfo->message : null;
         isset($jsonInfo->confirmNum) ? $this->confirmNum = $jsonInfo->confirmNum : null;
         isset($jsonInfo->tradeDate) ? $this->tradeDate = $jsonInfo->tradeDate : null;
-        isset($jsonInfo->tradeDT) ? $this->tradeDT = $jsonInfo->tradeDT : null;
+        isset($jsonInfo->issueDT) ? $this->issueDT = $jsonInfo->issueDT : null;
     }
 }
 

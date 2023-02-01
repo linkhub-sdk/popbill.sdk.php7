@@ -361,6 +361,12 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/Denied', $CorpNum);
     }
 
+    // 080 수신거부 조회
+    public function CheckAutoDenyNumber($CorpNum)
+    {
+        return $this->executeCURL('/Message/AutoDenyNumberInfo', $CorpNum);
+    }
+
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/Message/ChargeInfo?Type=' . $MessageType;

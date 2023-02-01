@@ -344,6 +344,7 @@ class EasyFinBankSearchResult
     public $pageNum;
     public $pageCount;
     public $lastScrapDT;
+    public $balance;
     public $list;
 
     public function fromJsonInfo($jsonInfo)
@@ -355,6 +356,7 @@ class EasyFinBankSearchResult
         isset ($jsonInfo->pageNum) ? $this->pageNum = $jsonInfo->pageNum : null;
         isset ($jsonInfo->pageCount) ? $this->pageCount = $jsonInfo->pageCount : null;
         isset ($jsonInfo->lastScrapDT) ? $this->lastScrapDT = $jsonInfo->lastScrapDT : null;
+        isset ($jsonInfo->balance) ? $this->balance = $jsonInfo->balance : null;
 
         $SearchDetailList = array();
         for ($i = 0; $i < Count($jsonInfo->list); $i++) {
@@ -426,6 +428,26 @@ class EasyFinBankJobState
     }
 }
 
+class PaymentForm
+{
+    public $settlerName;
+    public $settlerEmail;
+    public $notifyHP;
+    public $paymentName;
+    public $settleCost;
+}
+
+class RefundForm
+{
+    public $contactname;
+    public $tel;
+    public $requestpoint;
+    public $accountbank;
+    public $accountnum;
+    public $accountname;
+    public $reason;
+}
+
 class EasyFinBankAccountForm
 {
     public $BankCode;
@@ -450,7 +472,6 @@ class UpdateEasyFinBankAccountForm
     public $FastPWD;
     public $Memo;
 }
-
 
 class EasyFinBankAccount
 {

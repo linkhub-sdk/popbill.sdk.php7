@@ -115,6 +115,15 @@ class PopbillAccountCheck extends PopbillBase {
     }
 }
 
+class PaymentForm
+{
+    public $settlerName;
+    public $settlerEmail;
+    public $notifyHP;
+    public $paymentName;
+    public $settleCost;
+}
+
 class RefundForm
 {
     public $contactname;

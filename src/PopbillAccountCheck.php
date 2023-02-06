@@ -115,6 +115,17 @@ class PopbillAccountCheck extends PopbillBase {
     }
 }
 
+class RefundForm
+{
+    public $contactname;
+    public $tel;
+    public $requestpoint;
+    public $accountbank;
+    public $accountnum;
+    public $accountname;
+    public $reason;
+}
+
 class AccountCheckInfo
 {
     public $resultCode;

@@ -788,7 +788,7 @@ class ChargeInfo
         isset($jsonInfo->rateSystem) ? $this->rateSystem = $jsonInfo->rateSystem : null;
     }
 }
-class PopbillException extends Exception
+class PopbillException extends \Exception
 {
     public function __construct($response, $code = -99999999, Exception $previous = null)
     {

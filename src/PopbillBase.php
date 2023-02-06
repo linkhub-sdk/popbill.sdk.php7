@@ -37,7 +37,7 @@ class PopbillBase
     const Version = '1.0';
     private $Token_Table = array();
     private $Linkhub;
-    private $IsTest = false;
+    private $IsTest = true;
     private $IPRestrictOnOff = true;
     private $UseStaticIP = false;
     private $UseGAIP = false;

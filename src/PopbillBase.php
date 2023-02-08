@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-01
+ * Updated : 2023-02-08
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -37,7 +37,7 @@ class PopbillBase
     const Version = '1.0';
     private $Token_Table = array();
     private $Linkhub;
-    private $IsTest = true;
+    private $IsTest = false;
     private $IPRestrictOnOff = true;
     private $UseStaticIP = false;
     private $UseGAIP = false;

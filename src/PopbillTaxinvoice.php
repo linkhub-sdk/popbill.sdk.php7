@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2022-04-04
+ * Updated : 2023-02-10
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -639,6 +639,7 @@ class PopbillTaxinvoice extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", $postdata);
     }
 
+    // 과금정보 확인
     public function GetChargeInfo($CorpNum, $UserID = null)
     {
         $uri = '/Taxinvoice/ChargeInfo';

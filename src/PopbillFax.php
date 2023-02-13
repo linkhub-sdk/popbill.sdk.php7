@@ -29,7 +29,7 @@ class PopbillFax extends PopbillBase {
         $this->AddScope('161');
     }
 
-    // 발행 단가 확인
+    // 전송 단가 확인
     public function GetUnitCost($CorpNum, $ReceiveNumType=null)
     {
         return $this->executeCURL('/FAX/UnitCost?receiveNumType=' . $ReceiveNumType, $CorpNum)->unitCost;

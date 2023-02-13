@@ -30,7 +30,7 @@ class PopbillKakao extends PopbillBase {
         $this->AddScope('155');
     }
 
-    // 발행 단가 확인
+    // 전송 단가 확인
     public function GetUnitCost($CorpNum, $MessageType)
     {
         return $this->executeCURL('/KakaoTalk/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;

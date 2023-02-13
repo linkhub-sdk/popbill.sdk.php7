@@ -104,7 +104,7 @@ class PopbillAccountCheck extends PopbillBase {
     }
 
     // 과금정보 확인
-    public function GetChargeInfo ( $CorpNum, $UserID = null, $ServiceType = null) {
+    public function GetChargeInfo($CorpNum, $UserID = null, $ServiceType = null) {
         $uri = '/EasyFin/AccountCheck/ChargeInfo?serviceType='. $ServiceType;
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

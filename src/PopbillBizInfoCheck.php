@@ -44,7 +44,7 @@ class PopbillBizInfoCheck extends PopbillBase {
         return $BizCheckInfo;
     }
 
-    // 발행 단가 확인
+    // 조회 단가 확인
     public function GetUnitCost($CorpNum) {
         return $this->executeCURL('/BizInfo/UnitCost', $CorpNum)->unitCost;
     }

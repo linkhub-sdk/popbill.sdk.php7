@@ -70,7 +70,7 @@ class PopbillClosedown extends PopbillBase {
         return $CorpStateList;
     }
 
-    // 발행 단가 확인
+    // 조회 단가 확인
     public function GetUnitCost($CorpNum) {
         return $this->executeCURL('/CloseDown/UnitCost', $CorpNum)->unitCost;
     }

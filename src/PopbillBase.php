@@ -161,14 +161,14 @@ class PopbillBase
         return $this->executeCURL('/CorpInfo', $CorpNum, $UserID, true, null, $postdata);
     }
 
-    //팝빌 연결 URL함수
+    // 팝빌 연결 URL함수
     public function GetPopbillURL($CorpNum, $UserID, $TOGO)
     {
         $response = $this->executeCURL('/?TG=' . $TOGO, $CorpNum, $UserID);
         return $response->url;
     }
 
-    //팝빌 로그인 URL
+    // 팝빌 로그인 URL
     public function GetAccessURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/?TG=LOGIN', $CorpNum, $UserID);
@@ -196,12 +196,12 @@ class PopbillBase
         return $response->url;
     }
 
-    //가입여부 확인
+    // 가입여부 확인
     public function CheckIsMember($CorpNum, $LinkID)
     {
         return $this->executeCURL('/Join?CorpNum=' . $CorpNum . '&LID=' . $LinkID);
     }
-    //회원가입
+    // 회원가입
     public function JoinMember($JoinForm)
     {
         $postdata = json_encode($JoinForm);
@@ -535,7 +535,7 @@ class PopbillBase
         return $postbody;
     }
 
-    //파일명 추출
+    // 파일명 추출
     protected function GetBasename($path){
         $pattern = '/[^\/\\\\]*$/';
         if (preg_match($pattern, $path, $matches)){

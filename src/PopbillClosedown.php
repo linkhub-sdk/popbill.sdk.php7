@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2022-04-04
+ * Updated : 2023-02-10
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -70,12 +70,13 @@ class PopbillClosedown extends PopbillBase {
         return $CorpStateList;
     }
 
-    //조회단가 확인
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum) {
         return $this->executeCURL('/CloseDown/UnitCost', $CorpNum)->unitCost;
     }
 
-    public function GetChargeInfo ( $CorpNum, $UserID = null) {
+    // 과금정보 확인
+    public function GetChargeInfo($CorpNum, $UserID = null) {
         $uri = '/CloseDown/ChargeInfo';
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

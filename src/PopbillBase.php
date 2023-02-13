@@ -256,7 +256,7 @@ class PopbillBase
         return $this->executeCURL('/Refund', $CorpNum, $UserID, true, null, $postdata);
     }
 
-    // 포인트 사용내역
+    // 연동회원 포인트 사용내역 확인
     public function GetUseHistory($CorpNum, $SDate, $EDate, $Page = null, $PerPage = null, $Order = null, $UserID = null)
     {
         $uri  = '/UseHistory';
@@ -273,7 +273,7 @@ class PopbillBase
         return $UseHistoryResult;
     }
 
-    // 연동회원 무통장 입금신
+    // 연동회원 무통장 입금신청
     public function PaymentRequest($CorpNum, $PaymentForm, $UserID = null)
     {
         $postdata = json_encode($PaymentForm);

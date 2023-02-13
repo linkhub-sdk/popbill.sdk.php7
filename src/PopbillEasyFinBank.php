@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-01
+ * Updated : 2023-02-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -28,11 +28,13 @@ class PopbillEasyFinBank extends PopbillBase {
         $this->AddScope ( '180' );
     }
 
-    public function GetBankAccountMgtURL ( $CorpNum, $UserID = null )
+    // 계좌 관리 팝업 URL
+    public function GetBankAccountMgtURL ($CorpNum, $UserID = null)
     {
         return $this->executeCURL ( '/EasyFin/Bank?TG=BankAccount', $CorpNum, $UserID )->url;
     }
 
+    // 계좌 등록
     public function RegistBankAccount($CorpNum, $BankAccountInfo, $UserID = null)
     {
         $uri = '/EasyFin/Bank/BankAccount/Regist';
@@ -43,6 +45,7 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
     }
 
+    // 계좌정보 수정
     public function UpdateBankAccount($CorpNum, $BankCode, $AccountNumber, $BankAccountInfo, $UserID = null)
     {
         if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
@@ -60,6 +63,7 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
     }
 
+    // 정액제 해지요청
     public function CloseBankAccount($CorpNum, $BankCode, $AccountNumber, $CloseType, $UserID = null)
     {
         if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
@@ -82,6 +86,7 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, null, null);
     }
 
+    // 정액제 해지요청 취소
     public function RevokeCloseBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
     {
         if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
@@ -99,6 +104,7 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, null, null);
     }
 
+    // 계좌 삭제
     public function DeleteBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
     {
         if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
@@ -116,7 +122,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, null, $postdata);
     }
 
-    public function GetBankAccountInfo ( $CorpNum, $BankCode, $AccountNumber, $UserID = null)
+    // 계좌정보 확인
+    public function GetBankAccountInfo($CorpNum, $BankCode, $AccountNumber, $UserID = null)
     {
         if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
             throw new PopbillException ('기관코드가 올바르지 않습니다.');
@@ -134,7 +141,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $BankInfo;
     }
 
-    public function ListBankAccount ( $CorpNum, $UserID = null )
+    // 계좌정보 목록 조회
+    public function ListBankAccount($CorpNum, $UserID = null)
     {
         $result = $this->executeCURL('/EasyFin/Bank/ListBankAccount', $CorpNum, $UserID);
 
@@ -149,7 +157,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $BankAccountList;
     }
 
-    public function RequestJob ( $CorpNum, $BankCode, $AccountNumber, $SDate, $EDate, $UserID = null ) {
+    // 수집 요청
+    public function RequestJob($CorpNum, $BankCode, $AccountNumber, $SDate, $EDate, $UserID = null) {
 
         if ( empty($BankCode) || $BankCode === "")    {
             throw new PopbillException('기관코드가 입력되지 않았습니다.');
@@ -173,7 +182,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $this->executeCURL($uri, $CorpNum, $UserID, true, "", "")->jobID;
     }
 
-    public function GetJobState ( $CorpNum, $JobID, $UserID = null )
+    // 수집 상태 확인
+    public function GetJobState($CorpNum, $JobID, $UserID = null)
     {
         if ( empty($JobID) || strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디가 올바르지 않습니다.');
@@ -187,7 +197,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $JobState;
     }
 
-    public function ListActiveJob ( $CorpNum, $UserID = null )
+    // 수집 상태 목록 확인
+    public function ListActiveJob($CorpNum, $UserID = null)
     {
         $result = $this->executeCURL('/EasyFin/Bank/JobList', $CorpNum, $UserID);
 
@@ -202,7 +213,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $JobList;
     }
 
-    public function Search ( $CorpNum, $JobID, $TradeType, $SearchString, $Page, $PerPage, $Order, $UserID = null)
+    // 거래 내역 조회
+    public function Search($CorpNum, $JobID, $TradeType, $SearchString, $Page, $PerPage, $Order, $UserID = null)
     {
         if ( strlen ( $JobID ) != 18 ) {
             throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
@@ -248,7 +260,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $SummaryResult;
     }
 
-    public function SaveMemo ( $CorpNum, $TID, $Memo, $UserID = null )
+    // 거래 내역 요약정보 조회
+    public function SaveMemo($CorpNum, $TID, $Memo, $UserID = null)
     {
         if(empty($TID) || $TID === "")    {
             throw new PopbillException('거래내역 아이디가 입력되지 않았습니다.');
@@ -262,12 +275,14 @@ class PopbillEasyFinBank extends PopbillBase {
 
     }
 
-    public function GetFlatRatePopUpURL ( $CorpNum, $UserID = null )
+    // 정액제 서비스 신청 팝업 URL
+    public function GetFlatRatePopUpURL($CorpNum, $UserID = null)
     {
         return $this->executeCURL ( '/EasyFin/Bank?TG=CHRG', $CorpNum, $UserID )->url;
     }
 
-    public function GetFlatRateState ( $CorpNum, $BankCode, $AccountNumber, $UserID = null )
+    // 정액제 서비스 상태 확인
+    public function GetFlatRateState($CorpNum, $BankCode, $AccountNumber, $UserID = null)
     {
         $response = $this->executeCURL ( '/EasyFin/Bank/Contract/'.$BankCode.'/'.$AccountNumber, $CorpNum, $UserID ) ;
 
@@ -277,7 +292,8 @@ class PopbillEasyFinBank extends PopbillBase {
         return $FlatRateState;
     }
 
-    public function GetChargeInfo ( $CorpNum, $UserID = null)
+    // 과금정보 확인
+    public function GetChargeInfo($CorpNum, $UserID = null)
     {
         $response = $this->executeCURL('/EasyFin/Bank/ChargeInfo', $CorpNum, $UserID);
 
@@ -286,7 +302,6 @@ class PopbillEasyFinBank extends PopbillBase {
 
         return $ChargeInfo;
     }
-
 
 }
 

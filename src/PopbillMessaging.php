@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-01
+ * Updated : 2023-02-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -30,12 +30,13 @@ class PopbillMessaging extends PopbillBase {
         $this->AddScope('152');
     }
 
-    //발행단가 확인
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum, $MessageType)
     {
         return $this->executeCURL('/Message/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;
     }
 
+    // 발신번호 등록여부 확인
     public function CheckSenderNumber($CorpNum, $SenderNumber, $UserID=null)
     {
         if (empty($SenderNumber)) {
@@ -50,12 +51,17 @@ class PopbillMessaging extends PopbillBase {
     *    $Content   => 동보전송용 발신내용 미기재시 개별메시지 내용으로 전송, 발신내용이 없는 개별메시지에만 동보처리함.
     *    $Messages  => 발신메시지 최대 1000건, 배열
     *        'snd'  => 개별발신번호
+    *        'sndnm'=> 발신자명
     *        'rcv'  => 수신번호, 필수
     *        'rcvnm'=> 수신자 성명
     *        'msg'  => 메시지 내용, 미기재시 동보메시지로 전송함.
+    *        'sjt'  => 메시지 제목, SMS 사용 불가, 미입력시 팝빌에서 설정한 기본값 사용
+    *        'interOPRefKey'=> 파트너 지정 키, SMS/LMS/MMS 대량/동보전송시 파트너가 개별건마다 입력할 수 있는 값
     *    $ReserveDT => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
     *    $UserID    => 발신자 팝빌 회원아이디
     *    $SenderName=> 동보전송용 발신자명 미기재시 개별메시지 발신자명으로 전송
+    *    $SystemYN  => false
+    *    $requestNum=> 전송 요청번호, 파트너가 접수 단위를 식별하기 위해 부여하는 관리번호
     */
     public function SendSMS($CorpNum, $Sender, $Content, $Messages = array(), $ReserveDT = null, $adsYN = false, $UserID = null, $SenderName = null, $SystemYN = false, $RequestNum = null)
     {
@@ -68,13 +74,16 @@ class PopbillMessaging extends PopbillBase {
     *    $Subject     => 동보전송용 제목 미기재시 개별메시지 제목으로 전송, 제목이 없는 개별메시지에만 동보처리함.
     *    $Content     => 동보전송용 발신내용 미기재시 개별베시지 내용으로 전송, 발신내용이 없는 개별메시지에만 동보처리함.
     *    $Messages    => 발신메시지 최대 1000건, 배열
-    *        'snd'    => 개별발신번호
-    *        'rcv'    => 수신번호, 필수
-    *        'rcvnm'  => 수신자 성명
-    *        'msg'    => 메시지 내용, 미기재시 동보메시지로 전송함.
-    *        'sjt'    => 제목, 미기재시 동보 제목으로 전송함.
-      *    $ReserveDT => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
-      *    $UserID    => 발신자 팝빌 회원아이디
+    *          'snd'  => 개별발신번호
+    *          'sndnm'=> 발신자명
+    *          'rcv'  => 수신번호, 필수
+    *          'rcvnm'=> 수신자 성명
+    *          'msg'  => 메시지 내용, 미기재시 동보메시지로 전송함.
+    *          'sjt'  => 메시지 제목, SMS 사용 불가, 미입력시 팝빌에서 설정한 기본값 사용
+    *          'interOPRefKey'=> 파트너 지정 키, SMS/LMS/MMS 대량/동보전송시 파트너가 개별건마다 입력할 수 있는 값
+    *    $ReserveDT   => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
+    *    $adsYN       => 광고메시지 전송여부, true:광고/false:일반 중 택 1
+    *    $UserID      => 발신자 팝빌 회원아이디
     *    $SenderName  => 동보전송용 발신자명 미기재시 개별메시지 발신자명으로 전송
     */
     public function SendLMS($CorpNum, $Sender, $Subject, $Content, $Messages = array(), $ReserveDT = null, $adsYN = false, $UserID = null, $SenderName = null, $SystemYN = false, $RequestNum = null)
@@ -89,13 +98,18 @@ class PopbillMessaging extends PopbillBase {
     *    $Content   => 동보전송용 발신내용 미기재시 개별베시지 내용으로 전송, 발신내용이 없는 개별메시지에만 동보처리함.
     *    $Messages  => 발신메시지 최대 1000건, 배열
     *        'snd'  => 개별발신번호
+    *        'sndnm'=> 발신자명
     *        'rcv'  => 수신번호, 필수
     *        'rcvnm'=> 수신자 성명
     *        'msg'  => 메시지 내용, 미기재시 동보메시지로 전송함.
     *        'sjt'  => 제목, 미기재시 동보 제목으로 전송함.
+    *        'interOPRefKey'=> 파트너 지정 키
     *    $ReserveDT => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
+    *    $adsYN     => 광고메시지 전송여부, true:광고/false:일반 중 택 1
     *    $UserID    => 발신자 팝빌 회원아이디
     *    $SenderName=> 동보전송용 발신자명 미기재시 개별메시지 발신자명으로 전송
+    *    $SystemYN  => false
+    *    $requestNum=> 전송 요청번호
     */
     public function SendXMS($CorpNum, $Sender, $Subject, $Content, $Messages = array(), $ReserveDT = null, $adsYN = false, $UserID = null, $SenderName = null, $SystemYN = false, $RequestNum = null)
     {
@@ -108,15 +122,20 @@ class PopbillMessaging extends PopbillBase {
     *    $Subject    => 동보전송용 제목 미기재시 개별메시지 제목으로 전송, 제목이 없는 개별메시지에만 동보처리함.
     *    $Content    => 동보전송용 발신내용 미기재시 개별베시지 내용으로 전송, 발신내용이 없는 개별메시지에만 동보처리함.
     *    $Messages   => 발신메시지 최대 1000건, 배열
-    *        'snd'   => 개별발신번호
-    *        'rcv'   => 수신번호, 필수
-    *        'rcvnm' => 수신자 성명
-    *        'msg'   => 메시지 내용, 미기재시 동보메시지로 전송함.
-    *        'sjt'   => 제목, 미기재시 동보 제목으로 전송함.
+    *         'snd'  => 개별발신번호
+    *         'sndnm'=> 발신자명
+    *         'rcv'  => 수신번호, 필수
+    *         'rcvnm'=> 수신자 성명
+    *         'msg'  => 메시지 내용, 미기재시 동보메시지로 전송함.
+    *         'sjt'  => 제목, 미기재시 동보 제목으로 전송함.
+    *         'interOPRefKey'=> 파트너 지정 키
     *    $FilePaths  => 전송할 파일경로 문자열
-      *    $ReserveDT=> 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
-      *    $UserID   => 발신자 팝빌 회원아이디
+    *    $ReserveDT  => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
+    *    $adsYN      => 광고메시지 전송여부, true:광고/false:일반 중 택 1
+    *    $UserID     => 발신자 팝빌 회원아이디
     *    $SenderName => 동보전송용 발신자명 미기재시 개별메시지 발신자명으로 전송
+    *    $SystemYN  => false
+    *    $requestNum=> 전송 요청번호
     */
     public function SendMMS($CorpNum, $Sender, $Subject, $Content, $Messages = array(), $FilePaths = array(), $ReserveDT = null, $adsYN = false, $UserID = null, $SenderName = null, $SystemYN = false, $RequestNum = null)
     {
@@ -178,10 +197,10 @@ class PopbillMessaging extends PopbillBase {
     }
 
     /* 전송메시지 내역 및 전송상태 확인
-*    $CorpNum   => 발송사업자번호
-*    $RequestNum=> 전송요청번호
-*    $UserID    => 팝빌 회원아이디
-*/
+    *    $CorpNum   => 발송사업자번호
+    *    $RequestNum=> 전송요청번호
+    *    $UserID    => 팝빌 회원아이디
+    */
     public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -199,7 +218,7 @@ class PopbillMessaging extends PopbillBase {
         return $MessageInfoList;
     }
 
-    /* 예약전송 취소
+    /* 예약전송 전체 취소
     *    $CorpNum   => 발송사업자번호
     *    $ReceiptNum=> 접수번호
     *    $UserID    => 팝빌 회원아이디
@@ -212,7 +231,7 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
 
-    /* 예약전송 취소
+    /* 예약전송 전체 취소 (전송 요청번호)
     *    $CorpNum   => 발송사업자번호
     *    $RequestNum=> 전송요청번호
     *    $UserID    => 팝빌 회원아이디
@@ -225,11 +244,11 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/Cancel/' . $RequestNum, $CorpNum, $UserID);
     }
 
-    /* 예약전송 취소
-    *    $CorpNum => 발송사업자번호
-    *    $ReceiptNum    => 접수번호
-    *    $ReceiveNum    => 수신번호
-    *    $UserID    => 팝빌 회원아이디
+    /* 예약전송 일부 취소
+    *    $CorpNum    => 발송사업자번호
+    *    $ReceiptNum => 접수번호
+    *    $ReceiveNum => 수신번호
+    *    $UserID     => 팝빌 회원아이디
     */
     public function CancelReservebyRCV($CorpNum, $ReceiptNum, $ReceiveNum, $UserID = null)
     {
@@ -245,11 +264,11 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID, true, null, $postdata);
     }
     
-    /* 예약전송 취소
-    *    $CorpNum => 발송사업자번호
-    *    $RequestNum    => 전송요청번호
-    *    $ReceiveNum    => 수신번호
-    *    $UserID    => 팝빌 회원아이디
+    /* 예약전송 일부 취소 (전송 요청번호)
+    *    $CorpNum    => 발송사업자번호
+    *    $RequestNum => 전송요청번호
+    *    $ReceiveNum => 수신번호
+    *    $UserID     => 팝빌 회원아이디
     */
     public function CancelReserveRNbyRCV($CorpNum, $RequestNum, $ReceiveNum, $UserID = null)
     {
@@ -290,28 +309,28 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/' . $MessageType, $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    //문자 관련 URL함수
+    // 문자 관련 URL함수
     public function GetURL($CorpNum, $UserID, $TOGO)
     {
         $response = $this->executeCURL('/Message/?TG=' . $TOGO, $CorpNum, $UserID);
         return $response->url;
     }
 
-    //문자 전송내역 팝업 URL
+    // 문자 전송내역 팝업 URL
     public function GetSentListURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/Message/?TG=BOX', $CorpNum, $UserID);
         return $response->url;
     }
 
-    //발신번호 관리 팝업 URL
+    // 발신번호 관리 팝업 URL
     public function GetSenderNumberMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/Message/?TG=SENDER', $CorpNum, $UserID);
         return $response->url;
     }
 
-    //문자 전송내역 조회
+    // 전송내역 목록 조회
     public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = false, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
@@ -355,7 +374,7 @@ class PopbillMessaging extends PopbillBase {
         return $SearchList;
     }
 
-    // 080 수신거부목록 조회
+    // 080 수신거부 목록 확인
     public function GetAutoDenyList($CorpNum)
     {
         return $this->executeCURL('/Message/Denied', $CorpNum);
@@ -367,6 +386,7 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/AutoDenyNumberInfo', $CorpNum);
     }
 
+    // 과금정보 확인 
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/Message/ChargeInfo?Type=' . $MessageType;

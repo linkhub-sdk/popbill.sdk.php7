@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2022-04-04
+ * Updated : 2023-02-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -33,13 +33,13 @@ class PopbillStatement extends PopbillBase {
         $this->AddScope('126');
     }
 
-    #전자명세서 발행단가 확인
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum, $itemCode)
     {
         return $this->executeCURL('/Statement/' . $itemCode . '?cfg=UNITCOST', $CorpNum)->unitCost;
     }
 
-    #문서문서번호 사용유무 확인
+    // 문서문서번호 사용유무 확인
     public function CheckMgtKeyInuse($CorpNum, $itemCode, $MgtKey)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -53,7 +53,7 @@ class PopbillStatement extends PopbillBase {
         }
     }
 
-    # 전자명세서 선팩스 전송
+    // 전자명세서 선팩스 전송
     public function FAXSend($CorpNum, $Statement, $SendNum, $ReceiveNum, $UserID = null)
     {
         if(!is_null($SendNum) || !empty($SendNum)){
@@ -67,7 +67,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement', $CorpNum, $UserID, true, 'FAX', $postdata)->receiptNum;
     }
 
-    # 전자명세서 즉시발행
+    // 전자명세서 즉시발행
     public function RegistIssue($CorpNum, $Statement, $memo, $UserID = null, $EmailSubject = null)
     {
         if(!is_null($memo) || !empty($memo)){
@@ -82,14 +82,14 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement', $CorpNum, $UserID, true,'ISSUE', $postdata);
     }
 
-    # 전자명세서 임시저장
+    // 전자명세서 임시저장
     public function Register($CorpNum, $Statement, $UserID = null)
     {
         $postdata = json_encode($Statement);
         return $this->executeCURL('/Statement', $CorpNum, $UserID, true, null, $postdata);
     }
 
-    # 전자명세서 수정
+    // 전자명세서 수정
     public function Update($CorpNum, $itemCode, $MgtKey, $Statement, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -99,7 +99,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . "/" . $MgtKey, $CorpNum, $UserID, true,"PATCH", $postdata);
     }
 
-    # 전자명세서 삭제
+    // 전자명세서 삭제
     public function Delete($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -109,7 +109,7 @@ class PopbillStatement extends PopbillBase {
     }
 
 
-    # 전자명세서 발행
+    // 전자명세서 발행
     public function Issue($CorpNum, $itemCode, $MgtKey, $Memo, $UserID = null, $EmailSubject = null){
         if(is_null($MgtKey) || empty($MgtKey))
         {
@@ -129,7 +129,7 @@ class PopbillStatement extends PopbillBase {
     }
 
 
-    # 전자명세서 발행취소
+    // 전자명세서 발행취소
     public function CancelIssue($CorpNum, $itemCode, $MgtKey, $Memo, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -142,7 +142,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . "/" . $MgtKey, $CorpNum, $UserID, true, 'CANCEL', $postdata);
     }
 
-    # 전자명세서 첨부파일 추가
+    // 전자명세서 첨부파일 추가
     public function AttachFile($CorpNum, $itemCode, $MgtKey, $FilePath, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -159,7 +159,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);
     }
 
-    # 첨부파일 목록확인
+    // 첨부파일 목록확인
     public function GetFiles($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -168,7 +168,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files', $CorpNum, $UserID);
     }
 
-    # 첨부파일 삭제
+    // 첨부파일 삭제
     public function DeleteFile($CorpNum, $itemCode, $MgtKey, $FileID, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -180,7 +180,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files/' . $FileID, $CorpNum, $UserID, true, 'DELETE', null);
     }
 
-    # 다량 전자명세서 상태,요약 정보확인
+    // 다량 전자명세서 상태,요약 정보확인
     public function GetInfo($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -193,7 +193,7 @@ class PopbillStatement extends PopbillBase {
         return $StatementInfo;
     }
 
-    # 다량 전자명세서 상태,요약 정보확인
+    // 다량 전자명세서 상태,요약 정보확인
     public function GetInfos($CorpNum, $itemCode, $MgtKeyList, $UserID = null)
     {
         if(is_null($MgtKeyList) || empty($MgtKeyList)) {
@@ -213,7 +213,7 @@ class PopbillStatement extends PopbillBase {
         return $StatementInfoList;
     }
 
-    # 이력 확인
+    // 이력 확인
     public function GetLogs($CorpNum, $itemCode, $MgtKey)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -231,7 +231,7 @@ class PopbillStatement extends PopbillBase {
         return $StatementLogList;
     }
 
-    # 상세정보 확인
+    // 상세정보 확인
     public function GetDetailInfo($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -245,7 +245,7 @@ class PopbillStatement extends PopbillBase {
         return $StatementDetail;
     }
 
-    #알림메일 재전송
+    // 알림메일 재전송
     public function SendEmail($CorpNum, $itemCode, $MgtKey, $receiver, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -256,7 +256,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey, $CorpNum, $UserID, true,'EMAIL', $postdata);
     }
 
-    #알림문자 재전송
+    // 알림문자 재전송
     public function SendSMS($CorpNum, $itemCode, $MgtKey, $sender, $receiver, $contents, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -274,7 +274,7 @@ class PopbillStatement extends PopbillBase {
     }
 
 
-    #전자명세서 팩스전송
+    // 전자명세서 팩스전송
     public function SendFAX($CorpNum, $itemCode, $MgtKey, $sender, $receiver, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -290,12 +290,12 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey, $CorpNum, $UserID, true, 'FAX', $postdata);
     }
 
-    #팝빌 전자명세서 연결 URL
+    // 팝빌 전자명세서 연결 URL
     public function GetURL($CorpNum, $UserID, $TOGO) {
         return $this->executeCURL('/Statement?TG='.$TOGO, $CorpNum, $UserID)->url;
     }
 
-    #전자명세서 보기 URL
+    // 전자명세서 보기 URL
     public function GetPopUpURL($CorpNum, $itemCode, $MgtKey, $UserID = null){
         if(is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
@@ -303,7 +303,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=POPUP', $CorpNum, $UserID)->url;
     }
 
-    #인쇄 URL 호출
+    // 인쇄 URL 호출
     public function GetPrintURL($CorpNum, $itemCode, $MgtKey, $UserID = null){
         if(is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
@@ -311,7 +311,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=PRINT', $CorpNum, $UserID)->url;
     }
 
-    # 뷰 URL
+    // 뷰 URL
     public function GetViewURL($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if (is_null($MgtKey) || empty($MgtKey)) {
@@ -321,7 +321,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=VIEW', $CorpNum, $UserID)->url;
     }
 
-    #인쇄 URL 호출(공급받는자용)
+    // 인쇄 URL 호출(공급받는자용)
     public function GetEPrintURL($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -330,7 +330,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=EPRINT', $CorpNum, $UserID)->url;
     }
 
-    #다량 인쇄 URL호출
+    // 다량 인쇄 URL호출
     public function GetMassPrintURL($CorpNum, $itemCode, $MgtKeyList, $UserID = null)
     {
         if(is_null($MgtKeyList) || empty($MgtKeyList)) {
@@ -340,7 +340,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '?Print', $CorpNum, $UserID, true, '', $postdata)->url;
     }
 
-    #메일 링크 URL 호출
+    // 메일 링크 URL 호출
     public function GetMailURL($CorpNum, $itemCode, $MgtKey, $UserID = null)
     {
         if(is_null($MgtKey) || empty($MgtKey)) {
@@ -349,7 +349,7 @@ class PopbillStatement extends PopbillBase {
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=MAIL', $CorpNum, $UserID)->url;
     }
 
-    //전자명세서 목록조회
+    // 전자명세서 목록조회
     public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $ItemCode = array(), $Page = null, $PerPage = null, $Order = null, $QString = null)
     {
         if(is_null($DType) || empty($DType)) {
@@ -389,7 +389,7 @@ class PopbillStatement extends PopbillBase {
         return $SearchList;
     }
 
-    //팝빌 인감 및 첨부문서 등록 URL
+    // 팝빌 인감 및 첨부문서 등록 URL
     public function GetSealURL($CorpNum, $UserID = null)
     {
         $response = $this->executeCURL('/?TG=SEAL', $CorpNum, $UserID);

@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2020-07-01
- * Updated : 2022-04-04
+ * Updated : 2023-02-10
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -96,7 +96,7 @@ class PopbillAccountCheck extends PopbillBase {
         return $DepositorCheckInfo;
     }
 
-    // 조회단가 확인
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum, $ServiceType = null, $UserID = null) {
         $uri = "/EasyFin/AccountCheck/UnitCost?serviceType=". $ServiceType;
 

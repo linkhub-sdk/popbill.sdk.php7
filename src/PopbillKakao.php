@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-01
+ * Updated : 2023-02-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -30,11 +30,13 @@ class PopbillKakao extends PopbillBase {
         $this->AddScope('155');
     }
 
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum, $MessageType)
     {
         return $this->executeCURL('/KakaoTalk/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;
     }
 
+    // 알림톡/친구톡 전송내역 확인
     public function GetMessages($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
@@ -47,6 +49,7 @@ class PopbillKakao extends PopbillBase {
         return $DetailInfo;
     }
 
+    // 알림톡/친구톡 전송내역 확인 (요청번호 할당)
     public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -59,6 +62,7 @@ class PopbillKakao extends PopbillBase {
         return $DetailInfo;
     }
 
+    // 카카오톡 채널 목록 확인
     public function ListPlusFriendID($CorpNum)
     {
         $PlusFriendList = array();
@@ -73,6 +77,7 @@ class PopbillKakao extends PopbillBase {
         return $PlusFriendList;
     }
 
+    // 알림톡 템플릿 목록 확인
     public function ListATSTemplate($CorpNum)
     {
         $result = $this->executeCURL('/KakaoTalk/ListATSTemplate', $CorpNum);
@@ -87,6 +92,7 @@ class PopbillKakao extends PopbillBase {
         return $TemplateList;
     }
 
+    // 발신번호 등록여부 확인
     public function CheckSenderNumber($CorpNum, $SenderNumber, $UserID=null)
     {
         if (empty($SenderNumber)) {
@@ -95,11 +101,13 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/KakaoTalk/CheckSenderNumber/' . $SenderNumber, $CorpNum, $UserID);
     }
 
+    // 발신번호 목록 확인
     public function GetSenderNumberList($CorpNum)
     {
         return $this->executeCURL('/Message/SenderNumber', $CorpNum);
     }
 
+    // 예약전송 취소 (접수번호)
     public function CancelReserve($CorpNum, $ReceiptNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
@@ -108,6 +116,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/KakaoTalk/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
 
+    // 예약전송 전체 취소 (전송 요청번호)
     public function CancelReserveRN($CorpNum, $RequestNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -116,6 +125,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/KakaoTalk/Cancel/' . $RequestNum, $CorpNum, $UserID);
     }
 
+    // 예약전송 일부 취소 (접수번호)
     public function CancelReservebyRCV($CorpNum, $ReceiptNum, $ReceiveNum, $UserID = null)
     {
         if (empty($ReceiptNum)) {
@@ -130,6 +140,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/KakaoTalk/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID, true, null, $postdata);
     }
 
+    // 예약전송 일부 취소 (전송 요청번호)
     public function CancelReserveRNbyRCV($CorpNum, $RequestNum, $ReceiveNum, $UserID = null)
     {
         if (empty($RequestNum)) {
@@ -156,28 +167,28 @@ class PopbillKakao extends PopbillBase {
         return $response->url;
     }
 
-    //플러스친구 계정관리 팝업 URL
+    // 플러스친구 계정관리 팝업 URL
     public function GetPlusFriendMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/KakaoTalk/?TG=PLUSFRIEND', $CorpNum, $UserID);
         return $response->url;
     }
 
-    //발신번호 관리 팝업 URL
+    // 발신번호 관리 팝업 URL
     public function GetSenderNumberMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/Message/?TG=SENDER', $CorpNum, $UserID);
         return $response->url;
     }
 
-    //알림톡 템플릿관리 팝업 URL
+    // 알림톡 템플릿관리 팝업 URL
     public function GetATSTemplateMgtURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/KakaoTalk/?TG=TEMPLATE', $CorpNum, $UserID);
         return $response->url;
     }
 
-    //알림톡 템플릿 정보 확인
+    // 알림톡 템플릿 정보 확인
     public function GetATSTemplate($CorpNum, $TemplateCode, $UserID = null)
     {
         if (is_null($TemplateCode) || $TemplateCode === "") {
@@ -192,14 +203,14 @@ class PopbillKakao extends PopbillBase {
         return $TemplateInfo;
     }
 
-    //카카오톡 전송내역 팝업 URL
+    // 카카오톡 전송내역 팝업 URL
     public function GetSentListURL($CorpNum, $UserID)
     {
         $response = $this->executeCURL('/KakaoTalk/?TG=BOX', $CorpNum, $UserID);
         return $response->url;
     }
 
-
+    // 전송내역 목록 조회
     public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = '', $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
     {
         if (is_null($SDate) || $SDate === "") {
@@ -243,6 +254,7 @@ class PopbillKakao extends PopbillBase {
 
     }
 
+    // 과금정보 확인
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/KakaoTalk/ChargeInfo?Type=' . $MessageType;
@@ -254,9 +266,9 @@ class PopbillKakao extends PopbillBase {
         return $ChargeInfo;
     }
 
+    // 친구톡(이미지)
     public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
-
         $Request = array();
 
         if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
@@ -284,6 +296,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/FMS', $CorpNum, $UserID, true, null, $postdata, true)->receiptNum;
     }
 
+    // 친구톡(텍스트)
     public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $AltSubject = null)
     {
         $Request = array();
@@ -305,6 +318,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
+    // 알림톡 전송
     public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = null, $AltSubject = null)
     {
         $Request = array();

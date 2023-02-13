@@ -11,6 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Choi sh(code@linkhubcorp.com)
  * Written : 2022-09-30
+ * Updated : 2023-02-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -26,7 +27,7 @@ class PopbillBizInfoCheck extends PopbillBase {
         $this->AddScope('171');
     }
 
-    //기업정보조회 - 단건
+    // 기업정보조회 - 단건
     public function CheckBizInfo($MemberCorpNum, $CheckCorpNum, $UserId = null) {
         if(is_null($MemberCorpNum) || empty($MemberCorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
@@ -41,14 +42,14 @@ class PopbillBizInfoCheck extends PopbillBase {
         $BizCheckInfo = new BizCheckInfo();
         $BizCheckInfo->fromJsonInfo($result);
         return $BizCheckInfo;
-
     }
 
-    //조회단가 확인
+    // 발행 단가 확인
     public function GetUnitCost($CorpNum) {
         return $this->executeCURL('/BizInfo/UnitCost', $CorpNum)->unitCost;
     }
 
+    // 과금정보 확인
     public function GetChargeInfo ( $CorpNum, $UserID = null) {
         $uri = '/BizInfo/ChargeInfo';
 

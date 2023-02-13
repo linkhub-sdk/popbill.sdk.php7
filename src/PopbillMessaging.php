@@ -58,6 +58,7 @@ class PopbillMessaging extends PopbillBase {
     *        'sjt'  => 메시지 제목, SMS 사용 불가, 미입력시 팝빌에서 설정한 기본값 사용
     *        'interOPRefKey'=> 파트너 지정 키, SMS/LMS/MMS 대량/동보전송시 파트너가 개별건마다 입력할 수 있는 값
     *    $ReserveDT => 예약전송시 예약시간 yyyyMMddHHmmss 형식으로 기재
+    *    $adsYN       => 광고메시지 전송여부, true:광고/false:일반 중 택 1
     *    $UserID    => 발신자 팝빌 회원아이디
     *    $SenderName=> 동보전송용 발신자명 미기재시 개별메시지 발신자명으로 전송
     *    $SystemYN  => false

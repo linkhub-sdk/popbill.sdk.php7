@@ -1149,6 +1149,7 @@ class TaxinvoiceInfo
     public $ntsresultDT;
     public $ntssendErrCode;
     public $stateMemo;
+    public $regDT;
 
     public $interOPYN;
 
@@ -1190,6 +1191,8 @@ class TaxinvoiceInfo
         isset($jsonInfo->ntsresultDT) ? $this->ntsresultDT = $jsonInfo->ntsresultDT : null;
         isset($jsonInfo->ntssendErrCode) ? $this->ntssendErrCode = $jsonInfo->ntssendErrCode : null;
         isset($jsonInfo->stateMemo) ? $this->stateMemo = $jsonInfo->stateMemo : null;
+        isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
+        
         isset($jsonInfo->interOPYN) ? $this->interOPYN = $jsonInfo->interOPYN : null;
     }
 }

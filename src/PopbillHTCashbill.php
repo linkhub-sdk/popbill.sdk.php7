@@ -392,6 +392,13 @@ class KeyType
     const BUY = 'BUY';
 }
 
+class HTCBKeyType
+{
+    const SELL = 'SELL';
+    const BUY = 'BUY';
+    const TRUSTEE = 'TRUSTEE';
+}
+
 class RegistDeptUserRequest
 {
     public $id;

@@ -68,7 +68,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
 
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$JobID.'/State', $CorpNum, $UserID);
 
-        $JobState = new HTTaxinvoiceJobState();
+        $JobState = new HTTIJobState();
         $JobState->fromJsonInfo($response);
 
         return $JobState;
@@ -82,7 +82,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         $JobList = array();
 
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $JobState = new HTTaxinvoiceJobState();
+            $JobState = new HTTIJobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
@@ -194,7 +194,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
     {
         $response = $this->executeCURL ( '/HomeTax/Taxinvoice/Contract', $CorpNum, $UserID ) ;
 
-        $FlatRateState = new HTTaxinvoiceFlatRate();
+        $FlatRateState = new HTTIFlatRate();
         $FlatRateState->fromJsonInfo ( $response );
 
         return $FlatRateState;
@@ -262,7 +262,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
             throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
         }
 
-        $Request = new HTTaxinvoiceRegistDeptUserRequest();
+        $Request = new HTTIRegistDeptUserRequest();
         $Request->id = $deptUserID;
         $Request->pwd = $deptUserPWD;
         $postdata = json_encode($Request);
@@ -318,7 +318,7 @@ class RefundForm
     public $reason;
 }
 
-class HTTaxinvoiceFlatRate
+class HTTIFlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -675,7 +675,7 @@ class HTTaxinvoiceAbbr
     }
 }
 
-class HTTaxinvoiceJobState
+class HTTIJobState
 {
     public $jobID;
     public $jobState;
@@ -707,14 +707,14 @@ class HTTaxinvoiceJobState
     }
 }
 
-class HTTaxinvoiceKeyType
+class HTTIKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
 
-class HTTaxinvoiceRegistDeptUserRequest
+class HTTIRegistDeptUserRequest
 {
     public $id;
     public $pwd;

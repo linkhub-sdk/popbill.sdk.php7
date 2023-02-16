@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-13
+ * Updated : 2023-02-16
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -68,7 +68,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
 
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$JobID.'/State', $CorpNum, $UserID);
 
-        $JobState = new JobState();
+        $JobState = new HTTaxinvoiceJobState();
         $JobState->fromJsonInfo($response);
 
         return $JobState;
@@ -82,7 +82,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         $JobList = array();
 
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $JobState = new JobState();
+            $JobState = new HTTaxinvoiceJobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
@@ -194,7 +194,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
     {
         $response = $this->executeCURL ( '/HomeTax/Taxinvoice/Contract', $CorpNum, $UserID ) ;
 
-        $FlatRateState = new FlatRate();
+        $FlatRateState = new HTTaxinvoiceFlatRate();
         $FlatRateState->fromJsonInfo ( $response );
 
         return $FlatRateState;
@@ -262,7 +262,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
             throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
         }
 
-        $Request = new RegistDeptUserRequest();
+        $Request = new HTTaxinvoiceRegistDeptUserRequest();
         $Request->id = $deptUserID;
         $Request->pwd = $deptUserPWD;
         $postdata = json_encode($Request);
@@ -318,7 +318,7 @@ class RefundForm
     public $reason;
 }
 
-class FlatRate
+class HTTaxinvoiceFlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -675,7 +675,7 @@ class HTTaxinvoiceAbbr
     }
 }
 
-class JobState
+class HTTaxinvoiceJobState
 {
     public $jobID;
     public $jobState;
@@ -707,21 +707,14 @@ class JobState
     }
 }
 
-class HTTIKeyType
+class HTTaxinvoiceKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
     const TRUSTEE = 'TRUSTEE';
 }
 
-class KeyType
-{
-    const SELL = 'SELL';
-    const BUY = 'BUY';
-    const TRUSTEE = 'TRUSTEE';
-}
-
-class RegistDeptUserRequest
+class HTTaxinvoiceRegistDeptUserRequest
 {
     public $id;
     public $pwd;

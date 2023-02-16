@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-02-13
+ * Updated : 2023-02-16
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -64,7 +64,7 @@ class PopbillHTCashbill extends PopbillBase {
 
         $response = $this->executeCURL('/HomeTax/Cashbill/'.$JobID.'/State', $CorpNum, $UserID);
 
-        $JobState = new JobState();
+        $JobState = new HTCashbillJobState();
         $JobState->fromJsonInfo($response);
 
         return $JobState;
@@ -78,7 +78,7 @@ class PopbillHTCashbill extends PopbillBase {
         $JobList = array();
 
         for ( $i = 0; $i < Count ( $result ) ;  $i++ ) {
-            $JobState = new JobState();
+            $JobState = new HTCashbillJobState();
             $JobState->fromJsonInfo($result[$i]);
             $JobList[$i] = $JobState;
         }
@@ -138,7 +138,7 @@ class PopbillHTCashbill extends PopbillBase {
     {
         $response = $this->executeCURL ( '/HomeTax/Cashbill/Contract', $CorpNum, $UserID ) ;
 
-        $FlatRateState = new FlatRate();
+        $FlatRateState = new HTCashbillFlatRate();
         $FlatRateState->fromJsonInfo ( $response );
 
         return $FlatRateState;
@@ -176,7 +176,7 @@ class PopbillHTCashbill extends PopbillBase {
             throw new PopbillException('홈택스 부서사용자 계정 비밀번호가 입력되지 않았습니다.');
         }
 
-        $Request = new RegistDeptUserRequest();
+        $Request = new HTCashbillRegistDeptUserRequest();
         $Request->id = $deptUserID;
         $Request->pwd = $deptUserPWD;
         $postdata = json_encode($Request);
@@ -229,7 +229,7 @@ class RefundForm
     public $reason;
 }
 
-class FlatRate
+class HTCashbillFlatRate
 {
     public $referenceID;
     public $contractDT;
@@ -354,7 +354,7 @@ class HTCashbillSearch
     }
 }
 
-class JobState
+class HTCashbillJobState
 {
     public $jobID;
     public $jobState;
@@ -386,13 +386,13 @@ class JobState
     }
 }
 
-class KeyType
+class HTCashbillKeyType
 {
     const SELL = 'SELL';
     const BUY = 'BUY';
 }
 
-class RegistDeptUserRequest
+class HTCashbillRegistDeptUserRequest
 {
     public $id;
     public $pwd;

@@ -314,6 +314,25 @@ class PopbillBase
         }
     }
 
+        // 회원 탈퇴
+    public function QuitRequest($CorpNum, $QuiteReason, $UserID = null)
+    {
+        $postData = json_encode(["quiteReason" => $QuiteReason]);
+        return $this->executeCURL('/Payment', $CorpNum, $UserID, true, null, $postData);
+    }
+
+    // 환불가능 포인트 조회
+    public function GetRefundablePoint($CorpNum, $UserID = null)
+    {
+        return $this->executeCURL('/RefundPoint', $CorpNum, $UserID, false, null);
+    }
+
+    // 환불 신청 상태 조회
+    public function GetRefundResult($CorpNum, $refundCode, $UserID = null)
+    {
+        return $this->executeCURL('/Refund/' . $refundCode, $CorpNum, $UserID, false, null, null);
+    }
+
     protected function executeCURL($uri, $CorpNum = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null, $isBinary = false, $SubmitID = null)
     {
         if ($this->__requestMode != "STREAM") {

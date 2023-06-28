@@ -803,6 +803,27 @@ class ContactInfo
         isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     }
 }
+
+class PaymentForm
+{
+    public $settlerName;
+    public $settlerEmail;
+    public $notifyHP;
+    public $paymentName;
+    public $settleCost;
+}
+
+class RefundForm
+{
+    public $contactname;
+    public $tel;
+    public $requestpoint;
+    public $accountbank;
+    public $accountnum;
+    public $accountname;
+    public $reason;
+}
+
 class ChargeInfo
 {
     public $unitCost;

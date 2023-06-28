@@ -749,25 +749,6 @@ class PopbillTaxinvoice extends PopbillBase {
     }
 }
 
-class PaymentForm
-{
-    public $settlerName;
-    public $settlerEmail;
-    public $notifyHP;
-    public $paymentName;
-    public $settleCost;
-}
-
-class RefundForm
-{
-    public $contactname;
-    public $tel;
-    public $requestpoint;
-    public $accountbank;
-    public $accountnum;
-    public $accountname;
-    public $reason;
-}
 
 class Taxinvoice
 {
@@ -1192,7 +1173,7 @@ class TaxinvoiceInfo
         isset($jsonInfo->ntssendErrCode) ? $this->ntssendErrCode = $jsonInfo->ntssendErrCode : null;
         isset($jsonInfo->stateMemo) ? $this->stateMemo = $jsonInfo->stateMemo : null;
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
-        
+
         isset($jsonInfo->interOPYN) ? $this->interOPYN = $jsonInfo->interOPYN : null;
     }
 }

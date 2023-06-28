@@ -101,17 +101,17 @@ class PopbillHTTaxinvoice extends PopbillBase {
         $uri .= '?Type=' . implode ( ',' , $Type );
         $uri .= '&TaxType=' . implode ( ',' , $TaxType );
         $uri .= '&PurposeType=' . implode ( ',' , $PurposeType );
-        
+
         if ( !empty( $TaxRegIDYN ) ) {
             $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
-        
+
         $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         $uri .= '&TaxRegID=' . $TaxRegID;
         $uri .= '&Page=' . $Page;
         $uri .= '&PerPage=' . $PerPage;
         $uri .= '&Order=' . $Order;
-        
+
         if ( !empty( $SearchString ) ) {
             $uri .= '&SearchString=' . urlencode($QString);
         }
@@ -138,10 +138,10 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if ( !empty( $TaxRegIDYN ) ) {
             $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
-        
+
         $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         $uri .= '&TaxRegID=' . $TaxRegID;
-        
+
         if ( !empty( $SearchString ) ) {
             $uri .= '&SearchString=' . urlencode($QString);
         }
@@ -296,26 +296,6 @@ class PopbillHTTaxinvoice extends PopbillBase {
         }
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum, $UserID, true, 'DELETE', null);
     }
-}
-
-class PaymentForm
-{
-    public $settlerName;
-    public $settlerEmail;
-    public $notifyHP;
-    public $paymentName;
-    public $settleCost;
-}
-
-class RefundForm
-{
-    public $contactname;
-    public $tel;
-    public $requestpoint;
-    public $accountbank;
-    public $accountnum;
-    public $accountname;
-    public $reason;
 }
 
 class HTTIFlatRate

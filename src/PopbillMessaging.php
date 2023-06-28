@@ -263,10 +263,10 @@ class PopbillMessaging extends PopbillBase {
         }
 
         $postdata = json_encode($ReceiveNum);
-        
+
         return $this->executeCURL('/Message/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID, true, null, $postdata);
     }
-    
+
     /* 예약전송 일부 취소 (전송 요청번호)
     *    $CorpNum    => 발송사업자번호
     *    $RequestNum => 전송요청번호
@@ -281,7 +281,7 @@ class PopbillMessaging extends PopbillBase {
         if (empty($ReceiveNum)) {
             throw new PopbillException('예약전송 취소할 수신번호가 입력되지 않았습니다.');
         }
-        
+
         $postdata = json_encode($ReceiveNum);
 
         return $this->executeCURL('/Message/Cancel/' . $RequestNum, $CorpNum, $UserID, true, null, $postdata);
@@ -389,7 +389,7 @@ class PopbillMessaging extends PopbillBase {
         return $this->executeCURL('/Message/AutoDenyNumberInfo', $CorpNum);
     }
 
-    // 과금정보 확인 
+    // 과금정보 확인
     public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
     {
         $uri = '/Message/ChargeInfo?Type=' . $MessageType;
@@ -429,25 +429,6 @@ class PopbillMessaging extends PopbillBase {
 
 }
 
-class PaymentForm
-{
-    public $settlerName;
-    public $settlerEmail;
-    public $notifyHP;
-    public $paymentName;
-    public $settleCost;
-}
-
-class RefundForm
-{
-    public $contactname;
-    public $tel;
-    public $requestpoint;
-    public $accountbank;
-    public $accountnum;
-    public $accountname;
-    public $reason;
-}
 
 class ENumMessageType
 {

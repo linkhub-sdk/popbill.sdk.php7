@@ -381,7 +381,8 @@ class PopbillBase
                                 if ($key == 'Filedata') {
                                     $filename = substr($filename, 0, strpos($filename, ';filename'));
                                 }
-                                $postdata[$key] = new \CURLFile($filename);
+                                $NewFileName = substr($value, strpos($value, 'filename=') + strlen('filename='));
+                                $postdata[$key] = new \CURLFile($filename, null, $NewFileName);
                             }
                         } // end of foreach
                     }
@@ -478,7 +479,7 @@ class PopbillBase
                             $value = substr($postdata['Filedata'], 1);
                             $splitStr = explode(';', $value);
                             $path = $splitStr[0];
-                            $fileName = substr($splitStr[1], 9);
+                            $fileName = substr($value, strpos($value, 'filename=') + strlen('filename='));
                         }
                         if (file_exists($path) == FALSE) {
                             throw new PopbillException("전송할 파일이 존재하지 않습니다.", -99999999);

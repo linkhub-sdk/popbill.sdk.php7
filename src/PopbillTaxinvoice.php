@@ -394,7 +394,7 @@ class PopbillTaxinvoice extends PopbillBase {
     }
 
     // 파일첨부
-    public function AttachFile($CorpNum, $MgtKeyType, $MgtKey, $FilePath, $UserID = null)
+    public function AttachFile($CorpNum, $MgtKeyType, $MgtKey, $FilePath, $UserID = null, $DisplayName = null)
     {
         if (is_null($MgtKey) || empty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
@@ -403,7 +403,14 @@ class PopbillTaxinvoice extends PopbillBase {
         if (mb_detect_encoding($this->GetBasename($FilePath)) == 'CP949') {
             $FilePath = iconv('CP949', 'UTF-8', $FilePath);
         }
-        $FileName = $this->GetBasename($FilePath);
+
+        if(is_null($DisplayName) || empty($DisplayName))
+        {
+            $FileName = $this->GetBasename($FilePath);
+        }else{
+            $FileName = $DisplayName;
+        }
+
         $postdata = array('Filedata' => '@' . $FilePath . ';filename=' . $FileName);
 
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);

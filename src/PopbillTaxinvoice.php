@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2023-06-28
+ * Updated : 2024-09-22
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -707,14 +707,14 @@ class PopbillTaxinvoice extends PopbillBase {
     // 팝빌 인감 및 첨부문서 등록 URL
     public function GetSealURL($CorpNum, $UserID)
     {
-        $response = $this->executeCURL('/?TG=SEAL', $CorpNum, $UserID);
+        $response = $this->executeCURL('/Member?TG=SEAL', $CorpNum, $UserID);
         return $response->url;
     }
 
     // 공인인증서 등록 URL
     public function GetTaxCertURL($CorpNum, $UserID)
     {
-        $response = $this->executeCURL('/?TG=CERT', $CorpNum, $UserID);
+        $response = $this->executeCURL('/Member?TG=CERT', $CorpNum, $UserID);
         return $response->url;
     }
 

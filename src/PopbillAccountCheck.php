@@ -123,7 +123,7 @@ class AccountCheckInfo
     public $bankCode;
     public $accountNumber;
     public $accountName;
-    public $checkDate;
+    public $checkDT;
 
     function fromJsonInfo($jsonInfo)
     {
@@ -133,7 +133,7 @@ class AccountCheckInfo
         isset($jsonInfo->bankCode) ? $this->bankCode = $jsonInfo->bankCode : null;
         isset($jsonInfo->accountNumber) ? $this->accountNumber = $jsonInfo->accountNumber : null;
         isset($jsonInfo->accountName) ? $this->accountName = $jsonInfo->accountName : null;
-        isset($jsonInfo->checkDate) ? $this->checkDate = $jsonInfo->checkDate : null;
+        isset($jsonInfo->checkDT) ? $this->checkDT = $jsonInfo->checkDT : null;
     }
 }
 
@@ -146,7 +146,7 @@ class DepositorCheckInfo
     public $accountName;
     public $identityNumType;
     public $identityNum;
-    public $checkDate;
+    public $checkDT;
 
     function fromJsonInfo($jsonInfo)
     {
@@ -157,7 +157,7 @@ class DepositorCheckInfo
         isset($jsonInfo->accountName) ? $this->accountName = $jsonInfo->accountName : null;
         isset($jsonInfo->identityNumType) ? $this->identityNumType = $jsonInfo->identityNumType : null;
         isset($jsonInfo->identityNum) ? $this->identityNum = $jsonInfo->identityNum : null;
-        isset($jsonInfo->checkDate) ? $this->checkDate = $jsonInfo->checkDate : null;
+        isset($jsonInfo->checkDT) ? $this->checkDT = $jsonInfo->checkDT : null;
     }
 }
 

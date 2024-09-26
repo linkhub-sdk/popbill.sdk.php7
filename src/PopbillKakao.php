@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-22
+ * Updated : 2024-09-25
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -31,17 +31,26 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 전송 단가 확인
-    public function GetUnitCost($CorpNum, $MessageType)
-    {
+    public function GetUnitCost($CorpNum, $MessageType) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($MessageType)) {
+            throw new PopbillException('카카오톡 전송유형이 입력되지 않았습니다.');
+        }
+
         return $this->executeCURL('/KakaoTalk/UnitCost?Type=' . $MessageType, $CorpNum)->unitCost;
     }
 
     // 알림톡/친구톡 전송내역 확인
-    public function GetMessages($CorpNum, $ReceiptNum, $UserID = null)
-    {
-        if (empty($ReceiptNum)) {
+    public function GetMessages($CorpNum, $ReceiptNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($ReceiptNum)) {
             throw new PopbillException('카카오톡 접수번호가 입력되지 않았습니다.');
         }
+
         $response = $this->executeCURL('/KakaoTalk/' . $ReceiptNum, $CorpNum, $UserID);
         $DetailInfo = new KakaoSentInfo();
         $DetailInfo->fromJsonInfo($response);
@@ -50,11 +59,14 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 알림톡/친구톡 전송내역 확인 (요청번호 할당)
-    public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null)
-    {
-        if (empty($RequestNum)) {
+    public function GetMessagesRN($CorpNum, $RequestNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($RequestNum)) {
             throw new PopbillException('카카오톡 전송요청번호가 입력되지 않았습니다.');
         }
+
         $response = $this->executeCURL('/KakaoTalk/Get/' . $RequestNum, $CorpNum, $UserID);
         $DetailInfo = new KakaoSentInfo();
         $DetailInfo->fromJsonInfo($response);
@@ -63,8 +75,11 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 카카오톡 채널 목록 확인
-    public function ListPlusFriendID($CorpNum)
-    {
+    public function ListPlusFriendID($CorpNum) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $PlusFriendList = array();
         $response = $this->executeCURL('/KakaoTalk/ListPlusFriendID', $CorpNum);
 
@@ -78,8 +93,11 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 알림톡 템플릿 목록 확인
-    public function ListATSTemplate($CorpNum)
-    {
+    public function ListATSTemplate($CorpNum) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $result = $this->executeCURL('/KakaoTalk/ListATSTemplate', $CorpNum);
 
         $TemplateList = array();
@@ -93,32 +111,47 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 발신번호 등록여부 확인
-    public function CheckSenderNumber($CorpNum, $SenderNumber, $UserID=null)
-    {
-        if (empty($SenderNumber)) {
+    public function CheckSenderNumber($CorpNum, $SenderNumber, $UserID=null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($SenderNumber)) {
             throw new PopbillException('발신번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/KakaoTalk/CheckSenderNumber/' . $SenderNumber, $CorpNum, $UserID);
     }
 
     // 발신번호 목록 확인
-    public function GetSenderNumberList($CorpNum)
-    {
+    public function GetSenderNumberList($CorpNum) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         return $this->executeCURL('/Message/SenderNumber', $CorpNum);
     }
 
     // 예약전송 취소 (접수번호)
-    public function CancelReserve($CorpNum, $ReceiptNum, $UserID = null)
-    {
-        if (empty($ReceiptNum)) {
+    public function CancelReserve($CorpNum, $ReceiptNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($ReceiptNum)) {
             throw new PopbillException('예약전송을 취소할 접수번호가 입력되지 않았습니다.');
         }
+
         return $this->executeCURL('/KakaoTalk/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
 
     // 예약전송 전체 취소 (전송 요청번호)
-    public function CancelReserveRN($CorpNum, $RequestNum, $UserID = null)
-    {
+    public function CancelReserveRN($CorpNum, $RequestNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($RequestNum)) {
+            throw new PopbillException('예약전송을 취소할 전송요청번호가 입력되지 않았습니다.');
+        }
+
         if (empty($RequestNum)) {
             throw new PopbillException('예약전송을 취소할 전송요청번호가 입력되지 않았습니다.');
         }
@@ -126,12 +159,14 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 예약전송 일부 취소 (접수번호)
-    public function CancelReservebyRCV($CorpNum, $ReceiptNum, $ReceiveNum, $UserID = null)
-    {
-        if (empty($ReceiptNum)) {
+    public function CancelReservebyRCV($CorpNum, $ReceiptNum, $ReceiveNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($ReceiptNum)) {
             throw new PopbillException('예약전송 취소할 접수번호가 입력되지 않았습니다.');
         }
-        if (empty($ReceiveNum)) {
+        if($this->isNullOrEmpty($ReceiveNum)) {
             throw new PopbillException('예약전송 취소할 수신번호가 입력되지 않았습니다.');
         }
 
@@ -141,12 +176,14 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 예약전송 일부 취소 (전송 요청번호)
-    public function CancelReserveRNbyRCV($CorpNum, $RequestNum, $ReceiveNum, $UserID = null)
-    {
-        if (empty($RequestNum)) {
+    public function CancelReserveRNbyRCV($CorpNum, $RequestNum, $ReceiveNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($RequestNum)) {
             throw new PopbillException('예약전송 취소할 전송요청번호가 입력되지 않았습니다.');
         }
-        if (empty($ReceiveNum)) {
+        if($this->isNullOrEmpty($ReceiveNum)) {
             throw new PopbillException('예약전송 취소할 수신번호가 입력되지 않았습니다.');
         }
 
@@ -168,30 +205,44 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 플러스친구 계정관리 팝업 URL
-    public function GetPlusFriendMgtURL($CorpNum, $UserID)
-    {
+    public function GetPlusFriendMgtURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL('/KakaoTalk/?TG=PLUSFRIEND', $CorpNum, $UserID);
+
         return $response->url;
     }
 
     // 발신번호 관리 팝업 URL
-    public function GetSenderNumberMgtURL($CorpNum, $UserID)
-    {
+    public function GetSenderNumberMgtURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL('/Message/?TG=SENDER', $CorpNum, $UserID);
+        
         return $response->url;
     }
 
     // 알림톡 템플릿관리 팝업 URL
-    public function GetATSTemplateMgtURL($CorpNum, $UserID)
-    {
+    public function GetATSTemplateMgtURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL('/KakaoTalk/?TG=TEMPLATE', $CorpNum, $UserID);
+        
         return $response->url;
     }
 
     // 알림톡 템플릿 정보 확인
-    public function GetATSTemplate($CorpNum, $TemplateCode, $UserID = null)
-    {
-        if (is_null($TemplateCode) || $TemplateCode === "") {
+    public function GetATSTemplate($CorpNum, $TemplateCode, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($TemplateCode)) {
             throw new PopbillException('템플릿코드가 입력되지 않았습니다.');
         }
 
@@ -204,45 +255,76 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 카카오톡 전송내역 팝업 URL
-    public function GetSentListURL($CorpNum, $UserID)
-    {
+    public function GetSentListURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL('/KakaoTalk/?TG=BOX', $CorpNum, $UserID);
+
         return $response->url;
     }
 
     // 전송내역 목록 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = '', $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null)
-    {
-        if (is_null($SDate) || $SDate === "") {
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($SDate)) {
             throw new PopbillException('시작일자가 입력되지 않았습니다.');
         }
-
-        if (is_null($EDate) || $EDate === "") {
+        if(!$this->isValidDate($SDate)) {
+            throw new PopbillException('시작일자가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($EDate)) {
             throw new PopbillException('종료일자가 입력되지 않았습니다.');
+        }
+        if(!$this->isValidDate($EDate)) {
+            throw new PopbillException('종료일자가 유효하지 않습니다.');
         }
 
         $uri = '/KakaoTalk/Search?SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
 
-        if (!is_null($State) || !empty($State)) {
-            $uri .= '&State=' . implode(',', $State);
-        }
-        if (!is_null($Item) || !empty($Item)) {
-            $uri .= '&Item=' . implode(',', $Item);
+        $uri .= '&State=';
+        if(!$this->isNullOrEmpty($State)) {
+            $uri .= implode(',', $State);
         }
 
-        $uri .= '&ReserveYN=' . $ReserveYN;
+        $uri .= '&Item=';
+        if(!$this->isNullOrEmpty($Item)) {
+            $uri .= implode(',', $Item);
+        }
+
+        $uri .= '&ReserveYN=';
+        if(!$this->isNullOrEmpty($ReserveYN)) {
+            $uri .= $ReserveYN;
+        }
 
         if ($SenderYN) {
             $uri .= '&SenderYN=1';
+        } else {
+            $uri .= '&SenderYN=0';
         }
 
-        $uri .= '&Page=' . $Page;
-        $uri .= '&PerPage=' . $PerPage;
-        $uri .= '&Order=' . $Order;
+        $uri .= '&Page=';
+        if(!$this->isNullOrEmpty($Page)) {
+            $uri .= $Page;
+        }
 
-        if (!is_null($QString) || !empty($QString)) {
-            $uri .= '&QString=' . urlencode($QString);
+        $uri .= '&PerPage=';
+        if(!$this->isNullOrEmpty($PerPage)) {
+            $uri .= $PerPage;
+        }
+
+        $uri .= '&Order=';
+        if(!$this->isNullOrEmpty($Order)) {
+            $uri .= $Order;
+        }
+
+        $uri .= '&QString=';
+        if(!$this->isNullOrEmpty($QString)) {
+            $uri .= urlencode($QString);
         }
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
@@ -255,8 +337,14 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 과금정보 확인
-    public function GetChargeInfo($CorpNum, $MessageType, $UserID = null)
-    {
+    public function GetChargeInfo($CorpNum, $MessageType, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($MessageType)) {
+            throw new PopbillException('카카오톡 전송유형이 입력되지 않았습니다.');
+        }
+        
         $uri = '/KakaoTalk/ChargeInfo?Type=' . $MessageType;
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
@@ -267,23 +355,36 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 친구톡(이미지)
-    public function SendFMS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null, $AltSubject = null)
-    {
+    public function SendFMS($CorpNum, $PlusFriendID, $Sender = null, $Content = null, $AltContent = null, $AltSendType = null, $AdsYN = false, $Messages = array(), $Btns = array(), $ReserveDT = null, $FilePaths = array(), $ImageURL = null, $UserID = null, $RequestNum = null, $AltSubject = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($PlusFriendID)) {
+            throw new PopbillException('카카오톡 채널 검색용 아이디가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($Messages)) {
+            throw new PopbillException('전송정보가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($FilePaths)) {
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
+        }
+
         $Request = array();
 
-        if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
-        if (empty($Sender) == false) $Request['snd'] = $Sender;
-        if (empty($Content) == false) $Request['content'] = $Content;
-        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
-        if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
-        if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
-        if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
-        if (empty($AdsYN) == false) $Request['adsYN'] = $AdsYN;
-        if (empty($ImageURL) == false) $Request['imageURL'] = $ImageURL;
-        if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
-
+        $Request['plusFriendID'] = $PlusFriendID;
         $Request['msgs'] = $Messages;
-        $Request['btns'] = $Btns;
+
+        if(!$this->isNullOrEmpty($Sender)) $Request['snd'] = $Sender;
+        if(!$this->isNullOrEmpty($Content)) $Request['content'] = $Content;
+        if(!$this->isNullOrEmpty($AltSubject)) $Request['altSubject'] = $AltSubject;
+        if(!$this->isNullOrEmpty($AltContent)) $Request['altContent'] = $AltContent;
+        if(!$this->isNullOrEmpty($AltSendType)) $Request['altSendType'] = $AltSendType;
+        if(!$this->isNullOrEmpty($ReserveDT)) $Request['sndDT'] = $ReserveDT;
+        if(!$this->isNullOrEmpty($AdsYN)) $Request['adsYN'] = $AdsYN;
+        if(!$this->isNullOrEmpty($ImageURL)) $Request['imageURL'] = $ImageURL;
+        if(!$this->isNullOrEmpty($RequestNum)) $Request['requestNum'] = $RequestNum;
+        if(!$this->isNullOrEmpty($Btns)) $Request['btns'] = $Btns;
+
         $postdata = array();
         $postdata['form'] = json_encode($Request);
 
@@ -297,42 +398,62 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 친구톡(텍스트)
-    public function SendFTS($CorpNum, $PlusFriendID, $Sender, $Content, $AltContent, $AltSendType, $AdsYN, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $AltSubject = null)
-    {
+    public function SendFTS($CorpNum, $PlusFriendID, $Sender = null, $Content = null, $AltContent = null, $AltSendType = null, $AdsYN = false, $Messages = array(), $Btns = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $AltSubject = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($PlusFriendID)) {
+            throw new PopbillException('카카오톡 채널 검색용 아이디가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($Messages)) {
+            throw new PopbillException('전송정보가 입력되지 않았습니다.');
+        }
+        
         $Request = array();
 
-        if (empty($PlusFriendID) == false) $Request['plusFriendID'] = $PlusFriendID;
-        if (empty($Sender) == false) $Request['snd'] = $Sender;
-        if (empty($Content) == false) $Request['content'] = $Content;
-        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
-        if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
-        if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
-        if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
-        if (empty($AdsYN) == false) $Request['adsYN'] = $AdsYN;
-        if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
-
+        $Request['plusFriendID'] = $PlusFriendID;
         $Request['msgs'] = $Messages;
-        $Request['btns'] = $Btns;
+
+        if(!$this->isNullOrEmpty($Sender)) $Request['snd'] = $Sender;
+        if(!$this->isNullOrEmpty($Content)) $Request['content'] = $Content;
+        if(!$this->isNullOrEmpty($AltSubject)) $Request['altSubject'] = $AltSubject;
+        if(!$this->isNullOrEmpty($AltContent)) $Request['altContent'] = $AltContent;
+        if(!$this->isNullOrEmpty($AltSendType)) $Request['altSendType'] = $AltSendType;
+        if(!$this->isNullOrEmpty($ReserveDT)) $Request['sndDT'] = $ReserveDT;
+        if(!$this->isNullOrEmpty($AdsYN)) $Request['adsYN'] = $AdsYN;
+        if(!$this->isNullOrEmpty($RequestNum)) $Request['requestNum'] = $RequestNum;
+        if(!$this->isNullOrEmpty($Btns)) $Request['btns'] = $Btns;
+
         $postdata = json_encode($Request);
 
         return $this->executeCURL('/FTS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
     // 알림톡 전송
-    public function SendATS($CorpNum, $TemplateCode, $Sender, $Content, $AltContent, $AltSendType, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = null, $AltSubject = null)
-    {
+    public function SendATS($CorpNum, $TemplateCode, $Sender = null, $Content = null, $AltContent = null, $AltSendType = null, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = array(), $AltSubject = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($TemplateCode)) {
+            throw new PopbillException('승인된 알림톡 템플릿 코드가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($Messages)) {
+            throw new PopbillException('전송정보가 입력되지 않았습니다.');
+        }
+
         $Request = array();
 
-        if (empty($TemplateCode) == false) $Request['templateCode'] = $TemplateCode;
-        if (empty($Sender) == false) $Request['snd'] = $Sender;
-        if (empty($Content) == false) $Request['content'] = $Content;
-        if (empty($AltSubject) == false) $Request['altSubject'] = $AltSubject;
-        if (empty($AltContent) == false) $Request['altContent'] = $AltContent;
-        if (empty($AltSendType) == false) $Request['altSendType'] = $AltSendType;
-        if (empty($ReserveDT) == false) $Request['sndDT'] = $ReserveDT;
-        if (empty($RequestNum) == false) $Request['requestNum'] = $RequestNum;
+        $Request['templateCode'] = $TemplateCode;
         $Request['msgs'] = $Messages;
-        if (is_null($Btns) == false) $Request['btns'] = $Btns;
+
+        if(!$this->isNullOrEmpty($Sender)) $Request['snd'] = $Sender;
+        if(!$this->isNullOrEmpty($Content)) $Request['content'] = $Content;
+        if(!$this->isNullOrEmpty($AltSubject)) $Request['altSubject'] = $AltSubject;
+        if(!$this->isNullOrEmpty($AltContent)) $Request['altContent'] = $AltContent;
+        if(!$this->isNullOrEmpty($AltSendType)) $Request['altSendType'] = $AltSendType;
+        if(!$this->isNullOrEmpty($ReserveDT)) $Request['sndDT'] = $ReserveDT;
+        if(!$this->isNullOrEmpty($RequestNum)) $Request['requestNum'] = $RequestNum;
+        if(!$this->isNullOrEmpty($Btns)) $Request['btns'] = $Btns;
 
         $postdata = json_encode($Request);
 

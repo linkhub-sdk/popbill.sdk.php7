@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-22
+ * Updated : 2024-09-23
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -29,14 +29,23 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 계좌 관리 팝업 URL
-    public function GetBankAccountMgtURL ($CorpNum, $UserID = null)
-    {
+    public function GetBankAccountMgtURL ($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         return $this->executeCURL ( '/EasyFin/Bank?TG=BankAccount', $CorpNum, $UserID )->url;
     }
 
     // 계좌 등록
-    public function RegistBankAccount($CorpNum, $BankAccountInfo, $UserID = null)
-    {
+    public function RegistBankAccount($CorpNum, $BankAccountInfo, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($BankAccountInfo)) {
+            throw new PopbillException('계좌 정보가 입력되지 않았습니다.');
+        }
+
         $uri = '/EasyFin/Bank/BankAccount/Regist';
         $uri .= '?UsePeriod=' . $BankAccountInfo->UsePeriod;
 
@@ -46,14 +55,21 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 계좌정보 수정
-    public function UpdateBankAccount($CorpNum, $BankCode, $AccountNumber, $BankAccountInfo, $UserID = null)
-    {
-        if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
-            throw new PopbillException ('기관코드가 올바르지 않습니다.');
+    public function UpdateBankAccount($CorpNum, $BankCode, $AccountNumber, $BankAccountInfo, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if ( empty($AccountNumber) || $AccountNumber === "" ) {
-            throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
+        }
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($BankAccountInfo)) {
+            throw new PopbillException ('수정할 계좌 정보가 입력되지 않았습니다.');
         }
 
         $uri = '/EasyFin/Bank/BankAccount/'.$BankCode.'/'.$AccountNumber.'/Update';
@@ -64,18 +80,24 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 정액제 해지요청
-    public function CloseBankAccount($CorpNum, $BankCode, $AccountNumber, $CloseType, $UserID = null)
-    {
-        if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
-            throw new PopbillException ('기관코드가 올바르지 않습니다.');
+    public function CloseBankAccount($CorpNum, $BankCode, $AccountNumber, $CloseType, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if ( empty($AccountNumber) || $AccountNumber === "" ) {
-            throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
         }
-
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($CloseType)) {
+            throw new PopbillException ('정액제 해지 구분이 입력되지 않았습니다.');
+        }
         if( $CloseType != "일반" && $CloseType != "중도"){
-            throw new PopbillException ('정액제 해지유형이 올바르지 않습니다.');
+            throw new PopbillException ('정액제 해지 구분이 유효하지 않습니다.');
         }
 
         $uri = '/EasyFin/Bank/BankAccount/Close';
@@ -87,14 +109,18 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 정액제 해지요청 취소
-    public function RevokeCloseBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
-    {
-        if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
-            throw new PopbillException ('기관코드가 올바르지 않습니다.');
+    public function RevokeCloseBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if ( empty($AccountNumber) || $AccountNumber === "" ) {
-            throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
+        }
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
         }
 
         $uri = '/EasyFin/Bank/BankAccount/RevokeClose';
@@ -105,14 +131,18 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 계좌 삭제
-    public function DeleteBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null)
-    {
-        if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
-            throw new PopbillException ('기관코드가 올바르지 않습니다.');
+    public function DeleteBankAccount($CorpNum, $BankCode, $AccountNumber, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if ( empty($AccountNumber) || $AccountNumber === "" ) {
-            throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
+        }
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
         }
 
         $uri = '/EasyFin/Bank/BankAccount/Delete';
@@ -123,14 +153,18 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 계좌정보 확인
-    public function GetBankAccountInfo($CorpNum, $BankCode, $AccountNumber, $UserID = null)
-    {
-        if ( empty($BankCode) || strlen ( $BankCode ) != 4 ) {
-            throw new PopbillException ('기관코드가 올바르지 않습니다.');
+    public function GetBankAccountInfo($CorpNum, $BankCode, $AccountNumber, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if ( empty($AccountNumber) || $AccountNumber === "" ) {
-            throw new PopbillException ('계좌번호가 올바르지 않습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
+        }
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
         }
 
         $response = $this->executeCURL('/EasyFin/Bank/BankAccount/'.$BankCode.'/'.$AccountNumber, $CorpNum, $UserID);
@@ -142,8 +176,11 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 계좌정보 목록 조회
-    public function ListBankAccount($CorpNum, $UserID = null)
-    {
+    public function ListBankAccount($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $result = $this->executeCURL('/EasyFin/Bank/ListBankAccount', $CorpNum, $UserID);
 
         $BankAccountList = array();
@@ -159,21 +196,29 @@ class PopbillEasyFinBank extends PopbillBase {
 
     // 수집 요청
     public function RequestJob($CorpNum, $BankCode, $AccountNumber, $SDate, $EDate, $UserID = null) {
-
-        if ( empty($BankCode) || $BankCode === "")    {
-            throw new PopbillException('기관코드가 입력되지 않았습니다.');
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-
-        if(empty($AccountNumber) || $AccountNumber === "")    {
-            throw new PopbillException('계좌번호가 입력되지 않았습니다.');
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
         }
-
-        if(empty($SDate) || $SDate === "")    {
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($SDate)) {
             throw new PopbillException('조회 시작일자가 입력되지 않았습니다.');
         }
-
-        if(empty($EDate) || $EDate === "")    {
+        if(!$this->isValidDate($SDate)) {
+            throw new PopbillException('조회 시작일자가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($EDate)) {
             throw new PopbillException('조회 종료일자가 입력되지 않았습니다.');
+        }
+        if(!$this->isValidDate($EDate)) {
+            throw new PopbillException('조회 종료일자가 유효하지 않습니다.');
         }
 
         $uri = '/EasyFin/Bank/BankAccount?BankCode='.$BankCode.'&AccountNumber='.$AccountNumber;
@@ -183,10 +228,15 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 수집 상태 확인
-    public function GetJobState($CorpNum, $JobID, $UserID = null)
-    {
-        if ( empty($JobID) || strlen ( $JobID ) != 18 ) {
-            throw new PopbillException ('작업아이디가 올바르지 않습니다.');
+    public function GetJobState($CorpNum, $JobID, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($JobID)) {
+            throw new PopbillException('작업아이디가 입력되지 않았습니다.');
+        }
+        if(strlen ( $JobID ) != 18 ) {
+            throw new PopbillException ('작업아이디가 유효하지 않습니다.');
         }
 
         $response = $this->executeCURL('/EasyFin/Bank/'.$JobID.'/State', $CorpNum, $UserID);
@@ -198,8 +248,11 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 수집 상태 목록 확인
-    public function ListActiveJob($CorpNum, $UserID = null)
-    {
+    public function ListActiveJob($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $result = $this->executeCURL('/EasyFin/Bank/JobList', $CorpNum, $UserID);
 
         $JobList = array();
@@ -214,22 +267,43 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 거래 내역 조회
-    public function Search($CorpNum, $JobID, $TradeType, $SearchString, $Page, $PerPage, $Order, $UserID = null)
-    {
-        if ( strlen ( $JobID ) != 18 ) {
-            throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
+    public function Search($CorpNum, $JobID, $TradeType = array(), $SearchString = null, $Page = null, $PerPage = null, $Order = null, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($JobID)) {
+            throw new PopbillException('작업아이디가 입력되지 않았습니다.');
+        }
+        if(strlen ( $JobID ) != 18 ) {
+            throw new PopbillException ('작업아이디가 유효하지 않습니다.');
         }
 
         $uri = '/EasyFin/Bank/'.$JobID;
-        $uri .= '?TradeType=' . implode ( ',' , $TradeType );
 
-        if ( !empty( $SearchString ) ) {
-            $uri .= '&SearchString=' . urlencode($SearchString);
+        $uri .= '?TradeType=';
+        if(!$this->isNullOrEmpty($TradeType)) {
+            $uri .= implode (',', $TradeType);
         }
 
-        $uri .= '&Page=' . $Page;
-        $uri .= '&PerPage=' . $PerPage;
-        $uri .= '&Order=' . $Order;
+        $uri .= '&SearchString=';
+        if(!$this->isNullOrEmpty($SearchString)) {
+            $uri .= urlencode($SearchString);
+        }
+
+        $uri .= '&Page=';
+        if(!$this->isNullOrEmpty($Page)) {
+            $uri .= $Page;
+        }
+
+        $uri .= '&PerPage=';
+        if(!$this->isNullOrEmpty($PerPage)) {
+            $uri .= $PerPage;
+        }
+
+        $uri .= '&Order=';
+        if(!$this->isNullOrEmpty($Order)) {
+            $uri .= $Order;
+        }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
 
@@ -239,17 +313,27 @@ class PopbillEasyFinBank extends PopbillBase {
         return $SearchResult;
     }
 
-    public function Summary ( $CorpNum, $JobID, $TradeType, $SearchString, $UserID = null )
-    {
-        if ( strlen ( $JobID ) != 18 ) {
-            throw new PopbillException ('작업아이디(JobID)가 올바르지 않습니다.');
+    public function Summary ( $CorpNum, $JobID, $TradeType, $SearchString, $UserID = null ) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($JobID)) {
+            throw new PopbillException('작업아이디가 입력되지 않았습니다.');
+        }
+        if(strlen ( $JobID ) != 18 ) {
+            throw new PopbillException ('작업아이디가 유효하지 않습니다.');
         }
 
         $uri = '/EasyFin/Bank/'.$JobID.'/Summary';
-        $uri .= '?TradeType=' . implode ( ',' , $TradeType );
 
-        if ( !empty( $SearchString ) ) {
-            $uri .= '&SearchString=' . urlencode($SearchString);
+        $uri .= '?TradeType=';
+        if(!$this->isNullOrEmpty($TradeType)) {
+            $uri .= implode (',', $TradeType);
+        }
+
+        $uri .= '&SearchString=';
+        if(!$this->isNullOrEmpty($SearchString)) {
+            $uri .= urlencode($SearchString);
         }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
@@ -261,10 +345,15 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 거래 내역 요약정보 조회
-    public function SaveMemo($CorpNum, $TID, $Memo, $UserID = null)
-    {
-        if(empty($TID) || $TID === "")    {
+    public function SaveMemo($CorpNum, $TID, $Memo, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($TID)) {
             throw new PopbillException('거래내역 아이디가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($Memo)) {
+            throw new PopbillException('메모가 입력되지 않았습니다.');
         }
 
         $uri = '/EasyFin/Bank/SaveMemo';
@@ -276,14 +365,29 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 정액제 서비스 신청 팝업 URL
-    public function GetFlatRatePopUpURL($CorpNum, $UserID = null)
-    {
+    public function GetFlatRatePopUpURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         return $this->executeCURL ( '/EasyFin/Bank?TG=CHRG', $CorpNum, $UserID )->url;
     }
 
     // 정액제 서비스 상태 확인
-    public function GetFlatRateState($CorpNum, $BankCode, $AccountNumber, $UserID = null)
-    {
+    public function GetFlatRateState($CorpNum, $BankCode, $AccountNumber, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($BankCode)) {
+            throw new PopbillException ('기관코드가 입력되지 않았습니다.');
+        }
+        if(strlen ( $BankCode ) != 4 ) {
+            throw new PopbillException ('기관코드가 유효하지 않습니다.');
+        }
+        if($this->isNullOrEmpty($AccountNumber)) {
+            throw new PopbillException ('계좌번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL ( '/EasyFin/Bank/Contract/'.$BankCode.'/'.$AccountNumber, $CorpNum, $UserID ) ;
 
         $FlatRateState = new EasyFinBankFlatRate();
@@ -293,8 +397,11 @@ class PopbillEasyFinBank extends PopbillBase {
     }
 
     // 과금정보 확인
-    public function GetChargeInfo($CorpNum, $UserID = null)
-    {
+    public function GetChargeInfo($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
         $response = $this->executeCURL('/EasyFin/Bank/ChargeInfo', $CorpNum, $UserID);
 
         $ChargeInfo = new ChargeInfo();

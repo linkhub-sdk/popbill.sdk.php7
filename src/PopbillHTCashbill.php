@@ -109,7 +109,7 @@ class PopbillHTCashbill extends PopbillBase {
     }
 
     // 수집 결과 조회
-    public function Search($CorpNum, $JobID, $TradeType, $TradeUsage, $Page = null, $PerPage = null, $Order = null, $UserID = null) {
+    public function Search($CorpNum, $JobID, $TradeType = array(), $TradeUsage = array(), $Page = null, $PerPage = null, $Order = null, $UserID = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -119,16 +119,18 @@ class PopbillHTCashbill extends PopbillBase {
         if(strlen ( $JobID ) != 18) {
             throw new PopbillException ('작업아이디(JobID)가 유효하지 않습니다.');
         }
-        if($this->isNullOrEmpty($TradeType)) {
-            throw new PopbillException('현금영수증 문서형태가 입력되지 않았습니다.');
-        }
-        if($this->isNullOrEmpty($TradeUsage)) {
-            throw new PopbillException('현금영수증 거래구분이 입력되지 않았습니다.');
-        }
 
         $uri = '/HomeTax/Cashbill/'.$JobID;
-        $uri .= '?TradeType=' . implode ( ',' , $TradeType );
-        $uri .= '&TradeUsage=' . implode ( ',', $TradeUsage );
+
+        $uri .= '?TradeType=';
+        if(!$this->isNullOrEmpty($TradeType)) {
+            $uri .= implode ( ',', $TradeType );
+        }
+
+        $uri .= '&TradeUsage=';
+        if(!$this->isNullOrEmpty($TradeUsage)) {
+            $uri .= implode ( ',', $TradeUsage );
+        }
 
         $uri .= '&Page=';
         if(!$this->isNullOrEmpty($Page)) {

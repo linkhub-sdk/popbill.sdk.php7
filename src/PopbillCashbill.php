@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-23
+ * Updated : 2024-10-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -143,6 +143,9 @@ class PopbillCashbill extends PopbillBase {
         }
         if(!$this->isValidDate($orgTradeDate)) {
             throw new PopbillException('당초 승인 현금영수증의 거래일자가 유효하지 않습니다.');
+        }
+        if(!$this->isNullOrEmpty($tradeDT) && !($this->isValidDT($tradeDT) || $this->isValidDate($tradeDT))) {
+            throw new PopbillException('거래일시가 유효하지 않습니다.');
         }
 
         $request = array(
@@ -473,54 +476,44 @@ class PopbillCashbill extends PopbillBase {
         $uri .= '&SDate='.$SDate;
         $uri .= '&EDate='.$EDate;
 
-        $uri .= '&State=';
         if(!$this->isNullOrEmpty($State)) {
-            $uri .= implode(',', $State);
+            $uri .= '&State=' . implode(',', $State);
         }
 
-        $uri .= '&TradeType=';
         if(!$this->isNullOrEmpty($TradeType)) {
-            $uri .= implode(',', $TradeType);
+            $uri .= '&TradeType=' . implode(',', $TradeType);
         }
 
-        $uri .= '&TradeUsage=';
         if(!$this->isNullOrEmpty($TradeUsage)) {
-            $uri .= implode(',', $TradeUsage);
+            $uri .= '&TradeUsage=' . implode(',', $TradeUsage);
         }
 
-        $uri .= '&TaxationType=';
         if(!$this->isNullOrEmpty($TaxationType)) {
             $uri .= '&TaxationType=' . implode(',',$TaxationType);
         }
 
-        $uri .= '&Page=';
         if(!$this->isNullOrEmpty($Page)) {
-            $uri .= $Page;
+            $uri .= '&Page=' . $Page;
         }
 
-        $uri .= '&PerPage=';
         if(!$this->isNullOrEmpty($PerPage)) {
-            $uri .= $PerPage;
+            $uri .= '&PerPage=' . $PerPage;
         }
 
-        $uri .= '&Order=';
         if(!$this->isNullOrEmpty($Order)) {
-            $uri .= $Order;
+            $uri .= '&Order=' . $Order;
         }
 
-        $uri .= '&QString=';
         if(!$this->isNullOrEmpty($QString)) {
-            $uri .= $QString;
+            $uri .= '&QString=' . $QString;
         }
 
-        $uri .= '&TradeOpt=';
         if(!$this->isNullOrEmpty($TradeOpt)) {
-            $uri .= implode(',', $TradeOpt);
+            $uri .= '&TradeOpt=' . implode(',', $TradeOpt);
         }
 
-        $uri .= '&FranchiseTaxRegID=';
         if(!$this->isNullOrEmpty($FranchiseTaxRegID)) {
-            $uri .= $FranchiseTaxRegID;
+            $uri .= '&FranchiseTaxRegID=' . $FranchiseTaxRegID;
         }
 
         $response = $this->executeCURL($uri, $CorpNum, "");

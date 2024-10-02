@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-25
+ * Updated : 2024-10-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -760,7 +760,7 @@ class PopbillTaxinvoice extends PopbillBase {
     }
 
     // 세금계산서 조회
-    public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly = false, $Page = null, $PerPage = null, $Order = null,
+    public function Search($CorpNum, $MgtKeyType, $DType, $SDate, $EDate, $State = array(), $Type = array(), $TaxType = array(), $LateOnly = null, $Page = null, $PerPage = null, $Order = null,
                            $TaxRegIDType = null, $TaxRegIDYN = null, $TaxRegID = null, $QString = null, $InterOPYN = null, $UserID = null, $IssueType = array(),
                            $CloseDownState = array(), $MgtKey = null, $RegType = array()) {
         if($this->isNullOrEmpty($CorpNum)) {
@@ -790,85 +790,72 @@ class PopbillTaxinvoice extends PopbillBase {
         $uri .= '&SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
 
-        $uri .= '&State=';
         if(!$this->isNullOrEmpty($State)) {
-            $uri .= implode(',', $State);
+            $uri .= '&State=' . implode(',', $State);
         }
 
-        $uri .= '&Type=';
         if(!$this->isNullOrEmpty($Type)) {
-            $uri .= implode(',', $Type);
+            $uri .= '&Type=' . implode(',', $Type);
         }
 
-        $uri .= '&TaxType=';
         if(!$this->isNullOrEmpty($TaxType)) {
-            $uri .= implode(',', $TaxType);
+            $uri .= '&TaxType=' . implode(',', $TaxType);
         }
 
-        if ($LateOnly) {
-            $uri .= '&LateOnly=1';
-        } else {
-            $uri .= '&LateOnly=0';
+        if (!$this->isNullOrEmpty($LateOnly)) {
+            if ($LateOnly) {
+                $uri .= '&LateOnly=1';
+            } else {
+                $uri .= '&LateOnly=0';
+            }
         }
 
-        $uri .= '&Page=';
         if(!$this->isNullOrEmpty($Page)) {
-            $uri .= $Page;
+            $uri .= '&Page=' . $Page;
         }
 
-        $uri .= '&PerPage=';
         if(!$this->isNullOrEmpty($PerPage)) {
-            $uri .= $PerPage;
+            $uri .= '&PerPage=' . $PerPage;
         }
 
-        $uri .= '&Order=';
         if(!$this->isNullOrEmpty($Order)) {
-            $uri .= $Order;
+            $uri .= '&Order=' . $Order;
         }
 
-        $uri .= '&TaxRegID=';
         if(!$this->isNullOrEmpty($TaxRegID)) {
-            $uri .= $TaxRegID;
+            $uri .= '&TaxRegID=' . $TaxRegID;
         }
 
-        $uri .= '&TaxRegIDType=';
         if(!$this->isNullOrEmpty($TaxRegIDType)) {
-            $uri .= $TaxRegIDType;
+            $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         }
 
-        $uri .= '&TaxRegIDYN=';
         if(!$this->isNullOrEmpty($TaxRegIDYN)) {
-            $uri .= $TaxRegIDYN;
+            $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
 
-        $uri .= '&QString=';
         if(!$this->isNullOrEmpty($QString)) {
-            $uri .= urlencode($QString);
+            $uri .= '&QString=' . urlencode($QString);
         }
 
-        $uri .= '&InterOPYN=';
         if(!$this->isNullOrEmpty($InterOPYN)) {
-            $uri .= $InterOPYN;
+            $uri .= '&InterOPYN=' . $InterOPYN;
         }
 
-        $uri .= '&IssueType=';
         if(!$this->isNullOrEmpty($IssueType)) {
-            $uri .= implode(',', $IssueType);
+            $uri .= '&IssueType=' . implode(',', $IssueType);
         }
 
-        $uri .= '&CloseDownState=';
         if(!$this->isNullOrEmpty($CloseDownState)) {
-            $uri .= implode(',', $CloseDownState);
+            $uri .= '&CloseDownState=' . implode(',', $CloseDownState);
         }
 
-        $uri .= '&MgtKey=';
         if(!$this->isNullOrEmpty($MgtKey)) {
-            $uri .= $MgtKey;
+            $uri .= '&MgtKey=' . $MgtKey;
         }
 
-        $uri .= '&RegType=';
         if(!$this->isNullOrEmpty($RegType)) {
-            $uri .= implode(',', $RegType);
+            $uri .= '&RegType=' . implode(',', $RegType);
         }
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

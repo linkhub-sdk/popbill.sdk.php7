@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-24
+ * Updated : 2024-10-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -61,6 +61,9 @@ class PopbillFax extends PopbillBase {
         if($this->isNullOrEmpty($FilePaths)) {
             throw new PopbillException('전송할 팩스파일경로가 입력되지 않았습니다.');
         }
+        if(!$this->isNullOrEmpty($ReserveDT) && !$this->isValidDT($ReserveDT)) {
+            throw new PopbillException('전송 예약일시가 유효하지 않습니다.');
+        }
 
         $RequestForm = array();
         $RequestForm['fCnt'] = count($FilePaths);
@@ -96,6 +99,9 @@ class PopbillFax extends PopbillBase {
         }
         if($this->isNullOrEmpty($FileDatas)) {
             throw new PopbillException('전송할 팩스파일경로가 입력되지 않았습니다.');
+        }
+        if(!$this->isNullOrEmpty($ReserveDT) && !$this->isValidDT($ReserveDT)) {
+            throw new PopbillException('전송 예약일시가 유효하지 않습니다.');
         }
 
         $RequestForm = array();
@@ -138,6 +144,9 @@ class PopbillFax extends PopbillBase {
         if($this->isNullOrEmpty($ReceiptNum)) {
             throw new PopbillException('팩스접수번호(receiptNum)가 입력되지 않았습니다.');
         }
+        if(!$this->isNullOrEmpty($ReserveDT) && !$this->isValidDT($ReserveDT)) {
+            throw new PopbillException('전송 예약일시가 유효하지 않습니다.');
+        }
 
         $RequestForm = array();
 
@@ -160,6 +169,9 @@ class PopbillFax extends PopbillBase {
         }
         if($this->isNullOrEmpty($originalFAXrequestNum)) {
             throw new PopbillException('원본 팩스의 전송요청번호(originalFAXrequestNum)가 입력되지 않았습니다.');
+        }
+        if(!$this->isNullOrEmpty($ReserveDT) && !$this->isValidDT($ReserveDT)) {
+            throw new PopbillException('전송 예약일시가 유효하지 않습니다.');
         }
 
         $RequestForm = array();
@@ -271,7 +283,7 @@ class PopbillFax extends PopbillBase {
     }
 
     // 전송내역 목록 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $ReserveYN = false, $SenderOnly = null, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null) {
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $ReserveYN = null, $SenderOnly = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -292,41 +304,37 @@ class PopbillFax extends PopbillBase {
         $uri .= '?SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
 
-        $uri .= '&State=';
         if(!$this->isNullOrEmpty($State)) {
-            $uri .= implode(',', $State);
+            $uri .= '&State=' . implode(',', $State);
         }
 
-        if ($ReserveYN) {
-            $uri .= '&ReserveYN=1';
-        } else {
-            $uri .= '&ReserveYN=0';
+        if(!is_null($ReserveYN)) {
+            if($ReserveYN) {
+                $uri .= '&ReserveYN=1';
+            }else{
+                $uri .= '&ReserveYN=0';
+            }
         }
-
         if ($SenderOnly) {
             $uri .= '&SenderOnly=1';
         } else {
             $uri .= '&SenderOnly=0';
         }
 
-        $uri .= '&Page=';
         if(!$this->isNullOrEmpty($Page)) {
-            $uri .= $Page;
+            $uri .= '&Page=' . $Page;
         }
 
-        $uri .= '&PerPage=';
         if(!$this->isNullOrEmpty($PerPage)) {
-            $uri .= $PerPage;
+            $uri .= '&PerPage=' . $PerPage;
         }
 
-        $uri .= '&Order=';
         if(!$this->isNullOrEmpty($Order)) {
-            $uri .= $Order;
+            $uri .= '&Order=' . $Order;
         }
 
-        $uri .= '&QString=';
         if(!$this->isNullOrEmpty($QString)) {
-            $uri .= urlencode($QString);
+            $uri .= '&QString=' . urlencode($QString);
         }
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

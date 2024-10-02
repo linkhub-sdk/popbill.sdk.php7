@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-09-24
+ * Updated : 2024-10-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -127,49 +127,40 @@ class PopbillHTTaxinvoice extends PopbillBase {
             $uri .= implode ( ',', $Type );
         }
 
-        $uri .= '&TaxType=';
         if(!$this->isNullOrEmpty($TaxType)) {
-            $uri .= implode ( ',', $TaxType );
+            $uri .= '&TaxType=' . implode ( ',', $TaxType );
         }
 
-        $uri .= '&PurposeType=';
         if(!$this->isNullOrEmpty($PurposeType)) {
-            $uri .= implode ( ',', $PurposeType );
+            $uri .= '&PurposeType=' . implode ( ',', $PurposeType );
         }
 
-        $uri .= '&TaxRegIDYN=';
         if(!$this->isNullOrEmpty($TaxRegIDYN)) {
-            $uri .= $TaxRegIDYN;
+            $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
 
-        $uri .= '&TaxRegIDType=';
         if(!$this->isNullOrEmpty($TaxRegIDType)) {
-            $uri .= $TaxRegIDType;
+            $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         }
 
-        $uri .= '&TaxRegID=';
         if(!$this->isNullOrEmpty($TaxRegID)) {
-            $uri .= $TaxRegID;
+            $uri .= '&TaxRegID=' . $TaxRegID;
         }
 
-        $uri .= '&Page=';
         if(!$this->isNullOrEmpty($Page)) {
-            $uri .= $Page;
+            $uri .= '&Page=' . $Page;
         }
 
-        $uri .= '&PerPage=';
         if(!$this->isNullOrEmpty($PerPage)) {
-            $uri .= $PerPage;
+            $uri .= '&PerPage=' . $PerPage;
         }
 
-        $uri .= '&Order=';
         if(!$this->isNullOrEmpty($Order)) {
-            $uri .= $Order;
+            $uri .= '&Order=' . $Order;
         }
 
-        $uri .= '&SearchString=';
         if(!$this->isNullOrEmpty($SearchString)) {
-            $uri .= urlencode($SearchString);
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );
@@ -199,34 +190,28 @@ class PopbillHTTaxinvoice extends PopbillBase {
             $uri .= implode ( ',', $Type );
         }
 
-        $uri .= '&TaxType=';
         if(!$this->isNullOrEmpty($TaxType)) {
-            $uri .= implode ( ',', $TaxType );
+            $uri .= '&TaxType=' . implode ( ',', $TaxType );
         }
 
-        $uri .= '&PurposeType=';
         if(!$this->isNullOrEmpty($PurposeType)) {
-            $uri .= implode ( ',', $PurposeType );
+            $uri .= '&PurposeType=' . implode ( ',', $PurposeType );
         }
 
-        $uri .= '&TaxRegIDYN=';
         if(!$this->isNullOrEmpty($TaxRegIDYN)) {
-            $uri .= $TaxRegIDYN;
+            $uri .= '&TaxRegIDYN=' . $TaxRegIDYN;
         }
 
-        $uri .= '&TaxRegIDType=';
         if(!$this->isNullOrEmpty($TaxRegIDType)) {
-            $uri .= $TaxRegIDType;
+            $uri .= '&TaxRegIDType=' . $TaxRegIDType;
         }
 
-        $uri .= '&TaxRegID=';
         if(!$this->isNullOrEmpty($TaxRegID)) {
-            $uri .= $TaxRegID;
+            $uri .= '&TaxRegID=' . $TaxRegID;
         }
 
-        $uri .= '&SearchString=';
         if(!$this->isNullOrEmpty($SearchString)) {
-            $uri .= urlencode($SearchString);
+            $uri .= '&SearchString=' . urlencode($SearchString);
         }
 
         $response = $this->executeCURL ( $uri, $CorpNum, $UserID );

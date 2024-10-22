@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-10-15
+ * Updated : 2024-10-22
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.

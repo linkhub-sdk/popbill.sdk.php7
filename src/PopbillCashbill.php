@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-10-22
+ * Updated : 2024-11-04
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -716,6 +716,13 @@ class CashbillInfo
     public $ntsresultMessage;
     public $printYN;
     public $ntsresult;
+    public $supplyCost;
+    public $tax;
+    public $serviceFee;
+    public $orderNumber;
+    public $email;
+    public $hp; 
+    public $interOPYN;
 
     function fromJsonInfo($jsonInfo)
     {
@@ -745,6 +752,13 @@ class CashbillInfo
         isset($jsonInfo->ntsresultMessage) ? $this->ntsresultMessage = $jsonInfo->ntsresultMessage : null;
         isset($jsonInfo->printYN) ? $this->printYN = $jsonInfo->printYN : null;
         isset($jsonInfo->ntsresult) ? $this->ntsresult = $jsonInfo->ntsresult : null;
+        isset($jsonInfo->supplyCost) ? $this->supplyCost = $jsonInfo->supplyCost : null;
+        isset($jsonInfo->tax) ? $this->tax = $jsonInfo->tax : null;
+        isset($jsonInfo->serviceFee) ? $this->serviceFee = $jsonInfo->serviceFee : null;
+        isset($jsonInfo->orderNumber) ? $this->orderNumber = $jsonInfo->orderNumber : null;
+        isset($jsonInfo->email) ? $this->email = $jsonInfo->email : null;
+        isset($jsonInfo->hp) ? $this->hp = $jsonInfo->hp : null;
+        isset($jsonInfo->interOPYN) ? $this->interOPYN = $jsonInfo->interOPYN : null;
     }
 }
 

@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-10-22
+ * Updated : 2024-11-04
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -405,9 +405,9 @@ class PopbillMessaging extends PopbillBase {
         }
 
         if ($SenderYN) {
-            $uri .= '&SenderYN=1';
+            $uri .= '&SenderOnly=1';
         } else {
-            $uri .= '&SenderYN=0';
+            $uri .= '&SenderOnly=0';
         }
 
         if(!$this->isNullOrEmpty($Page)) {

@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2024-10-22
+ * Updated : 2024-11-11
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -27,7 +27,7 @@ class PopbillClosedown extends PopbillBase {
         $this->AddScope('170');
     }
 
-    //휴폐업조회 - 단건
+    // 사업자등록상태조회 (휴폐업조회) - 단건
     public function CheckCorpNum($MemberCorpNum, $CheckCorpNum) {
         if($this->isNullOrEmpty($MemberCorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
@@ -44,7 +44,7 @@ class PopbillClosedown extends PopbillBase {
 
     }
 
-    //휴폐업조회 - 대량
+    // 사업자등록상태조회 (휴폐업조회) - 대량
     public function CheckCorpNums($MemberCorpNum, $CheckCorpNumList){
         if($this->isNullOrEmpty($MemberCorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');

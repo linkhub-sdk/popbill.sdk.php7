@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-03
+ * Updated : 2025-01-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -567,23 +567,18 @@ class PopbillStatement extends PopbillBase {
         if(!$this->isNullOrEmpty($State)) {
             $uri .= '&State=' . implode(',', $State);
         }
-
         if(!$this->isNullOrEmpty($ItemCode)) {
             $uri .= '&ItemCode=' . implode(',', $ItemCode);
         }
-
         if(!$this->isNullOrEmpty($Page)) {
             $uri .= '&Page=' . $Page;
         }
-
         if(!$this->isNullOrEmpty($PerPage)) {
             $uri .= '&PerPage=' . $PerPage;
         }
-
         if(!$this->isNullOrEmpty($Order)) {
             $uri .= '&Order=' . $Order;
         }
-
         if(!$this->isNullOrEmpty($QString)) {
             $uri .= '&QString=' . urlencode($QString);
         }

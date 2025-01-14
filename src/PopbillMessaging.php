@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Jeong YoHan (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-03
+ * Updated : 2025-01-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -384,18 +384,17 @@ class PopbillMessaging extends PopbillBase {
         if(!$this->isValidDate($EDate)) {
             throw new PopbillException('종료일자가 유효하지 않습니다.');
         }
+        if($this->isNullOrEmpty($State)) {
+            throw new PopbillException('전송상태가 입력되지 않았습니다.');
+        }
 
         $uri = '/Message/Search?SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
-
-        if(!$this->isNullOrEmpty($State)) {
-            $uri .= '&State=' . implode(',', $State);
-        }
+        $uri .= '&State=' . implode(',', $State);
 
         if(!$this->isNullOrEmpty($Item)) {
             $uri .= '&Item=' . implode(',', $Item);
         }
-
         if(!is_null($ReserveYN)) {
             if ($ReserveYN) {
                 $uri .= '&ReserveYN=1';
@@ -403,25 +402,20 @@ class PopbillMessaging extends PopbillBase {
                 $uri .= '&ReserveYN=0';
             }
         }
-
         if ($SenderYN) {
             $uri .= '&SenderOnly=1';
         } else {
             $uri .= '&SenderOnly=0';
         }
-
         if(!$this->isNullOrEmpty($Page)) {
             $uri .= '&Page=' . $Page;
         }
-
         if(!$this->isNullOrEmpty($PerPage)) {
             $uri .= '&PerPage=' . $PerPage;
         }
-
         if(!$this->isNullOrEmpty($Order)) {
             $uri .= '&Order=' . $Order;
         }
-
         if(!$this->isNullOrEmpty($QString)) {
             $uri .= '&QString=' . urlencode($QString);
         }

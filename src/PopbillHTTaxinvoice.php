@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -33,7 +33,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-        
+
         $response = $this->executeCURL('/HomeTax/Taxinvoice/ChargeInfo', $CorpNum, $UserID);
 
         $ChargeInfo = new ChargeInfo();
@@ -121,8 +121,8 @@ class PopbillHTTaxinvoice extends PopbillBase {
         }
 
         $uri = '/HomeTax/Taxinvoice/' . $JobID . '?Type=';
-        
-        
+
+
         if(!$this->isNullOrEmpty($Type)) {
             $uri .= implode ( ',', $Type );
         }
@@ -300,7 +300,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         }
 
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$NTSConfirmNum.'/PopUp', $CorpNum, $UserID);
-        
+
         return $response->url;
     }
 
@@ -317,7 +317,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         }
 
         $response = $this->executeCURL('/HomeTax/Taxinvoice/'.$NTSConfirmNum.'/Print', $CorpNum, $UserID);
-        
+
         return $response->url;
     }
 
@@ -355,7 +355,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum);
     }
 
@@ -364,7 +364,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser/Check', $CorpNum);
     }
 
@@ -373,7 +373,7 @@ class PopbillHTTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/HomeTax/Taxinvoice/DeptUser', $CorpNum, $UserID, true, 'DELETE', null);
     }
 }

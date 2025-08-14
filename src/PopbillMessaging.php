@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -50,7 +50,7 @@ class PopbillMessaging extends PopbillBase {
         if($this->isNullOrEmpty($SenderNumber)) {
             throw new PopbillException('발신번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Message/CheckSenderNumber/' . $SenderNumber, $CorpNum, $UserID);
     }
 
@@ -245,7 +245,7 @@ class PopbillMessaging extends PopbillBase {
         if($this->isNullOrEmpty($ReceiptNum)) {
             throw new PopbillException('예약전송 취소할 접수번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Message/' . $ReceiptNum . '/Cancel', $CorpNum, $UserID);
     }
 
@@ -454,7 +454,7 @@ class PopbillMessaging extends PopbillBase {
         if($this->isNullOrEmpty($MessageType)) {
             throw new PopbillException('문자 전송유형이 입력되지 않았습니다.');
         }
-        
+
         $uri = '/Message/ChargeInfo?Type=' . $MessageType;
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

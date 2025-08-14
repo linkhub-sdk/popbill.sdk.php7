@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -278,7 +278,7 @@ class PopbillFax extends PopbillBase {
         }
 
         $response = $this->executeCURL('/FAX/?TG=SENDER', $CorpNum, $UserID);
-        
+
         return $response->url;
     }
 

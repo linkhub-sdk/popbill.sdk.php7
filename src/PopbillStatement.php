@@ -10,9 +10,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -115,7 +115,7 @@ class PopbillStatement extends PopbillBase {
         }
 
         $postdata = json_encode($Statement);
-        
+
         return $this->executeCURL('/Statement', $CorpNum, $UserID, true, null, $postdata);
     }
 
@@ -133,9 +133,9 @@ class PopbillStatement extends PopbillBase {
         if($this->isNullOrEmpty($Statement)) {
             throw new PopbillException('전자명세서 정보가 입력되지 않았습니다.');
         }
-        
+
         $postdata = json_encode($Statement);
-        
+
         return $this->executeCURL('/Statement/' . $itemCode . "/" . $MgtKey, $CorpNum, $UserID, true,"PATCH", $postdata);
     }
 
@@ -151,7 +151,7 @@ class PopbillStatement extends PopbillBase {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
 
-        return $this->executeCURL('/Statement/' 
+        return $this->executeCURL('/Statement/'
         . $itemCode . "/" . $MgtKey, $CorpNum, $UserID, true,'DELETE','');
     }
 
@@ -169,7 +169,7 @@ class PopbillStatement extends PopbillBase {
         }
 
         $Request = new STMIssueRequest();
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Request->memo = $Memo;
         }
@@ -264,7 +264,7 @@ class PopbillStatement extends PopbillBase {
         if($this->isNullOrEmpty($FileID)) {
             throw new PopbillException('파일아이디가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files/' . $FileID, $CorpNum, $UserID, true, 'DELETE', null);
     }
 
@@ -519,7 +519,7 @@ class PopbillStatement extends PopbillBase {
         if($this->isNullOrEmpty($MgtKeyList)) {
             throw new PopbillException('문서번호 배열이 입력되지 않았습니다.');
         }
-        
+
         $postdata = json_encode($MgtKeyList);
         return $this->executeCURL('/Statement/' . $itemCode . '?Print', $CorpNum, $UserID, true, '', $postdata)->url;
     }
@@ -535,7 +535,7 @@ class PopbillStatement extends PopbillBase {
         if($this->isNullOrEmpty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '?TG=MAIL', $CorpNum, $UserID)->url;
     }
 

@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -222,7 +222,7 @@ class PopbillKakao extends PopbillBase {
         }
 
         $response = $this->executeCURL('/Message/?TG=SENDER', $CorpNum, $UserID);
-        
+
         return $response->url;
     }
 
@@ -233,7 +233,7 @@ class PopbillKakao extends PopbillBase {
         }
 
         $response = $this->executeCURL('/KakaoTalk/?TG=TEMPLATE', $CorpNum, $UserID);
-        
+
         return $response->url;
     }
 
@@ -289,7 +289,7 @@ class PopbillKakao extends PopbillBase {
         $uri = '/KakaoTalk/Search?SDate=' . $SDate;
         $uri .= '&EDate=' . $EDate;
         $uri .= '&State=' . implode(',', $State);
-        
+
         if(!$this->isNullOrEmpty($Item)) {
             $uri .= '&Item=' . implode(',', $Item);
         }
@@ -335,7 +335,7 @@ class PopbillKakao extends PopbillBase {
         if($this->isNullOrEmpty($MessageType)) {
             throw new PopbillException('카카오톡 전송유형이 입력되지 않았습니다.');
         }
-        
+
         $uri = '/KakaoTalk/ChargeInfo?Type=' . $MessageType;
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
@@ -406,7 +406,7 @@ class PopbillKakao extends PopbillBase {
         if(!$this->isNullOrEmpty($ReserveDT) && !$this->isValidDT($ReserveDT)) {
             throw new PopbillException('전송 예약일시가 유효하지 않습니다.');
         }
-        
+
         $Request = array();
 
         $Request['plusFriendID'] = $PlusFriendID;

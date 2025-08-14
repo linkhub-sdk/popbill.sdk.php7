@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -38,7 +38,7 @@ class PopbillCashbill extends PopbillBase {
         }
 
         $response = $this->executeCURL('/Cashbill/?TG='.$TOGO,$CorpNum,$UserID);
-        
+
         return $response->url;
     }
 
@@ -69,7 +69,7 @@ class PopbillCashbill extends PopbillBase {
         if($this->isNullOrEmpty($Cashbill)) {
             throw new PopbillException('현금영수증 정보가 입력되지 않았습니다.');
         }
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Cashbill->memo = $Memo;
         }
@@ -451,7 +451,7 @@ class PopbillCashbill extends PopbillBase {
     // 목록 조회
     public function Search($CorpNum, $DType, $SDate, $EDate, $State = array(), $TradeType = array(), $TradeUsage = array(), $TaxationType = array(),
         $Page = null, $PerPage = null, $Order = null, $QString = null, $TradeOpt = array(null), $FranchiseTaxRegID = null){
-        
+
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -712,7 +712,7 @@ class CashbillInfo
     public $serviceFee;
     public $orderNumber;
     public $email;
-    public $hp; 
+    public $hp;
     public $interOPYN;
 
     function fromJsonInfo($jsonInfo)

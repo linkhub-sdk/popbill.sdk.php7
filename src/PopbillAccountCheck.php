@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2020-07-01
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -110,7 +110,7 @@ class PopbillAccountCheck extends PopbillBase {
         if($this->isNullOrEmpty($ServiceType)) {
             throw new PopbillException('서비스 유형이 입력되지 않았습니다.');
         }
-        
+
         $uri = '/EasyFin/AccountCheck/ChargeInfo?serviceType='. $ServiceType;
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

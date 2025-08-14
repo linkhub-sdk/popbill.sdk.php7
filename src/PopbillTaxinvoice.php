@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Jeong YoHan (code@linkhubcorp.com)
+ * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-01-14
+ * Updated : 2025-08-14
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -210,7 +210,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        
+
         $Request = new TIIssueRequest();
 
         if(!$this->isNullOrEmpty($Memo)) {
@@ -241,7 +241,7 @@ class PopbillTaxinvoice extends PopbillBase {
         }
 
         $Request = new TIMemoRequest();
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Request->memo = $Memo;
         }
@@ -259,7 +259,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($Taxinvoice)) {
             throw new PopbillException('세금계산서 정보가 입력되지 않았습니다.');
         }
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Taxinvoice->memo = $Memo;
         }
@@ -282,7 +282,7 @@ class PopbillTaxinvoice extends PopbillBase {
         }
 
         $Request = new TIMemoRequest();
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Request->memo = $Memo;
         }
@@ -325,7 +325,7 @@ class PopbillTaxinvoice extends PopbillBase {
         }
 
         $Request = new TIMemoRequest();
-        
+
         if(!$this->isNullOrEmpty($Memo)) {
             $Request->memo = $Memo;
         }
@@ -473,7 +473,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        
+
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey, $CorpNum);
 
         $TaxinvoiceInfo = new TaxinvoiceInfo();
@@ -539,7 +539,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        
+
         $result = $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Logs', $CorpNum);
         $TaxinvoiceLogList = array();
 
@@ -593,7 +593,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($MgtKey)) {
             throw new PopbillException('문서번호가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum);
     }
 
@@ -611,7 +611,7 @@ class PopbillTaxinvoice extends PopbillBase {
         if($this->isNullOrEmpty($FileID)) {
             throw new PopbillException('파일아이디가 입력되지 않았습니다.');
         }
-        
+
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files/' . $FileID, $CorpNum, $UserID, true, 'DELETE', '');
     }
 

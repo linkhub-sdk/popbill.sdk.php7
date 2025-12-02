@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
   * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-08-27
+ * Updated : 2025-12-01
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -78,8 +78,8 @@ class PopbillBase
     private function getsession_Token($CorpNum)
     {
         $targetToken = null;
-        if (array_key_exists($CorpNum, $this->Token_Table)) {
-            $targetToken = $this->Token_Table[$CorpNum];
+        if (array_key_exists($this->IsTest ? "TEST_".$CorpNum : "PROD_".$CorpNum, $this->Token_Table)) {
+            $targetToken = $this->Token_Table[$this->IsTest ? "TEST_".$CorpNum : "PROD_".$CorpNum];
         }
 
         $Refresh = false;
@@ -95,7 +95,7 @@ class PopbillBase
 
                 $targetToken = $this->Linkhub->getToken($this->IsTest ? PopbillBase::ServiceID_TEST : PopbillBase::ServiceID_REAL, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
 
-                $this->Token_Table[$CorpNum] = $targetToken;
+                $this->Token_Table[$this->IsTest ? "TEST_".$CorpNum : "PROD_".$CorpNum] = $targetToken;
             }
         } catch (LinkhubException $le) {
             throw new PopbillException($le->getMessage(), $le->getCode());
@@ -328,7 +328,7 @@ class PopbillBase
         try {
             $response = $this->executeCURL('/QuitRequest', $CorpNum, $UserID, true, null, $postData);
             if($response->code == 1) {
-                unset($this-> Token_Table[$CorpNum]);
+                unset($this-> Token_Table[$this->IsTest ? "TEST_".$CorpNum : "PROD_".$CorpNum]);
             }
         } catch (LinkhubException $le) {
             throw new PopbillException($le->getMessage(), $le->getCode());
@@ -567,9 +567,12 @@ class PopbillBase
             if (substr($key, 0, 4) == 'name') {
                 $fileName = $value;
             }
+            if (substr($key, 0, 5) == 'field') {
+                $fieldName = $value;
+            }
             if (substr($key, 0, 4) == 'file') {
                 $postbody .= "--" . $mime_boundary . $eol
-                    . 'Content-Disposition: form-data; name="' . 'file' . '"; filename="' . $fileName . '"' . $eol
+                    . 'Content-Disposition: form-data; name="' . ( isset($fieldName) ? $fieldName : 'file' ) . '"; filename="' . $fileName . '"' . $eol
                     . 'Content-Type: Application/octetstream' . $eol . $eol;
                 $postbody .= $value . $eol;
             }

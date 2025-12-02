@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-08-27
+ * Updated : 2025-12-01
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -266,7 +266,7 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 전송내역 목록 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null) {
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null, $PlusFriend = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -316,6 +316,10 @@ class PopbillKakao extends PopbillBase {
         }
         if(!$this->isNullOrEmpty($QString)) {
             $uri .= '&QString=' . urlencode($QString);
+        }
+
+        if(!$this->isNullOrEmpty($PlusFriend)) {
+            $uri .= '&PlusFriend=' . urlencode($PlusFriend);
         }
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);
@@ -428,7 +432,7 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 알림톡 전송
-    public function SendATS($CorpNum, $TemplateCode, $Sender = null, $Content = null, $AltContent = null, $AltSendType = null, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = array(), $AltSubject = null) {
+    public function SendATS($CorpNum, $TemplateCode, $Sender = null, $Content = null, $AltContent = null, $AltSendType = null, $Messages = array(), $ReserveDT = null, $UserID = null, $RequestNum = null, $Btns = array(), $AltSubject = null, $EmphasizeTitle = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -455,6 +459,7 @@ class PopbillKakao extends PopbillBase {
         if(!$this->isNullOrEmpty($ReserveDT)) $Request['sndDT'] = $ReserveDT;
         if(!$this->isNullOrEmpty($RequestNum)) $Request['requestNum'] = $RequestNum;
         if(!$this->isNullOrEmpty($Btns)) $Request['btns'] = $Btns;
+        if(!$this->isNullOrEmpty($EmphasizeTitle)) $Request['emphasizeTitle'] = $EmphasizeTitle;
 
         $postdata = json_encode($Request);
 
@@ -571,6 +576,7 @@ class KakaoSentInfoDetail
     public $sendDT;
     public $receiveNum;
     public $receiveName;
+    public $emphasizeTitle;
     public $content;
     public $result;
     public $resultDT;
@@ -592,6 +598,7 @@ class KakaoSentInfoDetail
         isset($jsonInfo->sendDT) ? ($this->sendDT = $jsonInfo->sendDT) : null;
         isset($jsonInfo->receiveNum) ? ($this->receiveNum = $jsonInfo->receiveNum) : null;
         isset($jsonInfo->receiveName) ? ($this->receiveName = $jsonInfo->receiveName) : null;
+        isset($jsonInfo->emphasizeTitle) ? ($this->emphasizeTitle = $jsonInfo->emphasizeTitle) : null;
         isset($jsonInfo->content) ? ($this->content = $jsonInfo->content) : null;
         isset($jsonInfo->result) ? ($this->result = $jsonInfo->result) : null;
         isset($jsonInfo->resultDT) ? ($this->resultDT = $jsonInfo->resultDT) : null;
@@ -614,6 +621,8 @@ class ATSTemplate
     public $templateCode;
     public $templateName;
     public $template;
+    public $emphasizeTitle;
+    public $emphasizeSubtitle;
     public $plusFriendID;
     public $ads;
     public $appendix;
@@ -626,6 +635,8 @@ class ATSTemplate
     {
         isset($jsonInfo->templateCode) ? $this->templateCode = $jsonInfo->templateCode : null;
         isset($jsonInfo->templateName) ? $this->templateName = $jsonInfo->templateName : null;
+        isset($jsonInfo->emphasizeTitle) ? $this->emphasizeTitle = $jsonInfo->emphasizeTitle : null;
+        isset($jsonInfo->emphasizeSubtitle) ? $this->emphasizeSubtitle = $jsonInfo->emphasizeSubtitle : null;
         isset($jsonInfo->template) ? $this->template = $jsonInfo->template : null;
         isset($jsonInfo->plusFriendID) ? $this->plusFriendID = $jsonInfo->plusFriendID : null;
         isset($jsonInfo->ads) ? $this->ads = $jsonInfo->ads : null;

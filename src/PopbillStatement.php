@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-08-27
+ * Updated : 2025-12-01
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -234,6 +234,41 @@ class PopbillStatement extends PopbillBase {
 
         return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);
     }
+
+    // 전자명세서 첨부파일 추가
+    public function AttachFileBinary($CorpNum, $itemCode, $MgtKey, $FileData, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($itemCode)) {
+            throw new PopbillException('전자명세서 문서유형이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+
+        $RequestForm = array();
+
+        $postdata = array();
+        $postdata['form'] = json_encode($RequestForm);
+        $postdata['field[0]'] = 'Filedata';
+
+        $i = 0;
+        foreach ($FileData as $key => $value) {
+            if ($key == 'fileName') {
+                $postdata['name[' . $i . ']'] = $value;
+            }
+            if ($key == 'fileData') {
+                $postdata['file[' . $i . ']'] =  $value;
+            }
+        }
+
+        $isBinary= true;
+
+        return $this->executeCURL('/Statement/' . $itemCode . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true, null, $isBinary);
+    }
+
+
 
     // 첨부파일 목록확인
     public function GetFiles($CorpNum, $itemCode, $MgtKey, $UserID = null) {

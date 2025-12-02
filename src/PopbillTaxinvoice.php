@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2025-08-27
+ * Updated : 2025-12-01
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -579,6 +579,39 @@ class PopbillTaxinvoice extends PopbillBase {
         $postdata = array('Filedata' => '@' . $FilePath . ';filename=' . $FileName);
 
         return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true);
+    }
+
+    // 파일첨부
+    public function AttachFileBinary($CorpNum, $MgtKeyType, $MgtKey, $FileData, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($MgtKeyType)) {
+            throw new PopbillException('세금계산서 유형이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($MgtKey)) {
+            throw new PopbillException('문서번호가 입력되지 않았습니다.');
+        }
+
+        $RequestForm = array();
+
+        $postdata = array();
+        $postdata['form'] = json_encode($RequestForm);
+        $postdata['field[0]'] = 'Filedata';
+
+        $i = 0;
+        foreach ($FileData as $key => $value) {
+            if ($key == 'fileName') {
+                $postdata['name[' . $i . ']'] = $value;
+            }
+            if ($key == 'fileData') {
+                $postdata['file[' . $i . ']'] =  $value;
+            }
+        }
+
+        $isBinary= true;
+
+        return $this->executeCURL('/Taxinvoice/' . $MgtKeyType . '/' . $MgtKey . '/Files', $CorpNum, $UserID, true, null, $postdata, true, null, $isBinary);
     }
 
 

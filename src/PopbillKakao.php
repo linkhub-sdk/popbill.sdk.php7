@@ -266,7 +266,7 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 전송내역 목록 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null, $PlusFriend = null) {
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null, $PlusFriendID = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -318,8 +318,8 @@ class PopbillKakao extends PopbillBase {
             $uri .= '&QString=' . urlencode($QString);
         }
 
-        if(!$this->isNullOrEmpty($PlusFriend)) {
-            $uri .= '&PlusFriend=' . urlencode($PlusFriend);
+        if(!$this->isNullOrEmpty($PlusFriendID)) {
+            $uri .= '&PlusFriendID=' . urlencode($PlusFriendID);
         }
 
         $response = $this->executeCURL($uri, $CorpNum, $UserID);

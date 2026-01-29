@@ -1,0 +1,14 @@
+image: atlassian/default-image:3
+
+pipelines:
+  branches:
+    '*':
+      - step:
+          name: Sync GitHub Mirror
+          image: alpine/git:latest
+          clone:
+            enabled: false
+          script:
+            - git clone --bare git@bitbucket.org:linkhub-sdk/popbill.sdk.php7.git
+            - cd barocert.sdk.php7.git
+            - git push --mirror git@github.com:linkhub-sdk/popbill.sdk.php7.git

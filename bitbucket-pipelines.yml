@@ -10,5 +10,5 @@ pipelines:
             enabled: false
           script:
             - git clone --bare git@bitbucket.org:linkhub-sdk/popbill.sdk.php7.git
-            - cd barocert.sdk.php7.git
+            - cd popbill.sdk.php7.git
             - git push --mirror git@github.com:linkhub-sdk/popbill.sdk.php7.git

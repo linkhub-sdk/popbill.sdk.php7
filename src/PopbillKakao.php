@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (code@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2026-02-26
+ * Updated : 2026-03-12
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -269,7 +269,7 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 전송내역 목록 조회
-    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null, $PlusFriendID = null, $ContentType = null) {
+    public function Search($CorpNum, $SDate, $EDate, $State = array(), $Item = array(), $ReserveYN = null, $SenderYN = false, $Page = null, $PerPage = null, $Order = null, $UserID = null, $QString = null, $PlusFriendID = null, $ContentType = array()) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
@@ -663,15 +663,13 @@ class PopbillKakao extends PopbillBase {
     }
 
     // 브랜드 메시지 이미지 업로드
-    public function UploadImage($CorpNum, $FilePaths = array(), $UserID = null) {
-        if($this->isNullOrEmpty($FilePaths)) {
+    public function UploadImage($CorpNum, $FilePath, $UserID = null) {
+        if($this->isNullOrEmpty($FilePath)) {
             throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
         }
 
-        foreach ($FilePaths as $FilePath) {
-            $postdata['image'] = '@' . $FilePath;
-        }
-
+        $postdata['image'] = '@' . $FilePath;
+        
         return $this->executeCURL('/BMS/Upload/Image/Default', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
     }
 
@@ -680,25 +678,29 @@ class PopbillKakao extends PopbillBase {
         if($this->isNullOrEmpty($File)) {
             throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
         }
-
-        $filePath = sys_get_temp_dir() . '/' . $File->fileName;
-        file_put_contents($filePath, $File->fileData);
+        if($this->isNullOrEmpty($File->fileName)) {
+            throw new PopbillException('파일명이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileData)) {
+            throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+        }
 
         $postdata = array();
-        $postdata['image'] = '@' . $filePath;
+        $postdata['form'] = '';
+        $postdata['name1'] = $File->fileName;
+        $postdata['field1'] = 'image';
+        $postdata['file1'] = $File->fileData;
 
-        return $this->executeCURL('/BMS/Upload/Image/Default', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
+        return $this->executeCURL('/BMS/Upload/Image/Default', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
     }
 
     // 브랜드 메시지 와이드 이미지 업로드
-    public function UploadWideImage($CorpNum, $FilePaths = array(), $UserID = null) {
-        if($this->isNullOrEmpty($FilePaths)) {
+    public function UploadWideImage($CorpNum, $FilePath, $UserID = null) {
+        if($this->isNullOrEmpty($FilePath)) {
             throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
         }
 
-        foreach ($FilePaths as $FilePath) {
-            $postdata['image'] = '@' . $FilePath;
-        }
+        $postdata['image'] = '@' . $FilePath;
 
         return $this->executeCURL('/BMS/Upload/Image/WideImage', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
     }
@@ -708,14 +710,20 @@ class PopbillKakao extends PopbillBase {
         if($this->isNullOrEmpty($File)) {
             throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
         }
-
-        $filePath = sys_get_temp_dir() . '/' . $File->fileName;
-        file_put_contents($filePath, $File->fileData);
+        if($this->isNullOrEmpty($File->fileName)) {
+            throw new PopbillException('파일명이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileData)) {
+            throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+        }
 
         $postdata = array();
-        $postdata['image'] = '@' . $filePath;
+        $postdata['form'] = '';
+        $postdata['name1'] = $File->fileName;
+        $postdata['field1'] = 'image';
+        $postdata['file1'] = $File->fileData;
 
-        return $this->executeCURL('/BMS/Upload/Image/WideImage', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
+        return $this->executeCURL('/BMS/Upload/Image/WideImage', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
     }
 }
 
@@ -1028,6 +1036,13 @@ class KakaoUploadFile
 {
     public $fileName;
     public $fileData;
+}
+
+class KakaoReceiver
+{
+    public $receiveNum;
+    public $receiveName;
+    public $interOPRefKey;
 }
 
 ?>

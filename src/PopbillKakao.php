@@ -994,7 +994,7 @@ class BMS
     public $reserveDT;
     public $requestNum;
     public $receivers;
-    public $buttons;
+    public $btns;
     public $coupon;
 }
 

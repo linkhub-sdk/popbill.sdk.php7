@@ -10,9 +10,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Linkhub DEV (code@linkhubcorp.com)
+ * Author : Linkhub DEV (ops@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2026-02-26
+ * Updated : 2026-03-17
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.

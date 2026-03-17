@@ -9,9 +9,9 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : Linkhub DEV (code@linkhubcorp.com)
+ * Author : Linkhub DEV (ops@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2026-03-12
+ * Updated : 2026-03-17
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -478,20 +478,20 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
 
         $receivers[] = array (
             'receiveNum' => $bms->receiveNum,
@@ -511,21 +511,21 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
-        if(!$this->isNullOrEmpty($bms->receivers)) $Request['msgs'] = $bms->receivers;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
+        $Request['msgs'] = $bms->receivers;
 
         $postdata = json_encode($Request);
 
@@ -539,22 +539,22 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->imageUrl)) $Request['imageUrl'] = $bms->imageUrl;
-        if(!$this->isNullOrEmpty($bms->imageLink)) $Request['imageLink'] = $bms->imageLink;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['imageUrl'] = $bms->imageUrl;
+        $Request['imageLink'] = $bms->imageLink;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
 
         $receivers[] = array (
             'receiveNum' => $bms->receiveNum,
@@ -574,23 +574,23 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->imageUrl)) $Request['imageUrl'] = $bms->imageUrl;
-        if(!$this->isNullOrEmpty($bms->imageLink)) $Request['imageLink'] = $bms->imageLink;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
-        if(!$this->isNullOrEmpty($bms->receivers)) $Request['msgs'] = $bms->receivers;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['imageUrl'] = $bms->imageUrl;
+        $Request['imageLink'] = $bms->imageLink;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
+        $Request['msgs'] = $bms->receivers;
 
         $postdata = json_encode($Request);
 
@@ -604,22 +604,22 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->imageUrl)) $Request['imageUrl'] = $bms->imageUrl;
-        if(!$this->isNullOrEmpty($bms->imageLink)) $Request['imageLink'] = $bms->imageLink;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['imageUrl'] = $bms->imageUrl;
+        $Request['imageLink'] = $bms->imageLink;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
 
         $receivers[] = array (
             'receiveNum' => $bms->receiveNum,
@@ -639,23 +639,23 @@ class PopbillKakao extends PopbillBase {
         }
 
         $Request = array();
-        if(!$this->isNullOrEmpty($bms->plusFriendID)) $Request['plusFriendID'] = $bms->plusFriendID;
-        if(!$this->isNullOrEmpty($bms->targeting)) $Request['targeting'] = $bms->targeting;
-        if(!$this->isNullOrEmpty($bms->unsubscribeNo)) $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->imageUrl)) $Request['imageUrl'] = $bms->imageUrl;
-        if(!$this->isNullOrEmpty($bms->imageLink)) $Request['imageLink'] = $bms->imageLink;
-        if(!$this->isNullOrEmpty($bms->adultYN)) $Request['adultYN'] = $bms->adultYN;
-        if(!$this->isNullOrEmpty($bms->content)) $Request['content'] = $bms->content;
-        if(!$this->isNullOrEmpty($bms->altYN)) $Request['altYN'] = $bms->altYN;
-        if(!$this->isNullOrEmpty($bms->sendNum)) $Request['sendNum'] = $bms->sendNum;
-        if(!$this->isNullOrEmpty($bms->altSubject)) $Request['altSubject'] = $bms->altSubject;
-        if(!$this->isNullOrEmpty($bms->altContent)) $Request['altContent'] = $bms->altContent;
-        if(!$this->isNullOrEmpty($bms->altUnsubscribeNo)) $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        if(!$this->isNullOrEmpty($bms->reserveDT)) $Request['reserveDT'] = $bms->reserveDT;
-        if(!$this->isNullOrEmpty($bms->requestNum)) $Request['requestNum'] = $bms->requestNum;
-        if(!$this->isNullOrEmpty($bms->btns)) $Request['btns'] = $bms->btns;
-        if(!$this->isNullOrEmpty($bms->coupon)) $Request['coupon'] = $bms->coupon;
-        if(!$this->isNullOrEmpty($bms->receivers)) $Request['msgs'] = $bms->receivers;
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['imageUrl'] = $bms->imageUrl;
+        $Request['imageLink'] = $bms->imageLink;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['content'] = $bms->content;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
+        $Request['msgs'] = $bms->receivers;
 
         $postdata = json_encode($Request);
 
@@ -665,7 +665,7 @@ class PopbillKakao extends PopbillBase {
     // 브랜드 메시지 이미지 업로드
     public function UploadImage($CorpNum, $FilePath, $UserID = null) {
         if($this->isNullOrEmpty($FilePath)) {
-            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
         }
 
         $postdata['image'] = '@' . $FilePath;
@@ -697,7 +697,7 @@ class PopbillKakao extends PopbillBase {
     // 브랜드 메시지 와이드 이미지 업로드
     public function UploadWideImage($CorpNum, $FilePath, $UserID = null) {
         if($this->isNullOrEmpty($FilePath)) {
-            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
         }
 
         $postdata['image'] = '@' . $FilePath;

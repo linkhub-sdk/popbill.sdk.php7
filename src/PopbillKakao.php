@@ -731,6 +731,8 @@ class PopbillKakao extends PopbillBase {
 class ENumKakaoType
 {
     const ATS = 'ATS';
+    const FTS = 'FTS';
+    const FMS = 'FMS';
     const BMS_I = 'BMS_I';
     const BMS_M = 'BMS_M';
     const BMS_N = 'BMS_N';

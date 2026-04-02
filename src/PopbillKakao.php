@@ -113,12 +113,12 @@ class PopbillKakao extends PopbillBase {
         return $TemplateList;
     }
 
-    public function ListBMSTemplate($CorpNum) {
+    public function ListBMSTemplate($CorpNum, $UserID = null) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
 
-        $result = $this->executeCURL('/KakaoTalk/BMSTemplates', $CorpNum);
+        $result = $this->executeCURL('/KakaoTalk/BMSTemplates', $CorpNum, $UserID);
 
         $TemplateList = array();
         for ($i = 0; $i < Count($result); $i++) {
@@ -257,12 +257,12 @@ class PopbillKakao extends PopbillBase {
         return $response->url;
     }
 
-    public function GetBMSTemplateMgtURL($CorpNum, $UserID = null) {
+    public function GetBMSTemplateMgtURL($CorpNum) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
 
-        $response = $this->executeCURL('/KakaoTalk/?TG=BMS_TEMPLATE', $CorpNum, $UserID);
+        $response = $this->executeCURL('/KakaoTalk/?TG=BMS_TEMPLATE', $CorpNum);
         return $response->url;
     }
 
@@ -1708,20 +1708,6 @@ class KakaoCarouselTail
         isset($jsonInfo->linkPc) ? $this->linkPc = $jsonInfo->linkPc : null;
         isset($jsonInfo->linkAndroid) ? $this->linkAndroid = $jsonInfo->linkAndroid : null;
         isset($jsonInfo->linkIos) ? $this->linkIos = $jsonInfo->linkIos : null;
-    }
-}
-
-class ImageURLResponse
-{
-    public $code;
-    public $message;
-    public $imageUrl;
-
-    function fromJsonInfo($jsonInfo)
-    {
-        isset($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
-        isset($jsonInfo->message) ? $this->message = $jsonInfo->message : null;
-        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
     }
 }
 

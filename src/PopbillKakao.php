@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (ops@linkhubcorp.com)
  * Written : 2019-02-08
- * Updated : 2026-03-17
+ * Updated : 2026-04-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.
@@ -106,6 +106,23 @@ class PopbillKakao extends PopbillBase {
         $TemplateList = array();
         for ($i = 0; $i < Count($result); $i++) {
             $TemplateObj = new ATSTemplate();
+            $TemplateObj->fromJsonInfo($result[$i]);
+            $TemplateList[$i] = $TemplateObj;
+        }
+
+        return $TemplateList;
+    }
+
+    public function ListBMSTemplate($CorpNum) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
+        $result = $this->executeCURL('/KakaoTalk/BMSTemplates', $CorpNum);
+
+        $TemplateList = array();
+        for ($i = 0; $i < Count($result); $i++) {
+            $TemplateObj = new BMSTemplate();
             $TemplateObj->fromJsonInfo($result[$i]);
             $TemplateList[$i] = $TemplateObj;
         }
@@ -240,6 +257,15 @@ class PopbillKakao extends PopbillBase {
         return $response->url;
     }
 
+    public function GetBMSTemplateMgtURL($CorpNum, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+
+        $response = $this->executeCURL('/KakaoTalk/?TG=BMS_TEMPLATE', $CorpNum, $UserID);
+        return $response->url;
+    }
+
     // 알림톡 템플릿 정보 확인
     public function GetATSTemplate($CorpNum, $TemplateCode, $UserID = null) {
         if($this->isNullOrEmpty($CorpNum)) {
@@ -252,6 +278,22 @@ class PopbillKakao extends PopbillBase {
         $result = $this->executeCURL('/KakaoTalk/GetATSTemplate/'.$TemplateCode, $CorpNum, $UserID);
 
         $TemplateInfo = new ATSTemplate();
+        $TemplateInfo->fromJsonInfo($result);
+
+        return $TemplateInfo;
+    }
+
+    public function GetBMSTemplate($CorpNum, $TemplateCode, $UserID = null) {
+        if($this->isNullOrEmpty($CorpNum)) {
+            throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($TemplateCode)) {
+            throw new PopbillException('템플릿코드가 입력되지 않았습니다.');
+        }
+
+        $result = $this->executeCURL('/KakaoTalk/BMSTemplate/' . $TemplateCode, $CorpNum, $UserID);
+
+        $TemplateInfo = new BMSTemplate();
         $TemplateInfo->fromJsonInfo($result);
 
         return $TemplateInfo;
@@ -471,8 +513,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/ATS', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    // 브랜드 메시지 텍스트 단건
-    public function SendBMSTextSingle($CorpNum, $bms, $UserID = null) {
+    public function SendBMSText($CorpNum, $bms, $UserID = null) {
         if($this->isNullOrEmpty($bms)) {
             throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
         }
@@ -480,42 +521,9 @@ class PopbillKakao extends PopbillBase {
         $Request = array();
         $Request['plusFriendID'] = $bms->plusFriendID;
         $Request['targeting'] = $bms->targeting;
-        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
         $Request['adultYN'] = $bms->adultYN;
         $Request['content'] = $bms->content;
-        $Request['altYN'] = $bms->altYN;
-        $Request['sendNum'] = $bms->sendNum;
-        $Request['altSubject'] = $bms->altSubject;
-        $Request['altContent'] = $bms->altContent;
-        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        $Request['reserveDT'] = $bms->reserveDT;
-        $Request['requestNum'] = $bms->requestNum;
-        $Request['btns'] = $bms->btns;
-        $Request['coupon'] = $bms->coupon;
-
-        $receivers[] = array (
-            'receiveNum' => $bms->receiveNum,
-            'receiveName' => $bms->receiveName
-        );
-        $Request['msgs'] = $receivers;
-
-        $postdata = json_encode($Request);
-
-        return $this->executeCURL('/BMS/Text', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
-    }
-
-    // 브랜드 메시지 텍스트 동보
-    public function SendBMSTextSame($CorpNum, $bms, $UserID = null) {
-        if($this->isNullOrEmpty($bms)) {
-            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
-        }
-
-        $Request = array();
-        $Request['plusFriendID'] = $bms->plusFriendID;
-        $Request['targeting'] = $bms->targeting;
         $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        $Request['adultYN'] = $bms->adultYN;
-        $Request['content'] = $bms->content;
         $Request['altYN'] = $bms->altYN;
         $Request['sendNum'] = $bms->sendNum;
         $Request['altSubject'] = $bms->altSubject;
@@ -532,8 +540,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/BMS/Text', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    // 브랜드 메시지 이미지 단건
-    public function SendBMSImageSingle($CorpNum, $bms, $UserID = null) {
+    public function SendBMSImage($CorpNum, $bms, $UserID = null) {
         if($this->isNullOrEmpty($bms)) {
             throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
         }
@@ -541,46 +548,11 @@ class PopbillKakao extends PopbillBase {
         $Request = array();
         $Request['plusFriendID'] = $bms->plusFriendID;
         $Request['targeting'] = $bms->targeting;
-        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['adultYN'] = $bms->adultYN;
         $Request['imageUrl'] = $bms->imageUrl;
         $Request['imageLink'] = $bms->imageLink;
-        $Request['adultYN'] = $bms->adultYN;
         $Request['content'] = $bms->content;
-        $Request['altYN'] = $bms->altYN;
-        $Request['sendNum'] = $bms->sendNum;
-        $Request['altSubject'] = $bms->altSubject;
-        $Request['altContent'] = $bms->altContent;
-        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        $Request['reserveDT'] = $bms->reserveDT;
-        $Request['requestNum'] = $bms->requestNum;
-        $Request['btns'] = $bms->btns;
-        $Request['coupon'] = $bms->coupon;
-
-        $receivers[] = array (
-            'receiveNum' => $bms->receiveNum,
-            'receiveName' => $bms->receiveName
-        );
-        $Request['msgs'] = $receivers;
-
-        $postdata = json_encode($Request);
-
-        return $this->executeCURL('/BMS/Image', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
-    }
-
-    // 브랜드 메시지 이미지 동보
-    public function SendBMSImageSame($CorpNum, $bms, $UserID = null) {
-        if($this->isNullOrEmpty($bms)) {
-            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
-        }
-
-        $Request = array();
-        $Request['plusFriendID'] = $bms->plusFriendID;
-        $Request['targeting'] = $bms->targeting;
         $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        $Request['imageUrl'] = $bms->imageUrl;
-        $Request['imageLink'] = $bms->imageLink;
-        $Request['adultYN'] = $bms->adultYN;
-        $Request['content'] = $bms->content;
         $Request['altYN'] = $bms->altYN;
         $Request['sendNum'] = $bms->sendNum;
         $Request['altSubject'] = $bms->altSubject;
@@ -597,8 +569,7 @@ class PopbillKakao extends PopbillBase {
         return $this->executeCURL('/BMS/Image', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
-    // 브랜드 메시지 와이드 이미지 단건
-    public function SendBMSWideImageSingle($CorpNum, $bms, $UserID = null) {
+    public function SendBMSWideImage($CorpNum, $bms, $UserID = null) {
         if($this->isNullOrEmpty($bms)) {
             throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
         }
@@ -606,46 +577,11 @@ class PopbillKakao extends PopbillBase {
         $Request = array();
         $Request['plusFriendID'] = $bms->plusFriendID;
         $Request['targeting'] = $bms->targeting;
-        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['adultYN'] = $bms->adultYN;
         $Request['imageUrl'] = $bms->imageUrl;
         $Request['imageLink'] = $bms->imageLink;
-        $Request['adultYN'] = $bms->adultYN;
         $Request['content'] = $bms->content;
-        $Request['altYN'] = $bms->altYN;
-        $Request['sendNum'] = $bms->sendNum;
-        $Request['altSubject'] = $bms->altSubject;
-        $Request['altContent'] = $bms->altContent;
-        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
-        $Request['reserveDT'] = $bms->reserveDT;
-        $Request['requestNum'] = $bms->requestNum;
-        $Request['btns'] = $bms->btns;
-        $Request['coupon'] = $bms->coupon;
-
-        $receivers[] = array (
-            'receiveNum' => $bms->receiveNum,
-            'receiveName' => $bms->receiveName
-        );
-        $Request['msgs'] = $receivers;
-
-        $postdata = json_encode($Request);
-
-        return $this->executeCURL('/BMS/WideImage', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
-    }
-
-    // 브랜드 메시지 와이드 이미지 동보
-    public function SendBMSWideImageSame($CorpNum, $bms, $UserID = null) {
-        if($this->isNullOrEmpty($bms)) {
-            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
-        }
-
-        $Request = array();
-        $Request['plusFriendID'] = $bms->plusFriendID;
-        $Request['targeting'] = $bms->targeting;
         $Request['unsubscribeNo'] = $bms->unsubscribeNo;
-        $Request['imageUrl'] = $bms->imageUrl;
-        $Request['imageLink'] = $bms->imageLink;
-        $Request['adultYN'] = $bms->adultYN;
-        $Request['content'] = $bms->content;
         $Request['altYN'] = $bms->altYN;
         $Request['sendNum'] = $bms->sendNum;
         $Request['altSubject'] = $bms->altSubject;
@@ -660,6 +596,174 @@ class PopbillKakao extends PopbillBase {
         $postdata = json_encode($Request);
 
         return $this->executeCURL('/BMS/WideImage', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+    public function SendBMSWideList($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['header'] = $bms->header;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['item'] = $bms->item;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/WideList', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+    public function SendBMSCarouselFeed($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['carousel'] = $bms->carousel;
+        $Request['tail'] = $bms->tail;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/CarouselFeed', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+    public function SendBMSVideo($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['header'] = $bms->header;
+        $Request['videoUrl'] = $bms->videoUrl;
+        $Request['thumbnailUrl'] = $bms->thumbnailUrl;
+        $Request['content'] = $bms->content;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['btns'] = $bms->btns;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/Video', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+    public function SendBMSCommerce($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['imageUrl'] = $bms->imageUrl;
+        $Request['imageLink'] = $bms->imageLink;
+        $Request['addContent'] = $bms->addContent;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['commerce'] = $bms->commerce;
+        $Request['btns'] = $bms->btns;
+        $Request['coupon'] = $bms->coupon;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/Commerce', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+    public function SendBMSCarouselCommerce($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['plusFriendID'] = $bms->plusFriendID;
+        $Request['targeting'] = $bms->targeting;
+        $Request['adultYN'] = $bms->adultYN;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['head'] = $bms->head;
+        $Request['carousel'] = $bms->carousel;
+        $Request['tail'] = $bms->tail;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/CarouselCommerce', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
+    }
+
+     public function SendBMSVariable($CorpNum, $bms, $UserID = null) {
+        if($this->isNullOrEmpty($bms)) {
+            throw new PopbillException('브랜드 메시지 정보가 입력되지 않았습니다.');
+        }
+
+        $Request = array();
+        $Request['templateCode'] = $bms->templateCode;
+        $Request['targeting'] = $bms->targeting;
+        $Request['unsubscribeNo'] = $bms->unsubscribeNo;
+        $Request['altYN'] = $bms->altYN;
+        $Request['sendNum'] = $bms->sendNum;
+        $Request['altSubject'] = $bms->altSubject;
+        $Request['altContent'] = $bms->altContent;
+        $Request['altUnsubscribeNo'] = $bms->altUnsubscribeNo;
+        $Request['reserveDT'] = $bms->reserveDT;
+        $Request['requestNum'] = $bms->requestNum;
+        $Request['contentVariable'] = $bms->contentVariable;
+        $Request['buttonVariable'] = $bms->buttonVariable;
+        $Request['couponVariable'] = $bms->couponVariable;
+        $Request['commerceVariable'] = $bms->commerceVariable;
+        $Request['carouselVariable'] = $bms->carouselVariable;
+        $Request['msgs'] = $bms->receivers;
+
+        $postdata = json_encode($Request);
+
+        return $this->executeCURL('/BMS/Variable', $CorpNum, $UserID, true, null, $postdata)->receiptNum;
     }
 
     // 브랜드 메시지 이미지 업로드
@@ -725,6 +829,282 @@ class PopbillKakao extends PopbillBase {
 
         return $this->executeCURL('/BMS/Upload/Image/WideImage', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
     }
+
+    public function UploadWideListMainImage($CorpNum, $FilePath, $UserID = null) {
+        if($this->isNullOrEmpty($FilePath)) {
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
+        }
+
+        $postdata['image'] = '@' . $FilePath;
+        
+        return $this->executeCURL('/BMS/Upload/Image/WideList/Main', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
+    }
+
+    public function UploadWideListMainImageBinary($CorpNum, $File, $UserID = null) {
+        if($this->isNullOrEmpty($File)) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileName)) {
+            throw new PopbillException('파일명이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileData)) {
+            throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+        $postdata['name1'] = $File->fileName;
+        $postdata['field1'] = 'image';
+        $postdata['file1'] = $File->fileData;
+
+        return $this->executeCURL('/BMS/Upload/Image/WideList/Main', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
+    }
+
+    public function UploadWideListImage($CorpNum, $FilePaths, $UserID = null) {
+        if($this->isNullOrEmpty($FilePaths) || count($FilePaths) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($FilePaths); $i++) {
+            if($this->isNullOrEmpty($FilePaths[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+
+            if(file_exists($FilePaths[$i]) == false) {
+                throw new PopbillException('전송할 파일이 존재하지 않습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $this->GetBasename($FilePaths[$i]);
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = file_get_contents($FilePaths[$i]);
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/WideList', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
+
+    public function UploadWideListImageBinary($CorpNum, $Files, $UserID = null) {
+        if($this->isNullOrEmpty($Files) || count($Files) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($Files); $i++) {
+            if($this->isNullOrEmpty($Files[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileName)) {
+                throw new PopbillException('파일명이 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileData)) {
+                throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $Files[$i]->fileName;
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = $Files[$i]->fileData;
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/WideList', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
+
+    public function UploadVideoImage($CorpNum, $FilePath, $UserID = null) {
+        if($this->isNullOrEmpty($FilePath)) {
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
+        }
+
+        $postdata['image'] = '@' . $FilePath;
+        
+        return $this->executeCURL('/BMS/Upload/Image/Video', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
+    }
+
+    public function UploadVideoImageBinary($CorpNum, $File, $UserID = null) {
+        if($this->isNullOrEmpty($File)) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileName)) {
+            throw new PopbillException('파일명이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileData)) {
+            throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+        $postdata['name1'] = $File->fileName;
+        $postdata['field1'] = 'image';
+        $postdata['file1'] = $File->fileData;
+
+        return $this->executeCURL('/BMS/Upload/Image/Video', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
+    }
+
+    public function UploadCommerceImage($CorpNum, $FilePath, $UserID = null) {
+        if($this->isNullOrEmpty($FilePath)) {
+            throw new PopbillException('이미지 파일 경로가 입력되지 않았습니다.');
+        }
+
+        $postdata['image'] = '@' . $FilePath;
+        
+        return $this->executeCURL('/BMS/Upload/Image/Commerce', $CorpNum, $UserID, true, null, $postdata, true)->imageUrl;
+    }
+
+    public function UploadCommerceImageBinary($CorpNum, $File, $UserID = null) {
+        if($this->isNullOrEmpty($File)) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileName)) {
+            throw new PopbillException('파일명이 입력되지 않았습니다.');
+        }
+        if($this->isNullOrEmpty($File->fileData)) {
+            throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+        $postdata['name1'] = $File->fileName;
+        $postdata['field1'] = 'image';
+        $postdata['file1'] = $File->fileData;
+
+        return $this->executeCURL('/BMS/Upload/Image/Commerce', $CorpNum, $UserID, true, null, $postdata, true, null, true)->imageUrl;
+    }
+
+    public function UploadCarouselFeedImage($CorpNum, $FilePaths, $UserID = null) {
+        if($this->isNullOrEmpty($FilePaths) || count($FilePaths) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($FilePaths); $i++) {
+            if($this->isNullOrEmpty($FilePaths[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+
+            if(file_exists($FilePaths[$i]) == false) {
+                throw new PopbillException('전송할 파일이 존재하지 않습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $this->GetBasename($FilePaths[$i]);
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = file_get_contents($FilePaths[$i]);
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/CarouselFeed', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
+
+    public function UploadCarouselFeedImageBinary($CorpNum, $Files, $UserID = null) {
+        if($this->isNullOrEmpty($Files) || count($Files) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($Files); $i++) {
+            if($this->isNullOrEmpty($Files[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileName)) {
+                throw new PopbillException('파일명이 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileData)) {
+                throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $Files[$i]->fileName;
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = $Files[$i]->fileData;
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/CarouselFeed', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
+
+    public function UploadCarouselCommerceImage($CorpNum, $FilePaths, $UserID = null) {
+        if($this->isNullOrEmpty($FilePaths) || count($FilePaths) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($FilePaths); $i++) {
+            if($this->isNullOrEmpty($FilePaths[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+
+            if(file_exists($FilePaths[$i]) == false) {
+                throw new PopbillException('전송할 파일이 존재하지 않습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $this->GetBasename($FilePaths[$i]);
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = file_get_contents($FilePaths[$i]);
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/CarouselCommerce', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
+
+    public function UploadCarouselCommerceImageBinary($CorpNum, $Files, $UserID = null) {
+        if($this->isNullOrEmpty($Files) || count($Files) == 0) {
+            throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+        }
+
+        $postdata = array();
+        $postdata['form'] = '';
+
+        for($i = 0; $i < count($Files); $i++) {
+            if($this->isNullOrEmpty($Files[$i])) {
+                throw new PopbillException('이미지 파일 정보가 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileName)) {
+                throw new PopbillException('파일명이 입력되지 않았습니다.');
+            }
+            if($this->isNullOrEmpty($Files[$i]->fileData)) {
+                throw new PopbillException('바이너리 데이터가 입력되지 않았습니다.');
+            }
+
+            $postdata['name' . ($i + 1)] = $Files[$i]->fileName;
+            $postdata['field' . ($i + 1)] = 'images';
+            $postdata['file' . ($i + 1)] = $Files[$i]->fileData;
+        }
+
+        $response = $this->executeCURL('/BMS/Upload/Image/CarouselCommerce', $CorpNum, $UserID, true, null, $postdata, true, null, true);
+
+        $ListImageResponse = new ListImageResponse();
+        $ListImageResponse->fromJsonInfo($response);
+
+        return $ListImageResponse;
+    }
 }
 
 
@@ -773,6 +1153,7 @@ class KakaoSentInfo
 {
     public $contentType;
     public $templateCode;
+    public $bmsTemplateCode;
     public $plusFriendID;
     public $targeting;
     public $unsubscribeNo;
@@ -783,21 +1164,20 @@ class KakaoSentInfo
     public $altSendType;
     public $reserveDT;
     public $adsYN;
-    public $imageURL;
     public $sendCnt;
     public $successCnt;
     public $failCnt;
     public $altCnt;
     public $cancelCnt;
-
-    public $msgs;
     public $btns;
-
+    public $msgs;
+    
     function fromJsonInfo($jsonInfo)
     {
 
         isset($jsonInfo->contentType) ? ($this->contentType = $jsonInfo->contentType) : null;
         isset($jsonInfo->templateCode) ? ($this->templateCode = $jsonInfo->templateCode) : null;
+        isset($jsonInfo->bmsTemplateCode) ? ($this->bmsTemplateCode = $jsonInfo->bmsTemplateCode) : null;
         isset($jsonInfo->plusFriendID) ? ($this->plusFriendID = $jsonInfo->plusFriendID) : null;
         isset($jsonInfo->targeting) ? ($this->targeting = $jsonInfo->targeting) : null;
         isset($jsonInfo->unsubscribeNo) ? ($this->unsubscribeNo = $jsonInfo->unsubscribeNo) : null;
@@ -808,12 +1188,21 @@ class KakaoSentInfo
         isset($jsonInfo->altSendType) ? ($this->altSendType = $jsonInfo->altSendType) : null;
         isset($jsonInfo->reserveDT) ? ($this->reserveDT = $jsonInfo->reserveDT) : null;
         isset($jsonInfo->adsYN) ? ($this->adsYN = $jsonInfo->adsYN) : null;
-        isset($jsonInfo->imageURL) ? ($this->imageURL = $jsonInfo->imageURL) : null;
         isset($jsonInfo->sendCnt) ? ($this->sendCnt = $jsonInfo->sendCnt) : null;
         isset($jsonInfo->successCnt) ? ($this->successCnt = $jsonInfo->successCnt) : null;
         isset($jsonInfo->failCnt) ? ($this->failCnt = $jsonInfo->failCnt) : null;
         isset($jsonInfo->altCnt) ? ($this->altCnt = $jsonInfo->altCnt) : null;
         isset($jsonInfo->cancelCnt) ? ($this->cancelCnt = $jsonInfo->cancelCnt) : null;
+
+        if (isset($jsonInfo->btns)) {
+            $btnsList = array();
+            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
+                $buttonDetail = new KakaoButton();
+                $buttonDetail->fromJsonInfo($jsonInfo->btns[$i]);
+                $btnsList[$i] = $buttonDetail;
+            }
+            $this->btns = $btnsList;
+        }
 
         if (isset($jsonInfo->msgs)) {
             $msgsList = array();
@@ -823,80 +1212,149 @@ class KakaoSentInfo
                 $msgsList[$i] = $kakaoDetail;
             }
             $this->msgs = $msgsList;
-        } // end of if
-
-        if (isset($jsonInfo->btns)) {
-            $btnsList = array();
-            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
-                $buttonDetail = new KakaoButton();
-                $buttonDetail->fromJsonInfo($jsonInfo->btns[$i]);
-                $btnsList[$i] = $buttonDetail;
-            }
-            $this->btns = $btnsList;
         }
-
     }
 
-} // end of KakaoSentInfo class
+}
 
 class KakaoSentInfoDetail
 {
     public $state;
     public $sendDT;
+    public $result;
+    public $resultDT;
+    public $contentType;
     public $receiveNum;
     public $receiveName;
     public $emphasizeTitle;
+    public $adultYN;
+    public $header;
     public $content;
-    public $result;
-    public $resultDT;
+    public $addContent;
+    public $imageUrl;
+    public $imageLink;
+    public $videoUrl;
+    public $thumbnailUrl;
     public $altSubject;
     public $altContent;
-    public $contentType;
     public $altContentType;
     public $altSendDT;
     public $altResult;
     public $altResultDT;
-    public $reserveDT;
     public $receiptNum;
     public $requestNum;
+    public $reserveDT;
     public $interOPRefKey;
-
+    public $item;
+    public $commerce;
+    public $head;
+    public $carousel;
+    public $tail;
     public $btns;
     public $coupon;
+    public $contentVariable;
+    public $buttonVariable;
+    public $couponVariable;
+    public $commerceVariable;
+    public $carouselVariable;
 
     public function fromJsonInfo($jsonInfo)
     {
         isset($jsonInfo->state) ? ($this->state = $jsonInfo->state) : null;
         isset($jsonInfo->sendDT) ? ($this->sendDT = $jsonInfo->sendDT) : null;
+        isset($jsonInfo->result) ? ($this->result = $jsonInfo->result) : null;
+        isset($jsonInfo->resultDT) ? ($this->resultDT = $jsonInfo->resultDT) : null;
+        isset($jsonInfo->contentType) ? ($this->contentType = $jsonInfo->contentType) : null;
         isset($jsonInfo->receiveNum) ? ($this->receiveNum = $jsonInfo->receiveNum) : null;
         isset($jsonInfo->receiveName) ? ($this->receiveName = $jsonInfo->receiveName) : null;
         isset($jsonInfo->emphasizeTitle) ? ($this->emphasizeTitle = $jsonInfo->emphasizeTitle) : null;
+        isset($jsonInfo->adultYN) ? ($this->adultYN = $jsonInfo->adultYN) : null;
+        isset($jsonInfo->header) ? ($this->header = $jsonInfo->header) : null;
         isset($jsonInfo->content) ? ($this->content = $jsonInfo->content) : null;
-        isset($jsonInfo->result) ? ($this->result = $jsonInfo->result) : null;
-        isset($jsonInfo->resultDT) ? ($this->resultDT = $jsonInfo->resultDT) : null;
+        isset($jsonInfo->addContent) ? ($this->addContent = $jsonInfo->addContent) : null;
+        isset($jsonInfo->imageUrl) ? ($this->imageUrl = $jsonInfo->imageUrl) : null;
+        isset($jsonInfo->imageLink) ? ($this->imageLink = $jsonInfo->imageLink) : null;
+        isset($jsonInfo->videoUrl) ? ($this->videoUrl = $jsonInfo->videoUrl) : null;
+        isset($jsonInfo->thumbnailUrl) ? ($this->thumbnailUrl = $jsonInfo->thumbnailUrl) : null;
         isset($jsonInfo->altSubject) ? ($this->altSubject = $jsonInfo->altSubject) : null;
         isset($jsonInfo->altContent) ? ($this->altContent = $jsonInfo->altContent) : null;
-        isset($jsonInfo->contentType) ? ($this->contentType = $jsonInfo->contentType) : null;
         isset($jsonInfo->altContentType) ? ($this->altContentType = $jsonInfo->altContentType) : null;
         isset($jsonInfo->altSendDT) ? ($this->altSendDT = $jsonInfo->altSendDT) : null;
         isset($jsonInfo->altResult) ? ($this->altResult = $jsonInfo->altResult) : null;
         isset($jsonInfo->altResultDT) ? ($this->altResultDT = $jsonInfo->altResultDT) : null;
-        isset($jsonInfo->reserveDT) ? ($this->reserveDT = $jsonInfo->reserveDT) : null;
         isset($jsonInfo->receiptNum) ? ($this->receiptNum = $jsonInfo->receiptNum) : null;
         isset($jsonInfo->requestNum) ? ($this->requestNum = $jsonInfo->requestNum) : null;
+        isset($jsonInfo->reserveDT) ? ($this->reserveDT = $jsonInfo->reserveDT) : null;
         isset($jsonInfo->interOPRefKey) ? ($this->interOPRefKey = $jsonInfo->interOPRefKey) : null;
 
-        if (isset($jsonInfo->btns)) {
-            $btnsList = array();
-            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
-                $buttonDetail = new KakaoButton();
-                $buttonDetail->fromJsonInfo($jsonInfo->btns[$i]);
-                $btnsList[$i] = $buttonDetail;
+        if(isset($jsonInfo->item)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->item); $i++) {
+                $InfoObj = new KakaoItem();
+                $InfoObj->fromJsonInfo($jsonInfo->item[$i]);
+                $InfoList[$i] = $InfoObj;
             }
-            $this->btns = $btnsList;
+            $this->item = $InfoList;
         }
 
-        isset($jsonInfo->coupon) ? ($this->coupon = $jsonInfo->coupon) : null;
+        if(isset($jsonInfo->commerce)){
+            $InfoObj = new KakaoCommerce();
+            $InfoObj->fromJsonInfo($jsonInfo->commerce);
+            $this->commerce = $InfoObj;
+        }
+
+        if(isset($jsonInfo->head)){
+            $InfoObj = new KakaoCarouselHead();
+            $InfoObj->fromJsonInfo($jsonInfo->head);
+            $this->head = $InfoObj;
+        }
+
+        if(isset($jsonInfo->carousel)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->carousel); $i++) {
+                $InfoObj = new KakaoCarousel();
+                $InfoObj->fromJsonInfo($jsonInfo->carousel[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->carousel = $InfoList;
+        }
+
+        if(isset($jsonInfo->tail)){
+            $InfoObj = new KakaoCarouselTail();
+            $InfoObj->fromJsonInfo($jsonInfo->tail);
+            $this->tail = $InfoObj;
+        }
+
+         if(isset($jsonInfo->btns)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
+                $InfoObj = new KakaoButton();
+                $InfoObj->fromJsonInfo($jsonInfo->btns[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->btns = $InfoList;
+        }
+
+        if(isset($jsonInfo->coupon)){
+            $InfoObj = new KakaoCoupon();
+            $InfoObj->fromJsonInfo($jsonInfo->coupon);
+            $this->coupon = $InfoObj;
+        }
+
+        isset($jsonInfo->contentVariable) ? ($this->contentVariable = $jsonInfo->contentVariable) : null;
+        isset($jsonInfo->buttonVariable) ? ($this->buttonVariable = $jsonInfo->buttonVariable) : null;
+        isset($jsonInfo->couponVariable) ? ($this->couponVariable = $jsonInfo->couponVariable) : null;
+        isset($jsonInfo->commerceVariable) ? ($this->commerceVariable = $jsonInfo->commerceVariable) : null;
+
+        if(isset($jsonInfo->carouselVariable)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->carouselVariable); $i++) {
+                $InfoObj = new KakaoCarouselVariable();
+                $InfoObj->fromJsonInfo($jsonInfo->carouselVariable[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->carouselVariable = $InfoList;
+        }
     }
 }
 
@@ -941,6 +1399,103 @@ class ATSTemplate
     }
 }
 
+class BMSTemplate
+{
+    public $templateCode;
+    public $templateType;
+    public $templateName;
+    public $content;
+    public $plusFriendID;
+    public $adultYN;
+    public $header;
+    public $addContent;
+    public $imageUrl;
+    public $imageLink;
+    public $videoUrl;
+    public $thumbnailUrl;
+    public $state;
+    public $stateDT;
+    public $item;
+    public $commerce;
+    public $head;
+    public $carousel;
+    public $tail;
+    public $btns;
+    public $coupon;
+
+    public function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->templateCode) ? $this->templateCode = $jsonInfo->templateCode : null;
+        isset($jsonInfo->templateType) ? $this->templateType = $jsonInfo->templateType : null;
+        isset($jsonInfo->templateName) ? $this->templateName = $jsonInfo->templateName : null;
+        isset($jsonInfo->content) ? $this->content = $jsonInfo->content : null;
+        isset($jsonInfo->plusFriendID) ? $this->plusFriendID = $jsonInfo->plusFriendID : null;
+        isset($jsonInfo->adultYN) ? $this->adultYN = $jsonInfo->adultYN : null;
+        isset($jsonInfo->header) ? $this->header = $jsonInfo->header : null;
+        isset($jsonInfo->addContent) ? $this->addContent = $jsonInfo->addContent : null;
+        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
+        isset($jsonInfo->imageLink) ? $this->imageLink = $jsonInfo->imageLink : null;
+        isset($jsonInfo->videoUrl) ? $this->videoUrl = $jsonInfo->videoUrl : null;
+        isset($jsonInfo->thumbnailUrl) ? $this->thumbnailUrl = $jsonInfo->thumbnailUrl : null;
+        isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+        isset($jsonInfo->stateDT) ? $this->stateDT = $jsonInfo->stateDT : null;
+
+        if(isset($jsonInfo->item)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->item); $i++) {
+                $InfoObj = new KakaoItem();
+                $InfoObj->fromJsonInfo($jsonInfo->item[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->item = $InfoList;
+        }
+
+        if(isset($jsonInfo->commerce)){
+            $InfoObj = new KakaoCommerce();
+            $InfoObj->fromJsonInfo($jsonInfo->commerce);
+            $this->commerce = $InfoObj;
+        }
+
+        if(isset($jsonInfo->head)){
+            $InfoObj = new KakaoCarouselHead();
+            $InfoObj->fromJsonInfo($jsonInfo->head);
+            $this->head = $InfoObj;
+        }
+
+        if(isset($jsonInfo->carousel)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->carousel); $i++) {
+                $InfoObj = new KakaoCarousel();
+                $InfoObj->fromJsonInfo($jsonInfo->carousel[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->carousel = $InfoList;
+        }
+
+        if(isset($jsonInfo->tail)){
+            $InfoObj = new KakaoCarouselTail();
+            $InfoObj->fromJsonInfo($jsonInfo->tail);
+            $this->tail = $InfoObj;
+        }
+
+         if(isset($jsonInfo->btns)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
+                $InfoObj = new KakaoButton();
+                $InfoObj->fromJsonInfo($jsonInfo->btns[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->btns = $InfoList;
+        }
+
+        if(isset($jsonInfo->coupon)){
+            $InfoObj = new KakaoCoupon();
+            $InfoObj->fromJsonInfo($jsonInfo->coupon);
+            $this->coupon = $InfoObj;
+        }
+    }
+}
+
 class KakaoButton
 {
     public $n;
@@ -966,6 +1521,8 @@ class PlusFriend
     public $regDT;
     public $state;
     public $stateDT;
+    public $bmsState;
+    public $bmsStateDT;
 
     function fromJsonInfo($jsonInfo)
     {
@@ -974,20 +1531,25 @@ class PlusFriend
         isset($jsonInfo->regDT) ? $this->regDT = $jsonInfo->regDT : null;
         isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
         isset($jsonInfo->stateDT) ? $this->stateDT = $jsonInfo->stateDT : null;
+        isset($jsonInfo->bmsState) ? $this->bmsState = $jsonInfo->bmsState : null;
+        isset($jsonInfo->bmsStateDT) ? $this->bmsStateDT = $jsonInfo->bmsStateDT : null;
     }
 }
 
 class BMS
 {
     public $plusFriendID;
+    public $templateCode;
     public $targeting;
-    public $unsubscribeNo;
+    public $header;
+    public $adultYN;
     public $imageUrl;
     public $imageLink;
-    public $receiveNum;
-    public $receiveName;
-    public $adultYN;
+    public $videoUrl;
+    public $thumbnailUrl;
+    public $addContent;
     public $content;
+    public $unsubscribeNo;
     public $altYN;
     public $sendNum;
     public $altSubject;
@@ -995,9 +1557,19 @@ class BMS
     public $altUnsubscribeNo;
     public $reserveDT;
     public $requestNum;
-    public $receivers;
+    public $item;
+    public $head;
+    public $carousel;
+    public $tail;
+    public $commerce;
     public $btns;
     public $coupon;
+    public $receivers;
+    public $contentVariable;
+    public $buttonVariable;
+    public $couponVariable;
+    public $commerceVariable;
+    public $carouselVariable;
 }
 
 class KakaoCoupon
@@ -1020,6 +1592,125 @@ class KakaoCoupon
     }
 }
 
+class KakaoCommerce
+{
+    public $title;
+    public $regularPrice;
+    public $discountPrice;
+    public $discountRate;
+    public $discountFixed;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->title) ? $this->title = $jsonInfo->title : null;
+        isset($jsonInfo->regularPrice) ? $this->regularPrice = $jsonInfo->regularPrice : null;
+        isset($jsonInfo->discountPrice) ? $this->discountPrice = $jsonInfo->discountPrice : null;
+        isset($jsonInfo->discountRate) ? $this->discountRate = $jsonInfo->discountRate : null;
+        isset($jsonInfo->discountFixed) ? $this->discountFixed = $jsonInfo->discountFixed : null;
+    }
+}
+
+class KakaoItem
+{
+    public $title;
+    public $imageUrl;
+    public $linkMobile;
+    public $linkPc;
+    public $linkAndroid;
+    public $linkIos;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->title) ? $this->title = $jsonInfo->title : null;
+        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
+        isset($jsonInfo->linkMobile) ? $this->linkMobile = $jsonInfo->linkMobile : null;
+        isset($jsonInfo->linkPc) ? $this->linkPc = $jsonInfo->linkPc : null;
+        isset($jsonInfo->linkAndroid) ? $this->linkAndroid = $jsonInfo->linkAndroid : null;
+        isset($jsonInfo->linkIos) ? $this->linkIos = $jsonInfo->linkIos : null;
+    }
+}
+
+class KakaoCarouselHead
+{
+    public $header;
+    public $content;
+    public $imageUrl;
+    public $linkMobile;
+    public $linkPc;
+    public $linkAndroid;
+    public $linkIos;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->header) ? $this->header = $jsonInfo->header : null;
+        isset($jsonInfo->content) ? $this->content = $jsonInfo->content : null;
+        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
+        isset($jsonInfo->linkMobile) ? $this->linkMobile = $jsonInfo->linkMobile : null;
+        isset($jsonInfo->linkPc) ? $this->linkPc = $jsonInfo->linkPc : null;
+        isset($jsonInfo->linkAndroid) ? $this->linkAndroid = $jsonInfo->linkAndroid : null;
+        isset($jsonInfo->linkIos) ? $this->linkIos = $jsonInfo->linkIos : null;
+    }
+}
+
+class KakaoCarousel
+{
+    public $header;
+    public $content;
+    public $imageUrl;
+    public $imageLink;
+    public $addContent;
+    public $commerce;
+    public $btns;
+    public $coupon;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->header) ? $this->header = $jsonInfo->header : null;
+        isset($jsonInfo->content) ? $this->content = $jsonInfo->content : null;
+        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
+        isset($jsonInfo->imageLink) ? $this->imageLink = $jsonInfo->imageLink : null;
+        isset($jsonInfo->addContent) ? $this->addContent = $jsonInfo->addContent : null;
+
+        if(isset($jsonInfo->commerce)){
+            $InfoObj = new KakaoCommerce();
+            $InfoObj->fromJsonInfo($jsonInfo->commerce);
+            $this->commerce = $InfoObj;
+        }
+
+        if(isset($jsonInfo->btns)){
+            $InfoList = array();
+            for ($i = 0; $i < Count($jsonInfo->btns); $i++) {
+                $InfoObj = new KakaoButton();
+                $InfoObj->fromJsonInfo($jsonInfo->btns[$i]);
+                $InfoList[$i] = $InfoObj;
+            }
+            $this->btns = $InfoList;
+        }
+
+        if(isset($jsonInfo->coupon)){
+            $InfoObj = new KakaoCoupon();
+            $InfoObj->fromJsonInfo($jsonInfo->coupon);
+            $this->coupon = $InfoObj;
+        }
+    }
+}
+
+class KakaoCarouselTail
+{
+    public $linkMobile;
+    public $linkPc;
+    public $linkAndroid;
+    public $linkIos;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->linkMobile) ? $this->linkMobile = $jsonInfo->linkMobile : null;
+        isset($jsonInfo->linkPc) ? $this->linkPc = $jsonInfo->linkPc : null;
+        isset($jsonInfo->linkAndroid) ? $this->linkAndroid = $jsonInfo->linkAndroid : null;
+        isset($jsonInfo->linkIos) ? $this->linkIos = $jsonInfo->linkIos : null;
+    }
+}
+
 class ImageURLResponse
 {
     public $code;
@@ -1034,6 +1725,41 @@ class ImageURLResponse
     }
 }
 
+class ListImageResponse
+{
+    public $code;
+    public $message;
+    public $result;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->code) ? $this->code = $jsonInfo->code : null;
+        isset($jsonInfo->message) ? $this->message = $jsonInfo->message : null;
+
+        if (isset($jsonInfo->result)) {
+            $resultList = array();
+            for ($i = 0; $i < Count($jsonInfo->result); $i++) {
+                $resultInfo = new ImageResult();
+                $resultInfo->fromJsonInfo($jsonInfo->result[$i]);
+                $resultList[$i] = $resultInfo;
+            }
+            $this->result = $resultList;
+        }
+    }
+}
+
+class ImageResult
+{
+    public $formField;
+    public $imageUrl;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->formField) ? $this->formField = $jsonInfo->formField : null;
+        isset($jsonInfo->imageUrl) ? $this->imageUrl = $jsonInfo->imageUrl : null;
+    }
+}
+
 class KakaoUploadFile
 {
     public $fileName;
@@ -1042,9 +1768,53 @@ class KakaoUploadFile
 
 class KakaoReceiver
 {
+    public $rcv;
+    public $rcvnm;
+    public $msg;
+    public $altsjt;
+    public $altmsg;
+    public $emphasizeTitle;
     public $receiveNum;
     public $receiveName;
+    public $header;
+    public $adultYN;
+    public $imageUrl;
+    public $imageLink;
+    public $videoUrl;
+    public $thumbnailUrl;
+    public $addContent;
+    public $content;
+    public $altSubject;
+    public $altContent;
     public $interOPRefKey;
+    public $item;
+    public $head;
+    public $carousel;
+    public $tail;
+    public $commerce;
+    public $btns;
+    public $coupon;
+    public $contentVariable;
+    public $buttonVariable;
+    public $couponVariable;
+    public $commerceVariable;
+    public $carouselVariable;
+}
+
+class KakaoCarouselVariable
+{
+    public $contentVariable;
+    public $buttonVariable;
+    public $couponVariable;
+    public $commerceVariable;
+
+    function fromJsonInfo($jsonInfo)
+    {
+        isset($jsonInfo->contentVariable) ? $this->contentVariable = $jsonInfo->contentVariable : null;
+        isset($jsonInfo->buttonVariable) ? $this->buttonVariable = $jsonInfo->buttonVariable : null;
+        isset($jsonInfo->couponVariable) ? $this->couponVariable = $jsonInfo->couponVariable : null;
+        isset($jsonInfo->commerceVariable) ? $this->commerceVariable = $jsonInfo->commerceVariable : null;
+    }
 }
 
 ?>

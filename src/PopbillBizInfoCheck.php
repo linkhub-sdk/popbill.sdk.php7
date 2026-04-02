@@ -11,7 +11,7 @@
  * https://www.linkhub.co.kr
  * Author : Linkhub DEV (ops@linkhubcorp.com)
  * Written : 2022-09-30
- * Updated : 2026-03-17
+ * Updated : 2026-04-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anything.

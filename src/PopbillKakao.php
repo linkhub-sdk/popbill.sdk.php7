@@ -257,12 +257,12 @@ class PopbillKakao extends PopbillBase {
         return $response->url;
     }
 
-    public function GetBMSTemplateMgtURL($CorpNum) {
+    public function GetBMSTemplateMgtURL($CorpNum, $UserID) {
         if($this->isNullOrEmpty($CorpNum)) {
             throw new PopbillException('팝빌회원 사업자번호가 입력되지 않았습니다.');
         }
 
-        $response = $this->executeCURL('/KakaoTalk/?TG=BMS_TEMPLATE', $CorpNum);
+        $response = $this->executeCURL('/KakaoTalk/?TG=BMS_TEMPLATE', $CorpNum, $UserID);
         return $response->url;
     }
 
